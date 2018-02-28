@@ -6,7 +6,27 @@ def fun1(param1, param2 : int) : void {}
 def fun2(param1 : int, param2 : double) : double {
     sensor, sensorAux : char;
     4+5*8;
-    return sensor;
+    # return sensor;
+    return;
 }
 a = 4+5;
 b = (double)a;
+# Variable and function definitions
+i, j, n : char;
+c : double;
+
+# Empty function
+def p() : char { }
+
+def f(n : int, r :double ) : char {
+  	real : int;
+  	c1, c2 : double;
+	c1 = (char)n;
+  	real = c1 + n + r;
+  	# p(); # Invocation as a statement
+  	# return (int)c1;
+}
+
+#while (a < a && a > b || a >= c && a <= b) :  {
+
+# }

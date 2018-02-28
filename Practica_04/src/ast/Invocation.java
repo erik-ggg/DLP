@@ -7,7 +7,6 @@ public class Invocation implements Statement {
     private Variable function;
 
     public Invocation(Variable function, List<Expression> expressions) {
-        System.out.println("Invocation: " + function + " ### " + expressions);
         this.expressions = expressions;
         this.function = function;
     }

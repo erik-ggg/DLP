@@ -52,7 +52,7 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
         ;
         
 definicion: expression ';'                                                      
-        | var ';'
+        | var ';'                                {  }
         | function
         | call_function ';'
         | struct ';'
@@ -63,7 +63,7 @@ definicion: expression ';'
 
 statement: while
         | if
-        | return ';'
+        | return
         ;
 
 expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
@@ -78,37 +78,36 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
         | CHAR_CONSTANT                 { $$ = new RealLiteral((String)$1); }
         | ID                            { $$ = new Variable((String)$1); }
-        |
         ;
 
 var: expression ':' type                                           { $$ = new VarDefinition((Variable)$1, (Type)$3); }   
         | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, (Type)$6); }   
         | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, (Type)$9); }
-        | expression ',' var                                            
+        | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, (Type)$5); }   
+        | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, (Type)$7); }
+        | expression ',' var                                       { }     
         ;
 
 function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
         ;
 
-function_params:  function_params ',' var       { $$ = $1; ((List)$$).add($2); }
+function_params:  function_params ',' var       { $$ = $1; ((List)$$).add($3); }
         | var                                   { $$ = new ArrayList(); ((List)$$).add($1); }
+        |                                       { $$ = new ArrayList(); }
         ;
 
 function_body: '{' '}'                          { $$ = new ArrayList(); }
-        | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($1); }
+        | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($2); }
+        ;
+                  
+call_function: ID '(' call_function_params ')'  //{ $$ = new Invocation((Variable)$1, (List<Expression>)$3); }
         ;
 
-// { $$ = new Invocation(new Variable((String)$1), (List<Expression>)$3); }                      
-call_function: ID '(' call_function_params ')'    
+call_function_params: call_function_params ',' expression       //{ $$ = $1; ((List)$$).add($2); }
+        | expression                                            //{ $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-call_function_params: call_function_params ',' call_function_params
-        | var_array
-        | expression
-        ;
-
-return: RETURN expression
-        | RETURN
+return: RETURN ';'
         ;
 
 while: WHILE '(' conditions ')' ':' function_body                               
