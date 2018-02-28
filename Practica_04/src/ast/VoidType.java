@@ -1,6 +1,6 @@
 package ast;
 
-public class VoidType {
+public class VoidType implements Type {
     private static final VoidType INSTANCE = new VoidType();
 
     private VoidType(){}

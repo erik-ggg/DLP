@@ -31,10 +31,10 @@ while (a < a && a > b || a >= c && a <= b) :  {
 
 }
 
-if (a > b)
+if (a > b) :
     a+5;
 
-if (a >= b) {
+if (a >= b) : {
     a+5;
     while (b > c) : {
         def f(param : char): void{
@@ -51,7 +51,7 @@ i(param1, (double)param2);
 print a;
 print f(i, (double)i); # Invocation as an expression
 
-if (a >= b) {
+if (a >= b) : {
     a+5;
     while (b > c) : {
         def f(param: int) :void {
@@ -64,7 +64,7 @@ if (a >= b) {
     b = 4 * a;
 }
 
-if (a >= b) {
+if (a >= b) : {
     a+5;
     while (b > c) : {
         def f(param: char): void{
@@ -144,24 +144,30 @@ def main(): void {
 		}
 		i=i+1;
   	}
-    print 't', 'r', 'u', 'e', '\n';
   	i=0;
 	pair.character = '0';
   	pair.integer = '0';
   	# a == 2
   	while true && vector[1]: {
   	    a%2 = 2;
-  	    if (!pair.integer || true != false && a%2 == 2)
+  	    if (!pair.integer || true != false && a%2 == 2) :
           	    i = pair.integer;
   	}
 
+    if pair.integer == vector[0][0] || !pair.character || i%2==0 : {
+        a = true;
+    }
+
   	while pair.integer >= i: {
     	if pair.integer == vector[0][0] || !pair.character || i%2==0 :
-      		print 't', 'r', 'u', 'e', '\n';
+    	    a = 4;
+      		# print 't', 'r', 'u', 'e', '\n';
     	else
-      		print 'f', 'a', 'l', 's', 'e', '\n';
+    	    a = 7;
+      		# print 'f', 'a', 'l', 's', 'e', '\n';
     	i=i+1;
   	}
+  	prueba = vector[1][(int)1.6];
   	print f(i, (double)i); # Invocation as an expression
   	vector[9][(int)4.3] = 5.6;
   	f(1, 2.2); # Invocation as a statement

@@ -4,10 +4,18 @@ public class Variable implements Expression {
 	private int row, column;
 	private String name;
 
+	public Variable(String name) {
+		this.name = name;
+	}
+
 	public Variable(int row, int col, String name) {
 		this.row = row;
 		this.column = col;
 		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override

@@ -1,16 +1,17 @@
 package ast;
 
-public class Arithmetic implements Expression {	
+public class Arithmetic implements Expression {
 	private Expression leftop, rightop;
 	private int row, column;
-	private String operator;
+	private char operator;
 
-	public Arithmetic(Expression left, Expression right) {
+	public Arithmetic(Expression left, char op, Expression right) {
 		this.leftop = left;
+		this.operator = op; 
 		this.rightop = right;
 	}
 
-	public Arithmetic(int row, int col, Expression expression1, String op, Expression expression2) {
+	public Arithmetic(int row, int col, Expression expression1, char op, Expression expression2) {
 		this.row = row;
 		this.column = col;
 		this.leftop = expression1;
@@ -32,7 +33,4 @@ public class Arithmetic implements Expression {
 	public String toString() {
 		return leftop.toString() + " " + operator + " " + rightop.toString();
 	}
-	
-	
-
 }

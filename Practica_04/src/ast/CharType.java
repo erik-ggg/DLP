@@ -1,6 +1,6 @@
 package ast;
 
-public class CharType {
+public class CharType implements Type {
     private static final CharType INSTANCE = new CharType();
 
     private CharType(){}

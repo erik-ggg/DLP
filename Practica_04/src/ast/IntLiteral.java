@@ -3,6 +3,10 @@ package ast;
 public class IntLiteral implements Expression {
 	private int row, column, value;
 
+	public IntLiteral(int value) {
+		this.value = value;
+	}
+
 	public IntLiteral(int row, int col, int value) {
 		this.row = row;
 		this.column = col;

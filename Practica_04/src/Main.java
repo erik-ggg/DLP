@@ -17,7 +17,8 @@ public class Main {
 	        
 		FileReader fr=null;
 		try {
-			fr=new FileReader(args[0]);
+//			fr=new FileReader(args[0]);
+			fr=new FileReader("C:\\Users\\ERIK\\Documents\\University\\DLP\\Repo\\DLP\\Practica_04\\small-input.txt");
 		} catch(IOException io) {
 			System.err.println("The file "+args[0]+" could not be opened.");
 			return;

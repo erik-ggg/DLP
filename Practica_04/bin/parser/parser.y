@@ -2,6 +2,8 @@
 // * Declaraciones de código Java
 // * Se sitúan al comienzo del archivo generado
 // * El package lo añade yacc si utilizamos la opción -Jpackage
+import java.util.List;
+import java.util.ArrayList;
 import scanner.Scanner;
 import java.io.Reader;
 import ast.*;
@@ -19,7 +21,9 @@ import ast.*;
 %token ELSE
 %token PRINT
 %token STRUCT
-%token TYPES
+%token INT
+%token REAL_TYPE
+%token CHAR_TYPE
 %token VOID
 
 
@@ -40,123 +44,74 @@ import ast.*;
 %%
 // * Gramática y acciones Yacc
 
-programa: definiciones ;
+programa: definiciones                          { ast = new Program((List<Definition>)$1);  }
+        ;                       
 
-definiciones: definiciones definicion 
-        | definicion
+definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
+        | definicion                            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
-
-definicion: expression ';'
+        
+definicion: expression ';'                                                      
         | var ';'
         | function
-        | assignment ';'
-        | while
-        | if
         | call_function ';'
         | struct ';'
-        | field_access ';'
         | array_init ';'        
         | PRINT definicion
+        | statement
         ;
 
-expression: expression '+' expression	
-        | expression '-' expression
-        | expression '*' expression
-        | expression '/' expression
-        | expression '%' expression
-        | INT_CONSTANT	             
-        | REAL_CONSTANT
-        | ID
+statement: while
+        | if
         ;
 
-vars: var ',' var
-        | var
-        ;
-
-var: var_aux ':' TYPES 
-        ;
-
-var_array: ID '['array_params']'
-        | ID '['array_params']''['array_params']'
-        ;
-
-// array_params: ID
-//         | INT_CONSTANT
-//         |
-//         ;
-
-array_params: params
-        | cast params
-        ;
-
-array_init: var_aux ":" '['array_params']' TYPES
-        | var_aux ":" '['array_params']''['array_params']' TYPES
-        ;
-
-params: ID
-        | INT_CONSTANT
-        | REAL_CONSTANT
-        | field_access
-        | '\'' CHAR_CONSTANT '\''
+expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
+        | expression '-' expression     { $$ = new Arithmetic((Expression)$1, '-', (Expression)$3); }
+        | expression '*' expression     { $$ = new Arithmetic((Expression)$1, '*', (Expression)$3); }
+        | expression '/' expression     { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
+        | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
+        | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
+        | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }     
+        | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
+        | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
+        | CHAR_CONSTANT                 { $$ = new RealLiteral((String)$1); }
+        | ID                            { $$ = new Variable((String)$1); }
         |
         ;
 
-var_aux: var_aux ',' var_aux
-        | var_array
-        | ID
+var: expression ':' type                                           { $$ = new VarDefinition((Variable)$1, (Type)$3); }   
+        | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, (Type)$6); }   
+        | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, (Type)$9); }
+        | expression ',' var                                            
         ;
 
-function: def ID '(' function_params ')' ':' function_return_type function_body
+function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
         ;
 
-function_return_type: TYPES
-        | VOID
+function_params:  function_params ',' var       { $$ = $1; ((List)$$).add($2); }
+        | var                                   { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-function_params: vars
-        |
+function_body: '{' '}'                          { $$ = new ArrayList(); }
+        | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($1); }
+        | '{' definiciones return ';' '}'       { $$ = new ArrayList(); }
         ;
 
-function_body: '{' '}' 
-        | '{' definiciones '}'
-        | '{' definiciones return ';' '}'
-        ;
-
-call_function: ID '(' call_function_params ')'
+// { $$ = new Invocation(new Variable((String)$1), (List<Expression>)$3); }                      
+call_function: ID '(' call_function_params ')'    
         ;
 
 call_function_params: call_function_params ',' call_function_params
         | var_array
         | expression
-        | cast ID
-        |
         ;
 
-return: RETURN ID
-        | RETURN cast ID
+return: RETURN expression
         ;
 
-assignment: assignment_start '=' assignment_end
-        | assignment_start '=' cast assignment_end
-        ;
-
-assignment_start: expression
-        | var_array
-        | field_access
-        ;
-
-assignment_end: var_array
-        | call_function
-        | expression
-        | CHAR_CONSTANT
-        | field_access
-        ;
-
-cast: '(' TYPES ')'
-        ;
-
-while: WHILE '(' conditions ')' ':' function_body 
-        | WHILE conditions ':' function_body 
+while: WHILE '(' conditions ')' ':' function_body                               
+        | WHILE conditions ':' function_body                                    
         ;
 
 if: IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body
@@ -184,24 +139,18 @@ condition: condition_params '>' condition_params
         | condition_params
         ;
 
-condition_params: expression
-        | field_access
-        | var_array
-        ;
+// struct: var_aux ':' STRUCT '{' struct_body ';' '}'
+//         ;
 
-field_access: field_access '.' field_access_param
-        | field_access_param '.' field_access_param
-        ;
+// struct_body: struct_body ';' struct_body
+//         | var
+//         | struct
+//         ;
 
-field_access_param: ID
-        | var_array 
-        ;
-struct: var_aux ':' STRUCT '{' struct_body ';' '}'
-        ;
-
-struct_body: struct_body ';' struct_body
-        | var
-        | struct
+type: INT                     { $$ = IntType.getInstance(); }
+        | REAL_TYPE           { $$ = RealType.getInstance(); }
+        | CHAR_TYPE           { $$ = CharType.getInstance(); }
+        | VOID                { $$ = VoidType.getInstance(); }
         ;
 %%
 

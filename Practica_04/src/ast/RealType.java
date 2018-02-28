@@ -1,6 +1,6 @@
 package ast;
 
-public class RealType {
+public class RealType implements Type {
     private static final RealType INSTANCE = new RealType();
 
     private RealType(){}

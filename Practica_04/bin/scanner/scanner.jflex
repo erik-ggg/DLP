@@ -50,7 +50,7 @@ IDENT = ({Word}|{ConstanteEntera}|_)*
 COMMENT = #.*
 ANYTHING = ({IDENT}|{JUMPS}|{NUMBER})*
 BIG_COMMENT = "\"\"\""{ANYTHING}"\"\"\""
-TOKENS = [%.+*<>;(){}!=:,&|\[\](&&)(||)]  
+TOKENS = [%.+*/<>;(){}!=:,&|\[\](&&)(||)]  
 DEF = def
 RETURN = return
 WHILE = while
@@ -58,7 +58,9 @@ IF = if
 ELSE = else
 PRINT = print
 STRUCT = struct
-TYPES = int|double|char
+INT = int
+REAL_TYPE = double
+CHAR_TYPE = char
 VOID = void
 
 %%
@@ -67,8 +69,12 @@ VOID = void
 // * Constante Entera
 {VOID} 				{this.yylval = new String(yytext());
          			    return Parser.VOID;}
-{TYPES} 				{this.yylval = new String(yytext());
-         			    return Parser.TYPES;}
+{INT} 				{this.yylval = new String(yytext());
+         			    return Parser.INT;}
+{REAL_TYPE} 				{this.yylval = new String(yytext());
+         			    return Parser.REAL_TYPE;}
+{CHAR_TYPE} 				{this.yylval = new String(yytext());
+         			    return Parser.CHAR_TYPE;}
 {STRUCT} 				{this.yylval = new String(yytext());
          			    return Parser.STRUCT;}
 {WHILE} 				{this.yylval = new String(yytext());
