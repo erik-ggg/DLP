@@ -32,6 +32,6 @@ public class VarDefinition implements Definition, Statement, Type {
 
     @Override
     public Type getType() {
-        return null;
+        return type;
     }
 }

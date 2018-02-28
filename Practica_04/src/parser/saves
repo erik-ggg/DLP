@@ -1,0 +1,5 @@
+{ ((List)$$).add($$ = new VarDefinition((Variable)$1, (Type)$3)); }
+{ ((List)$$).add($$ = new VarDefinition((Variable)$1, (Type)$6)); }
+{ ((List)$$).add($$ = new VarDefinition((Variable)$1, (Type)$9)); }
+{ ((List)$$).add($$ = new VarDefinition((Variable)$1, (Type)$5)); }   
+{ ((List)$$).add($$ = new VarDefinition((Variable)$1, (Type)$7)); }

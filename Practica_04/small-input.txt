@@ -1,8 +1,9 @@
 4+5*8;
+prueba: char;
 a[1]:int;
 a[][]:char;
 sensor, sensorAux : char;
-def fun1(param1, param2 : int) : void {}
+#def fun1(param1, param2 : int) : void {}
 def fun2(param1 : int, param2 : double) : double {
     sensor, sensorAux : char;
     4+5*8;

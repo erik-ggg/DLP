@@ -52,7 +52,7 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
         ;
         
 definicion: expression ';'                                                      
-        | var ';'                                {  }
+        | var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
         | function
         | call_function ';'
         | struct ';'
@@ -80,20 +80,24 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | ID                            { $$ = new Variable((String)$1); }
         ;
 
+var_final: ID ',' var_final           { $$ = $3; ((List)$$).add($1); }
+        | var                         { $$ = new ArrayList(); ((List)$$).add($1); }
+        ;
+
 var: expression ':' type                                           { $$ = new VarDefinition((Variable)$1, (Type)$3); }   
         | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, (Type)$6); }   
         | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, (Type)$9); }
         | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, (Type)$5); }   
         | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, (Type)$7); }
-        | expression ',' var                                       { }     
+        //| expression ',' var                                     { $$ = $2; ((List)$$).add(new VarDefinition((Variable)$1));}
         ;
 
 function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
         ;
 
-function_params:  function_params ',' var       { $$ = $1; ((List)$$).add($3); }
-        | var                                   { $$ = new ArrayList(); ((List)$$).add($1); }
-        |                                       { $$ = new ArrayList(); }
+function_params:  function_params ',' var        { $$ = $1; ((List)$$).add($3); }
+        | var                                    { $$ = new ArrayList(); ((List)$$).add($1); }
+        |                                              { $$ = new ArrayList(); }
         ;
 
 function_body: '{' '}'                          { $$ = new ArrayList(); }

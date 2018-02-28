@@ -1,5 +1,6 @@
 package ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VarList {
@@ -10,7 +11,20 @@ public class VarList {
         System.out.println(names);
     }
 
-    public VarList(List<String> names, Type type) {
-        for (String name: names) vars.add(new VarDefinition(name, type));
+    public VarList(List<VarDefinition> vars, Type type) {
+        this.vars = vars;
+        this.type = type;
+    }
+
+    public VarList(List<VarDefinition> vars) {
+        this.vars = new ArrayList<>();
+        Type type = null;
+        for (Object var : vars) {
+            if (var instanceof VarDefinition) {
+                this.vars.add((VarDefinition)var);
+                type = ((VarDefinition) var).getType();
+            }
+            else this.vars.add(new VarDefinition((String)var, type));
+        }
     }
 }
