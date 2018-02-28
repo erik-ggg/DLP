@@ -1,0 +1,65 @@
+4+5*8;
+sensor, sensorAux:;
+def fun1(param1, param2:): {}
+def fun2(param1:, param2:): {
+    sensor, sensorAux:;
+    4+5*8;
+    return sensor;
+}
+a = 4+5;
+b = ()a;
+
+# Variable and function definitions
+i, j, n: ;
+c: ;
+
+# Empty function
+def p():  { }
+
+def f(n: ,r: ): {
+  	real: ;
+  	c1, c2: ;
+	c1 = ()n;
+  	real = c1 + n + r;
+  	# p(); # Invocation as a statement
+  	return ()c1;
+}
+
+while (a < a && a > b
+|| a >= c && a <= b) :  {
+
+}
+# && a != b && a == b
+
+if (a > b)
+    a+5;
+
+if (a >= b) {
+    a+5;
+    while (b > c) : {
+        def f(param: ): {
+            b = 4 * a;
+        }
+    }
+}
+
+if (a >= b) {
+    a+5;
+    while (b > c) : {
+        def f(param: ): {
+
+        }
+    }
+} else {
+    b = 4 * a;
+}
+
+if (a >= b) {
+    a+5;
+    while (b > c) : {
+        def f(param: ): {
+            print a+5;
+        }
+    }
+} else
+    b = 4 * a;

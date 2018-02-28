@@ -1,0 +1,1031 @@
+   0  $accept : programa $end
+
+   1  programa : definiciones
+
+   2  definiciones : definicion
+   3               | definiciones definicion
+
+   4  definicion : expression ';'
+   5             | var ';'
+   6             | function
+   7             | assignment ';'
+   8             | while
+   9             | if
+  10             | PRINT definicion
+
+  11  expression : expression '+' expression
+  12             | expression '*' expression
+  13             | INT_CONSTANT
+  14             | REAL_CONSTANT
+  15             | ID
+
+  16  var : var_aux ':'
+  17      | ID '[' INT_CONSTANT ']' ':'
+  18      | ID '[' ']' '[' ']' ':'
+
+  19  var_aux : var_aux ',' var_aux
+  20          | ID
+
+  21  vars : vars ',' vars
+  22       | var
+
+  23  function : def ID function_params ':' function_body
+
+  24  function_params : '(' ')'
+  25                  | '(' vars ')'
+
+  26  function_body : '{' '}'
+  27                | '{' definiciones '}'
+  28                | '{' definiciones return ';' '}'
+
+  29  return : RETURN ID
+  30         | RETURN '(' ')' ID
+
+  31  assignment : ID '=' expression
+  32             | ID '=' '(' ')' ID
+
+  33  while : WHILE '(' conditions ')' ':' function_body
+
+  34  if : IF '(' conditions ')' ifelse_body ELSE ifelse_body
+  35     | IF '(' conditions ')' ifelse_body
+
+  36  ifelse_body : '{' definiciones '}'
+  37              | definicion
+
+  38  conditions : conditions '&' '&' condition
+  39             | conditions '|' '|' condition
+  40             | condition
+
+  41  condition : ID '>' ID
+  42            | ID '>' '=' ID
+  43            | ID '<' ID
+  44            | ID '<' '=' ID
+  45            | ID '=' '=' ID
+  46            | ID '!' '=' ID
+
+state 0
+	$accept : . programa $end  (0)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	programa  goto 8
+	definiciones  goto 9
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 1
+	expression : INT_CONSTANT .  (13)
+
+	.  reduce 13
+
+
+state 2
+	expression : ID .  (15)
+	var : ID . '[' INT_CONSTANT ']' ':'  (17)
+	var : ID . '[' ']' '[' ']' ':'  (18)
+	var_aux : ID .  (20)
+	assignment : ID . '=' expression  (31)
+	assignment : ID . '=' '(' ')' ID  (32)
+
+	'['  shift 18
+	'='  shift 19
+	'+'  reduce 15
+	'*'  reduce 15
+	','  reduce 20
+	':'  reduce 20
+	';'  reduce 15
+
+
+state 3
+	expression : REAL_CONSTANT .  (14)
+
+	.  reduce 14
+
+
+state 4
+	function : def . ID function_params ':' function_body  (23)
+
+	ID  shift 20
+	.  error
+
+
+state 5
+	while : WHILE . '(' conditions ')' ':' function_body  (33)
+
+	'('  shift 21
+	.  error
+
+
+state 6
+	if : IF . '(' conditions ')' ifelse_body ELSE ifelse_body  (34)
+	if : IF . '(' conditions ')' ifelse_body  (35)
+
+	'('  shift 22
+	.  error
+
+
+state 7
+	definicion : PRINT . definicion  (10)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	definicion  goto 23
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 8
+	$accept : programa . $end  (0)
+
+	$end  accept
+
+
+state 9
+	programa : definiciones .  (1)
+	definiciones : definiciones . definicion  (3)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	$end  reduce 1
+
+	definicion  goto 24
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 10
+	definiciones : definicion .  (2)
+
+	.  reduce 2
+
+
+state 11
+	definicion : expression . ';'  (4)
+	expression : expression . '+' expression  (11)
+	expression : expression . '*' expression  (12)
+
+	'+'  shift 25
+	'*'  shift 26
+	';'  shift 27
+	.  error
+
+
+state 12
+	definicion : var . ';'  (5)
+
+	';'  shift 28
+	.  error
+
+
+state 13
+	definicion : function .  (6)
+
+	.  reduce 6
+
+
+state 14
+	definicion : assignment . ';'  (7)
+
+	';'  shift 29
+	.  error
+
+
+state 15
+	definicion : while .  (8)
+
+	.  reduce 8
+
+
+state 16
+	definicion : if .  (9)
+
+	.  reduce 9
+
+
+state 17
+	var : var_aux . ':'  (16)
+	var_aux : var_aux . ',' var_aux  (19)
+
+	','  shift 30
+	':'  shift 31
+	.  error
+
+
+state 18
+	var : ID '[' . INT_CONSTANT ']' ':'  (17)
+	var : ID '[' . ']' '[' ']' ':'  (18)
+
+	INT_CONSTANT  shift 32
+	']'  shift 33
+	.  error
+
+
+state 19
+	assignment : ID '=' . expression  (31)
+	assignment : ID '=' . '(' ')' ID  (32)
+
+	INT_CONSTANT  shift 1
+	ID  shift 34
+	REAL_CONSTANT  shift 3
+	'('  shift 35
+	.  error
+
+	expression  goto 36
+
+
+state 20
+	function : def ID . function_params ':' function_body  (23)
+
+	'('  shift 37
+	.  error
+
+	function_params  goto 38
+
+
+state 21
+	while : WHILE '(' . conditions ')' ':' function_body  (33)
+
+	ID  shift 39
+	.  error
+
+	conditions  goto 40
+	condition  goto 41
+
+
+state 22
+	if : IF '(' . conditions ')' ifelse_body ELSE ifelse_body  (34)
+	if : IF '(' . conditions ')' ifelse_body  (35)
+
+	ID  shift 39
+	.  error
+
+	conditions  goto 42
+	condition  goto 41
+
+
+state 23
+	definicion : PRINT definicion .  (10)
+
+	.  reduce 10
+
+
+state 24
+	definiciones : definiciones definicion .  (3)
+
+	.  reduce 3
+
+
+state 25
+	expression : expression '+' . expression  (11)
+
+	INT_CONSTANT  shift 1
+	ID  shift 34
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 43
+
+
+state 26
+	expression : expression '*' . expression  (12)
+
+	INT_CONSTANT  shift 1
+	ID  shift 34
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 44
+
+
+state 27
+	definicion : expression ';' .  (4)
+
+	.  reduce 4
+
+
+state 28
+	definicion : var ';' .  (5)
+
+	.  reduce 5
+
+
+state 29
+	definicion : assignment ';' .  (7)
+
+	.  reduce 7
+
+
+state 30
+	var_aux : var_aux ',' . var_aux  (19)
+
+	ID  shift 45
+	.  error
+
+	var_aux  goto 46
+
+
+state 31
+	var : var_aux ':' .  (16)
+
+	.  reduce 16
+
+
+state 32
+	var : ID '[' INT_CONSTANT . ']' ':'  (17)
+
+	']'  shift 47
+	.  error
+
+
+state 33
+	var : ID '[' ']' . '[' ']' ':'  (18)
+
+	'['  shift 48
+	.  error
+
+
+state 34
+	expression : ID .  (15)
+
+	.  reduce 15
+
+
+state 35
+	assignment : ID '=' '(' . ')' ID  (32)
+
+	')'  shift 49
+	.  error
+
+
+state 36
+	expression : expression . '+' expression  (11)
+	expression : expression . '*' expression  (12)
+	assignment : ID '=' expression .  (31)
+
+	'+'  shift 25
+	'*'  shift 26
+	';'  reduce 31
+
+
+state 37
+	function_params : '(' . ')'  (24)
+	function_params : '(' . vars ')'  (25)
+
+	ID  shift 50
+	')'  shift 51
+	.  error
+
+	var  goto 52
+	var_aux  goto 17
+	vars  goto 53
+
+
+state 38
+	function : def ID function_params . ':' function_body  (23)
+
+	':'  shift 54
+	.  error
+
+
+state 39
+	condition : ID . '>' ID  (41)
+	condition : ID . '>' '=' ID  (42)
+	condition : ID . '<' ID  (43)
+	condition : ID . '<' '=' ID  (44)
+	condition : ID . '=' '=' ID  (45)
+	condition : ID . '!' '=' ID  (46)
+
+	'='  shift 55
+	'>'  shift 56
+	'<'  shift 57
+	'!'  shift 58
+	.  error
+
+
+state 40
+	while : WHILE '(' conditions . ')' ':' function_body  (33)
+	conditions : conditions . '&' '&' condition  (38)
+	conditions : conditions . '|' '|' condition  (39)
+
+	')'  shift 59
+	'&'  shift 60
+	'|'  shift 61
+	.  error
+
+
+state 41
+	conditions : condition .  (40)
+
+	.  reduce 40
+
+
+state 42
+	if : IF '(' conditions . ')' ifelse_body ELSE ifelse_body  (34)
+	if : IF '(' conditions . ')' ifelse_body  (35)
+	conditions : conditions . '&' '&' condition  (38)
+	conditions : conditions . '|' '|' condition  (39)
+
+	')'  shift 62
+	'&'  shift 60
+	'|'  shift 61
+	.  error
+
+
+state 43
+	expression : expression . '+' expression  (11)
+	expression : expression '+' expression .  (11)
+	expression : expression . '*' expression  (12)
+
+	'*'  shift 26
+	'+'  reduce 11
+	';'  reduce 11
+
+
+state 44
+	expression : expression . '+' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression '*' expression .  (12)
+
+	.  reduce 12
+
+
+state 45
+	var_aux : ID .  (20)
+
+	.  reduce 20
+
+
+state 46
+	var_aux : var_aux . ',' var_aux  (19)
+	var_aux : var_aux ',' var_aux .  (19)
+
+	.  reduce 19
+
+
+state 47
+	var : ID '[' INT_CONSTANT ']' . ':'  (17)
+
+	':'  shift 63
+	.  error
+
+
+state 48
+	var : ID '[' ']' '[' . ']' ':'  (18)
+
+	']'  shift 64
+	.  error
+
+
+state 49
+	assignment : ID '=' '(' ')' . ID  (32)
+
+	ID  shift 65
+	.  error
+
+
+state 50
+	var : ID . '[' INT_CONSTANT ']' ':'  (17)
+	var : ID . '[' ']' '[' ']' ':'  (18)
+	var_aux : ID .  (20)
+
+	'['  shift 18
+	','  reduce 20
+	':'  reduce 20
+
+
+state 51
+	function_params : '(' ')' .  (24)
+
+	.  reduce 24
+
+
+state 52
+	vars : var .  (22)
+
+	.  reduce 22
+
+
+state 53
+	vars : vars . ',' vars  (21)
+	function_params : '(' vars . ')'  (25)
+
+	','  shift 66
+	')'  shift 67
+	.  error
+
+
+state 54
+	function : def ID function_params ':' . function_body  (23)
+
+	'{'  shift 68
+	.  error
+
+	function_body  goto 69
+
+
+state 55
+	condition : ID '=' . '=' ID  (45)
+
+	'='  shift 70
+	.  error
+
+
+state 56
+	condition : ID '>' . ID  (41)
+	condition : ID '>' . '=' ID  (42)
+
+	ID  shift 71
+	'='  shift 72
+	.  error
+
+
+state 57
+	condition : ID '<' . ID  (43)
+	condition : ID '<' . '=' ID  (44)
+
+	ID  shift 73
+	'='  shift 74
+	.  error
+
+
+state 58
+	condition : ID '!' . '=' ID  (46)
+
+	'='  shift 75
+	.  error
+
+
+state 59
+	while : WHILE '(' conditions ')' . ':' function_body  (33)
+
+	':'  shift 76
+	.  error
+
+
+state 60
+	conditions : conditions '&' . '&' condition  (38)
+
+	'&'  shift 77
+	.  error
+
+
+state 61
+	conditions : conditions '|' . '|' condition  (39)
+
+	'|'  shift 78
+	.  error
+
+
+state 62
+	if : IF '(' conditions ')' . ifelse_body ELSE ifelse_body  (34)
+	if : IF '(' conditions ')' . ifelse_body  (35)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 79
+	.  error
+
+	definicion  goto 80
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+	ifelse_body  goto 81
+
+
+state 63
+	var : ID '[' INT_CONSTANT ']' ':' .  (17)
+
+	.  reduce 17
+
+
+state 64
+	var : ID '[' ']' '[' ']' . ':'  (18)
+
+	':'  shift 82
+	.  error
+
+
+state 65
+	assignment : ID '=' '(' ')' ID .  (32)
+
+	.  reduce 32
+
+
+state 66
+	vars : vars ',' . vars  (21)
+
+	ID  shift 50
+	.  error
+
+	var  goto 52
+	var_aux  goto 17
+	vars  goto 83
+
+
+state 67
+	function_params : '(' vars ')' .  (25)
+
+	.  reduce 25
+
+
+state 68
+	function_body : '{' . '}'  (26)
+	function_body : '{' . definiciones '}'  (27)
+	function_body : '{' . definiciones return ';' '}'  (28)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 84
+	.  error
+
+	definiciones  goto 85
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 69
+	function : def ID function_params ':' function_body .  (23)
+
+	.  reduce 23
+
+
+state 70
+	condition : ID '=' '=' . ID  (45)
+
+	ID  shift 86
+	.  error
+
+
+state 71
+	condition : ID '>' ID .  (41)
+
+	.  reduce 41
+
+
+state 72
+	condition : ID '>' '=' . ID  (42)
+
+	ID  shift 87
+	.  error
+
+
+state 73
+	condition : ID '<' ID .  (43)
+
+	.  reduce 43
+
+
+state 74
+	condition : ID '<' '=' . ID  (44)
+
+	ID  shift 88
+	.  error
+
+
+state 75
+	condition : ID '!' '=' . ID  (46)
+
+	ID  shift 89
+	.  error
+
+
+state 76
+	while : WHILE '(' conditions ')' ':' . function_body  (33)
+
+	'{'  shift 68
+	.  error
+
+	function_body  goto 90
+
+
+state 77
+	conditions : conditions '&' '&' . condition  (38)
+
+	ID  shift 39
+	.  error
+
+	condition  goto 91
+
+
+state 78
+	conditions : conditions '|' '|' . condition  (39)
+
+	ID  shift 39
+	.  error
+
+	condition  goto 92
+
+
+state 79
+	ifelse_body : '{' . definiciones '}'  (36)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	definiciones  goto 93
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 80
+	ifelse_body : definicion .  (37)
+
+	.  reduce 37
+
+
+state 81
+	if : IF '(' conditions ')' ifelse_body . ELSE ifelse_body  (34)
+	if : IF '(' conditions ')' ifelse_body .  (35)
+
+	ELSE  shift 94
+	$end  reduce 35
+	INT_CONSTANT  reduce 35
+	ID  reduce 35
+	REAL_CONSTANT  reduce 35
+	def  reduce 35
+	RETURN  reduce 35
+	WHILE  reduce 35
+	IF  reduce 35
+	PRINT  reduce 35
+	'}'  reduce 35
+
+
+state 82
+	var : ID '[' ']' '[' ']' ':' .  (18)
+
+	.  reduce 18
+
+
+state 83
+	vars : vars . ',' vars  (21)
+	vars : vars ',' vars .  (21)
+
+	.  reduce 21
+
+
+state 84
+	function_body : '{' '}' .  (26)
+
+	.  reduce 26
+
+
+state 85
+	definiciones : definiciones . definicion  (3)
+	function_body : '{' definiciones . '}'  (27)
+	function_body : '{' definiciones . return ';' '}'  (28)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	RETURN  shift 95
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 96
+	.  error
+
+	definicion  goto 24
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+	return  goto 97
+
+
+state 86
+	condition : ID '=' '=' ID .  (45)
+
+	.  reduce 45
+
+
+state 87
+	condition : ID '>' '=' ID .  (42)
+
+	.  reduce 42
+
+
+state 88
+	condition : ID '<' '=' ID .  (44)
+
+	.  reduce 44
+
+
+state 89
+	condition : ID '!' '=' ID .  (46)
+
+	.  reduce 46
+
+
+state 90
+	while : WHILE '(' conditions ')' ':' function_body .  (33)
+
+	.  reduce 33
+
+
+state 91
+	conditions : conditions '&' '&' condition .  (38)
+
+	.  reduce 38
+
+
+state 92
+	conditions : conditions '|' '|' condition .  (39)
+
+	.  reduce 39
+
+
+state 93
+	definiciones : definiciones . definicion  (3)
+	ifelse_body : '{' definiciones . '}'  (36)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 98
+	.  error
+
+	definicion  goto 24
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+
+
+state 94
+	if : IF '(' conditions ')' ifelse_body ELSE . ifelse_body  (34)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 79
+	.  error
+
+	definicion  goto 80
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	var_aux  goto 17
+	ifelse_body  goto 99
+
+
+state 95
+	return : RETURN . ID  (29)
+	return : RETURN . '(' ')' ID  (30)
+
+	ID  shift 100
+	'('  shift 101
+	.  error
+
+
+state 96
+	function_body : '{' definiciones '}' .  (27)
+
+	.  reduce 27
+
+
+state 97
+	function_body : '{' definiciones return . ';' '}'  (28)
+
+	';'  shift 102
+	.  error
+
+
+state 98
+	ifelse_body : '{' definiciones '}' .  (36)
+
+	.  reduce 36
+
+
+state 99
+	if : IF '(' conditions ')' ifelse_body ELSE ifelse_body .  (34)
+
+	.  reduce 34
+
+
+state 100
+	return : RETURN ID .  (29)
+
+	.  reduce 29
+
+
+state 101
+	return : RETURN '(' . ')' ID  (30)
+
+	')'  shift 103
+	.  error
+
+
+state 102
+	function_body : '{' definiciones return ';' . '}'  (28)
+
+	'}'  shift 104
+	.  error
+
+
+state 103
+	return : RETURN '(' ')' . ID  (30)
+
+	ID  shift 105
+	.  error
+
+
+state 104
+	function_body : '{' definiciones return ';' '}' .  (28)
+
+	.  reduce 28
+
+
+state 105
+	return : RETURN '(' ')' ID .  (30)
+
+	.  reduce 30
+
+
+33 terminals, 18 nonterminals
+47 grammar rules, 106 states

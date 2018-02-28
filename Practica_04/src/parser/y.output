@@ -1,0 +1,2259 @@
+   0  $accept : programa $end
+
+   1  programa : definiciones
+
+   2  definiciones : definiciones definicion
+   3               | definicion
+
+   4  definicion : expression ';'
+   5             | var ';'
+   6             | function
+   7             | assignment ';'
+   8             | while
+   9             | if
+  10             | call_function ';'
+  11             | struct ';'
+  12             | field_access ';'
+  13             | array_init ';'
+  14             | PRINT definicion
+
+  15  expression : expression '+' expression
+  16             | expression '-' expression
+  17             | expression '*' expression
+  18             | expression '/' expression
+  19             | expression '%' expression
+  20             | INT_CONSTANT
+  21             | REAL_CONSTANT
+  22             | ID
+
+  23  vars : var ',' var
+  24       | var
+
+  25  var : var_aux ':' TYPES
+
+  26  var_array : ID '[' array_params ']'
+  27            | ID '[' array_params ']' '[' array_params ']'
+
+  28  array_params : params
+  29               | cast params
+
+  30  array_init : var_aux ':' '[' array_params ']' TYPES
+  31             | var_aux ':' '[' array_params ']' '[' array_params ']' TYPES
+
+  32  params : ID
+  33         | INT_CONSTANT
+  34         | REAL_CONSTANT
+  35         | field_access
+  36         | '\'' CHAR_CONSTANT '\''
+  37         |
+
+  38  var_aux : var_aux ',' var_aux
+  39          | var_array
+  40          | ID
+
+  41  function : def ID '(' function_params ')' ':' function_return_type function_body
+
+  42  function_return_type : TYPES
+  43                       | VOID
+
+  44  function_params : vars
+  45                  |
+
+  46  function_body : '{' '}'
+  47                | '{' definiciones '}'
+  48                | '{' definiciones return ';' '}'
+
+  49  call_function : ID '(' call_function_params ')'
+
+  50  call_function_params : call_function_params ',' call_function_params
+  51                       | var_array
+  52                       | expression
+  53                       | cast ID
+  54                       |
+
+  55  return : RETURN ID
+  56         | RETURN cast ID
+
+  57  assignment : assignment_start '=' assignment_end
+  58             | assignment_start '=' cast assignment_end
+
+  59  assignment_start : expression
+  60                   | var_array
+  61                   | field_access
+
+  62  assignment_end : var_array
+  63                 | call_function
+  64                 | expression
+  65                 | CHAR_CONSTANT
+  66                 | field_access
+
+  67  cast : '(' TYPES ')'
+
+  68  while : WHILE '(' conditions ')' ':' function_body
+  69        | WHILE conditions ':' function_body
+
+  70  if : IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body
+  71     | IF '(' conditions ')' ':' ifelse_body
+  72     | IF conditions ':' ifelse_body ELSE ifelse_body
+  73     | IF conditions ':' ifelse_body
+
+  74  ifelse_body : '{' definiciones '}'
+  75              | definicion
+
+  76  conditions : condition '&' '&' conditions
+  77             | condition '|' '|' conditions
+  78             | condition
+
+  79  condition : condition_params '>' condition_params
+  80            | condition_params '>' '=' condition_params
+  81            | condition_params '<' condition_params
+  82            | condition_params '<' '=' condition_params
+  83            | condition_params '=' '=' condition_params
+  84            | condition_params '!' '=' condition_params
+  85            | '!' condition_params
+  86            | condition_params
+
+  87  condition_params : expression
+  88                   | field_access
+  89                   | var_array
+
+  90  field_access : field_access '.' field_access_param
+  91               | field_access_param '.' field_access_param
+
+  92  field_access_param : ID
+  93                     | var_array
+
+  94  struct : var_aux ':' STRUCT '{' struct_body ';' '}'
+
+  95  struct_body : struct_body ';' struct_body
+  96              | var
+  97              | struct
+
+state 0
+	$accept : . programa $end  (0)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	programa  goto 8
+	definiciones  goto 9
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 1
+	expression : INT_CONSTANT .  (20)
+
+	.  reduce 20
+
+
+state 2
+	expression : ID .  (22)
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	var_aux : ID .  (40)
+	call_function : ID . '(' call_function_params ')'  (49)
+	field_access_param : ID .  (92)
+
+	'('  shift 25
+	'['  shift 26
+	'+'  reduce 22
+	'-'  reduce 22
+	'*'  reduce 22
+	'/'  reduce 22
+	'%'  reduce 22
+	':'  reduce 40
+	'='  reduce 22
+	';'  reduce 22
+	','  reduce 40
+	'.'  reduce 92
+
+
+state 3
+	expression : REAL_CONSTANT .  (21)
+
+	.  reduce 21
+
+
+state 4
+	function : def . ID '(' function_params ')' ':' function_return_type function_body  (41)
+
+	ID  shift 27
+	.  error
+
+
+state 5
+	while : WHILE . '(' conditions ')' ':' function_body  (68)
+	while : WHILE . conditions ':' function_body  (69)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'('  shift 29
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 34
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 6
+	if : IF . '(' conditions ')' ':' ifelse_body ELSE ifelse_body  (70)
+	if : IF . '(' conditions ')' ':' ifelse_body  (71)
+	if : IF . conditions ':' ifelse_body ELSE ifelse_body  (72)
+	if : IF . conditions ':' ifelse_body  (73)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'('  shift 37
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 38
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 7
+	definicion : PRINT . definicion  (14)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	definicion  goto 39
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 8
+	$accept : programa . $end  (0)
+
+	$end  accept
+
+
+state 9
+	programa : definiciones .  (1)
+	definiciones : definiciones . definicion  (2)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	$end  reduce 1
+
+	definicion  goto 40
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 10
+	definiciones : definicion .  (3)
+
+	.  reduce 3
+
+
+state 11
+	definicion : expression . ';'  (4)
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+	assignment_start : expression .  (59)
+
+	'+'  shift 41
+	'-'  shift 42
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	';'  shift 46
+	'='  reduce 59
+
+
+state 12
+	definicion : var . ';'  (5)
+
+	';'  shift 47
+	.  error
+
+
+state 13
+	definicion : function .  (6)
+
+	.  reduce 6
+
+
+state 14
+	definicion : assignment . ';'  (7)
+
+	';'  shift 48
+	.  error
+
+
+state 15
+	definicion : while .  (8)
+
+	.  reduce 8
+
+
+state 16
+	definicion : if .  (9)
+
+	.  reduce 9
+
+
+state 17
+	definicion : call_function . ';'  (10)
+
+	';'  shift 49
+	.  error
+
+
+state 18
+	definicion : struct . ';'  (11)
+
+	';'  shift 50
+	.  error
+
+
+state 19
+	definicion : field_access . ';'  (12)
+	assignment_start : field_access .  (61)
+	field_access : field_access . '.' field_access_param  (90)
+
+	';'  shift 51
+	'.'  shift 52
+	'='  reduce 61
+
+
+state 20
+	definicion : array_init . ';'  (13)
+
+	';'  shift 53
+	.  error
+
+
+state 21
+	var : var_aux . ':' TYPES  (25)
+	array_init : var_aux . ':' '[' array_params ']' TYPES  (30)
+	array_init : var_aux . ':' '[' array_params ']' '[' array_params ']' TYPES  (31)
+	var_aux : var_aux . ',' var_aux  (38)
+	struct : var_aux . ':' STRUCT '{' struct_body ';' '}'  (94)
+
+	':'  shift 54
+	','  shift 55
+	.  error
+
+
+state 22
+	var_aux : var_array .  (39)
+	assignment_start : var_array .  (60)
+	field_access_param : var_array .  (93)
+
+	':'  reduce 39
+	'='  reduce 60
+	','  reduce 39
+	'.'  reduce 93
+
+
+state 23
+	assignment : assignment_start . '=' assignment_end  (57)
+	assignment : assignment_start . '=' cast assignment_end  (58)
+
+	'='  shift 56
+	.  error
+
+
+state 24
+	field_access : field_access_param . '.' field_access_param  (91)
+
+	'.'  shift 57
+	.  error
+
+
+state 25
+	call_function : ID '(' . call_function_params ')'  (49)
+	call_function_params : .  (54)
+
+	INT_CONSTANT  shift 1
+	ID  shift 58
+	REAL_CONSTANT  shift 3
+	'('  shift 59
+	','  reduce 54
+	')'  reduce 54
+
+	expression  goto 60
+	var_array  goto 61
+	cast  goto 62
+	call_function_params  goto 63
+
+
+state 26
+	var_array : ID '[' . array_params ']'  (26)
+	var_array : ID '[' . array_params ']' '[' array_params ']'  (27)
+	params : .  (37)
+
+	INT_CONSTANT  shift 64
+	ID  shift 65
+	REAL_CONSTANT  shift 66
+	'('  shift 59
+	'\''  shift 67
+	']'  reduce 37
+
+	field_access  goto 68
+	var_array  goto 69
+	array_params  goto 70
+	params  goto 71
+	cast  goto 72
+	field_access_param  goto 24
+
+
+state 27
+	function : def ID . '(' function_params ')' ':' function_return_type function_body  (41)
+
+	'('  shift 73
+	.  error
+
+
+state 28
+	expression : ID .  (22)
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	field_access_param : ID .  (92)
+
+	'['  shift 26
+	'+'  reduce 22
+	'-'  reduce 22
+	'*'  reduce 22
+	'/'  reduce 22
+	'%'  reduce 22
+	'>'  reduce 22
+	'<'  reduce 22
+	':'  reduce 22
+	'='  reduce 22
+	'.'  reduce 92
+	')'  reduce 22
+	'!'  reduce 22
+	'&'  reduce 22
+	'|'  reduce 22
+
+
+state 29
+	while : WHILE '(' . conditions ')' ':' function_body  (68)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 74
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 30
+	condition : '!' . condition_params  (85)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 75
+	field_access_param  goto 24
+
+
+state 31
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+	condition_params : expression .  (87)
+
+	'+'  shift 41
+	'-'  shift 42
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	'>'  reduce 87
+	'<'  reduce 87
+	':'  reduce 87
+	'='  reduce 87
+	')'  reduce 87
+	'!'  reduce 87
+	'&'  reduce 87
+	'|'  reduce 87
+
+
+state 32
+	condition_params : field_access .  (88)
+	field_access : field_access . '.' field_access_param  (90)
+
+	'.'  shift 52
+	'>'  reduce 88
+	'<'  reduce 88
+	':'  reduce 88
+	'='  reduce 88
+	')'  reduce 88
+	'!'  reduce 88
+	'&'  reduce 88
+	'|'  reduce 88
+
+
+state 33
+	condition_params : var_array .  (89)
+	field_access_param : var_array .  (93)
+
+	'>'  reduce 89
+	'<'  reduce 89
+	':'  reduce 89
+	'='  reduce 89
+	'.'  reduce 93
+	')'  reduce 89
+	'!'  reduce 89
+	'&'  reduce 89
+	'|'  reduce 89
+
+
+state 34
+	while : WHILE conditions . ':' function_body  (69)
+
+	':'  shift 76
+	.  error
+
+
+state 35
+	conditions : condition . '&' '&' conditions  (76)
+	conditions : condition . '|' '|' conditions  (77)
+	conditions : condition .  (78)
+
+	'&'  shift 77
+	'|'  shift 78
+	':'  reduce 78
+	')'  reduce 78
+
+
+state 36
+	condition : condition_params . '>' condition_params  (79)
+	condition : condition_params . '>' '=' condition_params  (80)
+	condition : condition_params . '<' condition_params  (81)
+	condition : condition_params . '<' '=' condition_params  (82)
+	condition : condition_params . '=' '=' condition_params  (83)
+	condition : condition_params . '!' '=' condition_params  (84)
+	condition : condition_params .  (86)
+
+	'>'  shift 79
+	'<'  shift 80
+	'='  shift 81
+	'!'  shift 82
+	':'  reduce 86
+	')'  reduce 86
+	'&'  reduce 86
+	'|'  reduce 86
+
+
+state 37
+	if : IF '(' . conditions ')' ':' ifelse_body ELSE ifelse_body  (70)
+	if : IF '(' . conditions ')' ':' ifelse_body  (71)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 83
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 38
+	if : IF conditions . ':' ifelse_body ELSE ifelse_body  (72)
+	if : IF conditions . ':' ifelse_body  (73)
+
+	':'  shift 84
+	.  error
+
+
+state 39
+	definicion : PRINT definicion .  (14)
+
+	.  reduce 14
+
+
+state 40
+	definiciones : definiciones definicion .  (2)
+
+	.  reduce 2
+
+
+state 41
+	expression : expression '+' . expression  (15)
+
+	INT_CONSTANT  shift 1
+	ID  shift 85
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 86
+
+
+state 42
+	expression : expression '-' . expression  (16)
+
+	INT_CONSTANT  shift 1
+	ID  shift 85
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 87
+
+
+state 43
+	expression : expression '*' . expression  (17)
+
+	INT_CONSTANT  shift 1
+	ID  shift 85
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 88
+
+
+state 44
+	expression : expression '/' . expression  (18)
+
+	INT_CONSTANT  shift 1
+	ID  shift 85
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 89
+
+
+state 45
+	expression : expression '%' . expression  (19)
+
+	INT_CONSTANT  shift 1
+	ID  shift 85
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 90
+
+
+state 46
+	definicion : expression ';' .  (4)
+
+	.  reduce 4
+
+
+state 47
+	definicion : var ';' .  (5)
+
+	.  reduce 5
+
+
+state 48
+	definicion : assignment ';' .  (7)
+
+	.  reduce 7
+
+
+state 49
+	definicion : call_function ';' .  (10)
+
+	.  reduce 10
+
+
+state 50
+	definicion : struct ';' .  (11)
+
+	.  reduce 11
+
+
+state 51
+	definicion : field_access ';' .  (12)
+
+	.  reduce 12
+
+
+state 52
+	field_access : field_access '.' . field_access_param  (90)
+
+	ID  shift 91
+	.  error
+
+	var_array  goto 69
+	field_access_param  goto 92
+
+
+state 53
+	definicion : array_init ';' .  (13)
+
+	.  reduce 13
+
+
+state 54
+	var : var_aux ':' . TYPES  (25)
+	array_init : var_aux ':' . '[' array_params ']' TYPES  (30)
+	array_init : var_aux ':' . '[' array_params ']' '[' array_params ']' TYPES  (31)
+	struct : var_aux ':' . STRUCT '{' struct_body ';' '}'  (94)
+
+	STRUCT  shift 93
+	TYPES  shift 94
+	'['  shift 95
+	.  error
+
+
+state 55
+	var_aux : var_aux ',' . var_aux  (38)
+
+	ID  shift 96
+	.  error
+
+	var_aux  goto 97
+	var_array  goto 98
+
+
+state 56
+	assignment : assignment_start '=' . assignment_end  (57)
+	assignment : assignment_start '=' . cast assignment_end  (58)
+
+	INT_CONSTANT  shift 1
+	ID  shift 99
+	CHAR_CONSTANT  shift 100
+	REAL_CONSTANT  shift 3
+	'('  shift 59
+	.  error
+
+	expression  goto 101
+	call_function  goto 102
+	field_access  goto 103
+	var_array  goto 104
+	cast  goto 105
+	assignment_end  goto 106
+	field_access_param  goto 24
+
+
+state 57
+	field_access : field_access_param '.' . field_access_param  (91)
+
+	ID  shift 91
+	.  error
+
+	var_array  goto 69
+	field_access_param  goto 107
+
+
+state 58
+	expression : ID .  (22)
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+
+	'['  shift 26
+	'+'  reduce 22
+	'-'  reduce 22
+	'*'  reduce 22
+	'/'  reduce 22
+	'%'  reduce 22
+	','  reduce 22
+	')'  reduce 22
+
+
+state 59
+	cast : '(' . TYPES ')'  (67)
+
+	TYPES  shift 108
+	.  error
+
+
+state 60
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+	call_function_params : expression .  (52)
+
+	'+'  shift 41
+	'-'  shift 42
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	','  reduce 52
+	')'  reduce 52
+
+
+state 61
+	call_function_params : var_array .  (51)
+
+	.  reduce 51
+
+
+state 62
+	call_function_params : cast . ID  (53)
+
+	ID  shift 109
+	.  error
+
+
+state 63
+	call_function : ID '(' call_function_params . ')'  (49)
+	call_function_params : call_function_params . ',' call_function_params  (50)
+
+	','  shift 110
+	')'  shift 111
+	.  error
+
+
+state 64
+	params : INT_CONSTANT .  (33)
+
+	.  reduce 33
+
+
+state 65
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	params : ID .  (32)
+	field_access_param : ID .  (92)
+
+	'['  shift 26
+	'.'  reduce 92
+	']'  reduce 32
+
+
+state 66
+	params : REAL_CONSTANT .  (34)
+
+	.  reduce 34
+
+
+state 67
+	params : '\'' . CHAR_CONSTANT '\''  (36)
+
+	CHAR_CONSTANT  shift 112
+	.  error
+
+
+state 68
+	params : field_access .  (35)
+	field_access : field_access . '.' field_access_param  (90)
+
+	'.'  shift 52
+	']'  reduce 35
+
+
+state 69
+	field_access_param : var_array .  (93)
+
+	.  reduce 93
+
+
+state 70
+	var_array : ID '[' array_params . ']'  (26)
+	var_array : ID '[' array_params . ']' '[' array_params ']'  (27)
+
+	']'  shift 113
+	.  error
+
+
+state 71
+	array_params : params .  (28)
+
+	.  reduce 28
+
+
+state 72
+	array_params : cast . params  (29)
+	params : .  (37)
+
+	INT_CONSTANT  shift 64
+	ID  shift 65
+	REAL_CONSTANT  shift 66
+	'\''  shift 67
+	']'  reduce 37
+
+	field_access  goto 68
+	var_array  goto 69
+	params  goto 114
+	field_access_param  goto 24
+
+
+state 73
+	function : def ID '(' . function_params ')' ':' function_return_type function_body  (41)
+	function_params : .  (45)
+
+	ID  shift 96
+	')'  reduce 45
+
+	var  goto 115
+	vars  goto 116
+	var_aux  goto 117
+	var_array  goto 98
+	function_params  goto 118
+
+
+state 74
+	while : WHILE '(' conditions . ')' ':' function_body  (68)
+
+	')'  shift 119
+	.  error
+
+
+state 75
+	condition : '!' condition_params .  (85)
+
+	.  reduce 85
+
+
+state 76
+	while : WHILE conditions ':' . function_body  (69)
+
+	'{'  shift 120
+	.  error
+
+	function_body  goto 121
+
+
+state 77
+	conditions : condition '&' . '&' conditions  (76)
+
+	'&'  shift 122
+	.  error
+
+
+state 78
+	conditions : condition '|' . '|' conditions  (77)
+
+	'|'  shift 123
+	.  error
+
+
+state 79
+	condition : condition_params '>' . condition_params  (79)
+	condition : condition_params '>' . '=' condition_params  (80)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'='  shift 124
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 125
+	field_access_param  goto 24
+
+
+state 80
+	condition : condition_params '<' . condition_params  (81)
+	condition : condition_params '<' . '=' condition_params  (82)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'='  shift 126
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 127
+	field_access_param  goto 24
+
+
+state 81
+	condition : condition_params '=' . '=' condition_params  (83)
+
+	'='  shift 128
+	.  error
+
+
+state 82
+	condition : condition_params '!' . '=' condition_params  (84)
+
+	'='  shift 129
+	.  error
+
+
+state 83
+	if : IF '(' conditions . ')' ':' ifelse_body ELSE ifelse_body  (70)
+	if : IF '(' conditions . ')' ':' ifelse_body  (71)
+
+	')'  shift 130
+	.  error
+
+
+state 84
+	if : IF conditions ':' . ifelse_body ELSE ifelse_body  (72)
+	if : IF conditions ':' . ifelse_body  (73)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 131
+	.  error
+
+	definicion  goto 132
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	ifelse_body  goto 133
+	field_access_param  goto 24
+
+
+state 85
+	expression : ID .  (22)
+
+	.  reduce 22
+
+
+state 86
+	expression : expression . '+' expression  (15)
+	expression : expression '+' expression .  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	'+'  reduce 15
+	'-'  reduce 15
+	'>'  reduce 15
+	'<'  reduce 15
+	':'  reduce 15
+	'='  reduce 15
+	';'  reduce 15
+	','  reduce 15
+	')'  reduce 15
+	'!'  reduce 15
+	'&'  reduce 15
+	'|'  reduce 15
+
+
+state 87
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression '-' expression .  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	'+'  reduce 16
+	'-'  reduce 16
+	'>'  reduce 16
+	'<'  reduce 16
+	':'  reduce 16
+	'='  reduce 16
+	';'  reduce 16
+	','  reduce 16
+	')'  reduce 16
+	'!'  reduce 16
+	'&'  reduce 16
+	'|'  reduce 16
+
+
+state 88
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression '*' expression .  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+
+	.  reduce 17
+
+
+state 89
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression '/' expression .  (18)
+	expression : expression . '%' expression  (19)
+
+	.  reduce 18
+
+
+state 90
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+	expression : expression '%' expression .  (19)
+
+	.  reduce 19
+
+
+state 91
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	field_access_param : ID .  (92)
+
+	'['  shift 26
+	'>'  reduce 92
+	'<'  reduce 92
+	':'  reduce 92
+	'='  reduce 92
+	';'  reduce 92
+	'.'  reduce 92
+	')'  reduce 92
+	']'  reduce 92
+	'!'  reduce 92
+	'&'  reduce 92
+	'|'  reduce 92
+
+
+state 92
+	field_access : field_access '.' field_access_param .  (90)
+
+	.  reduce 90
+
+
+state 93
+	struct : var_aux ':' STRUCT . '{' struct_body ';' '}'  (94)
+
+	'{'  shift 134
+	.  error
+
+
+state 94
+	var : var_aux ':' TYPES .  (25)
+
+	.  reduce 25
+
+
+state 95
+	array_init : var_aux ':' '[' . array_params ']' TYPES  (30)
+	array_init : var_aux ':' '[' . array_params ']' '[' array_params ']' TYPES  (31)
+	params : .  (37)
+
+	INT_CONSTANT  shift 64
+	ID  shift 65
+	REAL_CONSTANT  shift 66
+	'('  shift 59
+	'\''  shift 67
+	']'  reduce 37
+
+	field_access  goto 68
+	var_array  goto 69
+	array_params  goto 135
+	params  goto 71
+	cast  goto 72
+	field_access_param  goto 24
+
+
+state 96
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	var_aux : ID .  (40)
+
+	'['  shift 26
+	':'  reduce 40
+	','  reduce 40
+
+
+state 97
+	var_aux : var_aux . ',' var_aux  (38)
+	var_aux : var_aux ',' var_aux .  (38)
+
+	.  reduce 38
+
+
+state 98
+	var_aux : var_array .  (39)
+
+	.  reduce 39
+
+
+state 99
+	expression : ID .  (22)
+	var_array : ID . '[' array_params ']'  (26)
+	var_array : ID . '[' array_params ']' '[' array_params ']'  (27)
+	call_function : ID . '(' call_function_params ')'  (49)
+	field_access_param : ID .  (92)
+
+	'('  shift 25
+	'['  shift 26
+	'+'  reduce 22
+	'-'  reduce 22
+	'*'  reduce 22
+	'/'  reduce 22
+	'%'  reduce 22
+	';'  reduce 22
+	'.'  reduce 92
+
+
+state 100
+	assignment_end : CHAR_CONSTANT .  (65)
+
+	.  reduce 65
+
+
+state 101
+	expression : expression . '+' expression  (15)
+	expression : expression . '-' expression  (16)
+	expression : expression . '*' expression  (17)
+	expression : expression . '/' expression  (18)
+	expression : expression . '%' expression  (19)
+	assignment_end : expression .  (64)
+
+	'+'  shift 41
+	'-'  shift 42
+	'*'  shift 43
+	'/'  shift 44
+	'%'  shift 45
+	';'  reduce 64
+
+
+state 102
+	assignment_end : call_function .  (63)
+
+	.  reduce 63
+
+
+state 103
+	assignment_end : field_access .  (66)
+	field_access : field_access . '.' field_access_param  (90)
+
+	'.'  shift 52
+	';'  reduce 66
+
+
+state 104
+	assignment_end : var_array .  (62)
+	field_access_param : var_array .  (93)
+
+	';'  reduce 62
+	'.'  reduce 93
+
+
+state 105
+	assignment : assignment_start '=' cast . assignment_end  (58)
+
+	INT_CONSTANT  shift 1
+	ID  shift 99
+	CHAR_CONSTANT  shift 100
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 101
+	call_function  goto 102
+	field_access  goto 103
+	var_array  goto 104
+	assignment_end  goto 136
+	field_access_param  goto 24
+
+
+state 106
+	assignment : assignment_start '=' assignment_end .  (57)
+
+	.  reduce 57
+
+
+state 107
+	field_access : field_access_param '.' field_access_param .  (91)
+
+	.  reduce 91
+
+
+state 108
+	cast : '(' TYPES . ')'  (67)
+
+	')'  shift 137
+	.  error
+
+
+state 109
+	call_function_params : cast ID .  (53)
+
+	.  reduce 53
+
+
+state 110
+	call_function_params : call_function_params ',' . call_function_params  (50)
+	call_function_params : .  (54)
+
+	INT_CONSTANT  shift 1
+	ID  shift 58
+	REAL_CONSTANT  shift 3
+	'('  shift 59
+	','  reduce 54
+	')'  reduce 54
+
+	expression  goto 60
+	var_array  goto 61
+	cast  goto 62
+	call_function_params  goto 138
+
+
+state 111
+	call_function : ID '(' call_function_params ')' .  (49)
+
+	.  reduce 49
+
+
+state 112
+	params : '\'' CHAR_CONSTANT . '\''  (36)
+
+	'\''  shift 139
+	.  error
+
+
+state 113
+	var_array : ID '[' array_params ']' .  (26)
+	var_array : ID '[' array_params ']' . '[' array_params ']'  (27)
+
+	'['  shift 140
+	'>'  reduce 26
+	'<'  reduce 26
+	':'  reduce 26
+	'='  reduce 26
+	';'  reduce 26
+	','  reduce 26
+	'.'  reduce 26
+	')'  reduce 26
+	']'  reduce 26
+	'!'  reduce 26
+	'&'  reduce 26
+	'|'  reduce 26
+
+
+state 114
+	array_params : cast params .  (29)
+
+	.  reduce 29
+
+
+state 115
+	vars : var . ',' var  (23)
+	vars : var .  (24)
+
+	','  shift 141
+	')'  reduce 24
+
+
+state 116
+	function_params : vars .  (44)
+
+	.  reduce 44
+
+
+state 117
+	var : var_aux . ':' TYPES  (25)
+	var_aux : var_aux . ',' var_aux  (38)
+
+	':'  shift 142
+	','  shift 55
+	.  error
+
+
+state 118
+	function : def ID '(' function_params . ')' ':' function_return_type function_body  (41)
+
+	')'  shift 143
+	.  error
+
+
+state 119
+	while : WHILE '(' conditions ')' . ':' function_body  (68)
+
+	':'  shift 144
+	.  error
+
+
+state 120
+	function_body : '{' . '}'  (46)
+	function_body : '{' . definiciones '}'  (47)
+	function_body : '{' . definiciones return ';' '}'  (48)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 145
+	.  error
+
+	definiciones  goto 146
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 121
+	while : WHILE conditions ':' function_body .  (69)
+
+	.  reduce 69
+
+
+state 122
+	conditions : condition '&' '&' . conditions  (76)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 147
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 123
+	conditions : condition '|' '|' . conditions  (77)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	'!'  shift 30
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	conditions  goto 148
+	condition  goto 35
+	condition_params  goto 36
+	field_access_param  goto 24
+
+
+state 124
+	condition : condition_params '>' '=' . condition_params  (80)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 149
+	field_access_param  goto 24
+
+
+state 125
+	condition : condition_params '>' condition_params .  (79)
+
+	.  reduce 79
+
+
+state 126
+	condition : condition_params '<' '=' . condition_params  (82)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 150
+	field_access_param  goto 24
+
+
+state 127
+	condition : condition_params '<' condition_params .  (81)
+
+	.  reduce 81
+
+
+state 128
+	condition : condition_params '=' '=' . condition_params  (83)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 151
+	field_access_param  goto 24
+
+
+state 129
+	condition : condition_params '!' '=' . condition_params  (84)
+
+	INT_CONSTANT  shift 1
+	ID  shift 28
+	REAL_CONSTANT  shift 3
+	.  error
+
+	expression  goto 31
+	field_access  goto 32
+	var_array  goto 33
+	condition_params  goto 152
+	field_access_param  goto 24
+
+
+state 130
+	if : IF '(' conditions ')' . ':' ifelse_body ELSE ifelse_body  (70)
+	if : IF '(' conditions ')' . ':' ifelse_body  (71)
+
+	':'  shift 153
+	.  error
+
+
+state 131
+	ifelse_body : '{' . definiciones '}'  (74)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	.  error
+
+	definiciones  goto 154
+	definicion  goto 10
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 132
+	ifelse_body : definicion .  (75)
+
+	.  reduce 75
+
+
+state 133
+	if : IF conditions ':' ifelse_body . ELSE ifelse_body  (72)
+	if : IF conditions ':' ifelse_body .  (73)
+
+	ELSE  shift 155
+	$end  reduce 73
+	INT_CONSTANT  reduce 73
+	ID  reduce 73
+	REAL_CONSTANT  reduce 73
+	def  reduce 73
+	RETURN  reduce 73
+	WHILE  reduce 73
+	IF  reduce 73
+	PRINT  reduce 73
+	'}'  reduce 73
+
+
+state 134
+	struct : var_aux ':' STRUCT '{' . struct_body ';' '}'  (94)
+
+	ID  shift 96
+	.  error
+
+	var  goto 156
+	struct  goto 157
+	var_aux  goto 158
+	var_array  goto 98
+	struct_body  goto 159
+
+
+state 135
+	array_init : var_aux ':' '[' array_params . ']' TYPES  (30)
+	array_init : var_aux ':' '[' array_params . ']' '[' array_params ']' TYPES  (31)
+
+	']'  shift 160
+	.  error
+
+
+state 136
+	assignment : assignment_start '=' cast assignment_end .  (58)
+
+	.  reduce 58
+
+
+state 137
+	cast : '(' TYPES ')' .  (67)
+
+	.  reduce 67
+
+
+state 138
+	call_function_params : call_function_params . ',' call_function_params  (50)
+	call_function_params : call_function_params ',' call_function_params .  (50)
+
+	.  reduce 50
+
+
+state 139
+	params : '\'' CHAR_CONSTANT '\'' .  (36)
+
+	.  reduce 36
+
+
+state 140
+	var_array : ID '[' array_params ']' '[' . array_params ']'  (27)
+	params : .  (37)
+
+	INT_CONSTANT  shift 64
+	ID  shift 65
+	REAL_CONSTANT  shift 66
+	'('  shift 59
+	'\''  shift 67
+	']'  reduce 37
+
+	field_access  goto 68
+	var_array  goto 69
+	array_params  goto 161
+	params  goto 71
+	cast  goto 72
+	field_access_param  goto 24
+
+
+state 141
+	vars : var ',' . var  (23)
+
+	ID  shift 96
+	.  error
+
+	var  goto 162
+	var_aux  goto 117
+	var_array  goto 98
+
+
+state 142
+	var : var_aux ':' . TYPES  (25)
+
+	TYPES  shift 94
+	.  error
+
+
+state 143
+	function : def ID '(' function_params ')' . ':' function_return_type function_body  (41)
+
+	':'  shift 163
+	.  error
+
+
+state 144
+	while : WHILE '(' conditions ')' ':' . function_body  (68)
+
+	'{'  shift 120
+	.  error
+
+	function_body  goto 164
+
+
+state 145
+	function_body : '{' '}' .  (46)
+
+	.  reduce 46
+
+
+state 146
+	definiciones : definiciones . definicion  (2)
+	function_body : '{' definiciones . '}'  (47)
+	function_body : '{' definiciones . return ';' '}'  (48)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	RETURN  shift 165
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 166
+	.  error
+
+	definicion  goto 40
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	return  goto 167
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 147
+	conditions : condition '&' '&' conditions .  (76)
+
+	.  reduce 76
+
+
+state 148
+	conditions : condition '|' '|' conditions .  (77)
+
+	.  reduce 77
+
+
+state 149
+	condition : condition_params '>' '=' condition_params .  (80)
+
+	.  reduce 80
+
+
+state 150
+	condition : condition_params '<' '=' condition_params .  (82)
+
+	.  reduce 82
+
+
+state 151
+	condition : condition_params '=' '=' condition_params .  (83)
+
+	.  reduce 83
+
+
+state 152
+	condition : condition_params '!' '=' condition_params .  (84)
+
+	.  reduce 84
+
+
+state 153
+	if : IF '(' conditions ')' ':' . ifelse_body ELSE ifelse_body  (70)
+	if : IF '(' conditions ')' ':' . ifelse_body  (71)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 131
+	.  error
+
+	definicion  goto 132
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	ifelse_body  goto 168
+	field_access_param  goto 24
+
+
+state 154
+	definiciones : definiciones . definicion  (2)
+	ifelse_body : '{' definiciones . '}'  (74)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'}'  shift 169
+	.  error
+
+	definicion  goto 40
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	field_access_param  goto 24
+
+
+state 155
+	if : IF conditions ':' ifelse_body ELSE . ifelse_body  (72)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 131
+	.  error
+
+	definicion  goto 132
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	ifelse_body  goto 170
+	field_access_param  goto 24
+
+
+state 156
+	struct_body : var .  (96)
+
+	.  reduce 96
+
+
+state 157
+	struct_body : struct .  (97)
+
+	.  reduce 97
+
+
+state 158
+	var : var_aux . ':' TYPES  (25)
+	var_aux : var_aux . ',' var_aux  (38)
+	struct : var_aux . ':' STRUCT '{' struct_body ';' '}'  (94)
+
+	':'  shift 171
+	','  shift 55
+	.  error
+
+
+state 159
+	struct : var_aux ':' STRUCT '{' struct_body . ';' '}'  (94)
+	struct_body : struct_body . ';' struct_body  (95)
+
+	';'  shift 172
+	.  error
+
+
+state 160
+	array_init : var_aux ':' '[' array_params ']' . TYPES  (30)
+	array_init : var_aux ':' '[' array_params ']' . '[' array_params ']' TYPES  (31)
+
+	TYPES  shift 173
+	'['  shift 174
+	.  error
+
+
+state 161
+	var_array : ID '[' array_params ']' '[' array_params . ']'  (27)
+
+	']'  shift 175
+	.  error
+
+
+state 162
+	vars : var ',' var .  (23)
+
+	.  reduce 23
+
+
+state 163
+	function : def ID '(' function_params ')' ':' . function_return_type function_body  (41)
+
+	TYPES  shift 176
+	VOID  shift 177
+	.  error
+
+	function_return_type  goto 178
+
+
+state 164
+	while : WHILE '(' conditions ')' ':' function_body .  (68)
+
+	.  reduce 68
+
+
+state 165
+	return : RETURN . ID  (55)
+	return : RETURN . cast ID  (56)
+
+	ID  shift 179
+	'('  shift 59
+	.  error
+
+	cast  goto 180
+
+
+state 166
+	function_body : '{' definiciones '}' .  (47)
+
+	.  reduce 47
+
+
+state 167
+	function_body : '{' definiciones return . ';' '}'  (48)
+
+	';'  shift 181
+	.  error
+
+
+state 168
+	if : IF '(' conditions ')' ':' ifelse_body . ELSE ifelse_body  (70)
+	if : IF '(' conditions ')' ':' ifelse_body .  (71)
+
+	ELSE  shift 182
+	$end  reduce 71
+	INT_CONSTANT  reduce 71
+	ID  reduce 71
+	REAL_CONSTANT  reduce 71
+	def  reduce 71
+	RETURN  reduce 71
+	WHILE  reduce 71
+	IF  reduce 71
+	PRINT  reduce 71
+	'}'  reduce 71
+
+
+state 169
+	ifelse_body : '{' definiciones '}' .  (74)
+
+	.  reduce 74
+
+
+state 170
+	if : IF conditions ':' ifelse_body ELSE ifelse_body .  (72)
+
+	.  reduce 72
+
+
+state 171
+	var : var_aux ':' . TYPES  (25)
+	struct : var_aux ':' . STRUCT '{' struct_body ';' '}'  (94)
+
+	STRUCT  shift 93
+	TYPES  shift 94
+	.  error
+
+
+state 172
+	struct : var_aux ':' STRUCT '{' struct_body ';' . '}'  (94)
+	struct_body : struct_body ';' . struct_body  (95)
+
+	ID  shift 96
+	'}'  shift 183
+	.  error
+
+	var  goto 156
+	struct  goto 157
+	var_aux  goto 158
+	var_array  goto 98
+	struct_body  goto 184
+
+
+state 173
+	array_init : var_aux ':' '[' array_params ']' TYPES .  (30)
+
+	.  reduce 30
+
+
+state 174
+	array_init : var_aux ':' '[' array_params ']' '[' . array_params ']' TYPES  (31)
+	params : .  (37)
+
+	INT_CONSTANT  shift 64
+	ID  shift 65
+	REAL_CONSTANT  shift 66
+	'('  shift 59
+	'\''  shift 67
+	']'  reduce 37
+
+	field_access  goto 68
+	var_array  goto 69
+	array_params  goto 185
+	params  goto 71
+	cast  goto 72
+	field_access_param  goto 24
+
+
+state 175
+	var_array : ID '[' array_params ']' '[' array_params ']' .  (27)
+
+	.  reduce 27
+
+
+state 176
+	function_return_type : TYPES .  (42)
+
+	.  reduce 42
+
+
+state 177
+	function_return_type : VOID .  (43)
+
+	.  reduce 43
+
+
+state 178
+	function : def ID '(' function_params ')' ':' function_return_type . function_body  (41)
+
+	'{'  shift 120
+	.  error
+
+	function_body  goto 186
+
+
+state 179
+	return : RETURN ID .  (55)
+
+	.  reduce 55
+
+
+state 180
+	return : RETURN cast . ID  (56)
+
+	ID  shift 187
+	.  error
+
+
+state 181
+	function_body : '{' definiciones return ';' . '}'  (48)
+
+	'}'  shift 188
+	.  error
+
+
+state 182
+	if : IF '(' conditions ')' ':' ifelse_body ELSE . ifelse_body  (70)
+
+	INT_CONSTANT  shift 1
+	ID  shift 2
+	REAL_CONSTANT  shift 3
+	def  shift 4
+	WHILE  shift 5
+	IF  shift 6
+	PRINT  shift 7
+	'{'  shift 131
+	.  error
+
+	definicion  goto 132
+	expression  goto 11
+	var  goto 12
+	function  goto 13
+	assignment  goto 14
+	while  goto 15
+	if  goto 16
+	call_function  goto 17
+	struct  goto 18
+	field_access  goto 19
+	array_init  goto 20
+	var_aux  goto 21
+	var_array  goto 22
+	assignment_start  goto 23
+	ifelse_body  goto 189
+	field_access_param  goto 24
+
+
+state 183
+	struct : var_aux ':' STRUCT '{' struct_body ';' '}' .  (94)
+
+	.  reduce 94
+
+
+state 184
+	struct_body : struct_body . ';' struct_body  (95)
+	struct_body : struct_body ';' struct_body .  (95)
+
+	.  reduce 95
+
+
+state 185
+	array_init : var_aux ':' '[' array_params ']' '[' array_params . ']' TYPES  (31)
+
+	']'  shift 191
+	.  error
+
+
+state 186
+	function : def ID '(' function_params ')' ':' function_return_type function_body .  (41)
+
+	.  reduce 41
+
+
+state 187
+	return : RETURN cast ID .  (56)
+
+	.  reduce 56
+
+
+state 188
+	function_body : '{' definiciones return ';' '}' .  (48)
+
+	.  reduce 48
+
+
+state 189
+	if : IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body .  (70)
+
+	.  reduce 70
+
+
+state 190
+	struct_body : struct_body ';' . struct_body  (95)
+
+	ID  shift 96
+	.  error
+
+	var  goto 156
+	struct  goto 157
+	var_aux  goto 158
+	var_array  goto 98
+	struct_body  goto 184
+
+
+state 191
+	array_init : var_aux ':' '[' array_params ']' '[' array_params ']' . TYPES  (31)
+
+	TYPES  shift 192
+	.  error
+
+
+state 192
+	array_init : var_aux ':' '[' array_params ']' '[' array_params ']' TYPES .  (31)
+
+	.  reduce 31
+
+
+44 terminals, 33 nonterminals
+98 grammar rules, 193 states
