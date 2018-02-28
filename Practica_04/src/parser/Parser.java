@@ -559,7 +559,11 @@ public void yyerror (String error) {
 public Parser(Scanner scanner) {
 	this.scanner = scanner;
 }
-//#line 499 "Parser.java"
+
+public ASTNode getAST() {
+        return ast;
+}
+//#line 503 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################

@@ -24,16 +24,11 @@ import ast.*;
 
 
 %left '+''-'
-%left '*''/''%'
-%left '>' '>=' '<' '<=' '!=' '=='
-%left '&&' '||'
+%left '*''/'
+%left ','
 %left ':'
 %left '='
-%left ';'
-%left ',''.'
-%nonassoc '('')'
-%nonassoc '['']'
-%nonassoc '!'
+%left ';'')'
 %nonassoc MENORQUEELSE
 %nonassoc ELSE
 
@@ -42,8 +37,8 @@ import ast.*;
 
 programa: definiciones ;
 
-definiciones: definiciones definicion 
-        | definicion
+definiciones: definicion
+        | definiciones definicion 
         ;
 
 definicion: expression ';'
@@ -52,18 +47,14 @@ definicion: expression ';'
         | assignment ';'
         | while
         | if
+        | PRINT definicion 
         | call_function ';'
         | struct ';'
         | field_access ';'
-        | array_init ';'        
-        | PRINT definicion
         ;
 
 expression: expression '+' expression	
-        | expression '-' expression
-        | expression '*' expression
-        | expression '/' expression
-        | expression '%' expression
+        | expression '*' expression 
         | INT_CONSTANT	             
         | REAL_CONSTANT
         | ID
@@ -80,24 +71,8 @@ var_array: ID '['array_params']'
         | ID '['array_params']''['array_params']'
         ;
 
-// array_params: ID
-//         | INT_CONSTANT
-//         |
-//         ;
-
-array_params: params
-        | cast params
-        ;
-
-array_init: var_aux ":" '['array_params']' TYPES
-        | var_aux ":" '['array_params']''['array_params']' TYPES
-        ;
-
-params: ID
+array_params: ID
         | INT_CONSTANT
-        | REAL_CONSTANT
-        | field_access
-        | '\'' CHAR_CONSTANT '\''
         |
         ;
 
@@ -107,6 +82,9 @@ var_aux: var_aux ',' var_aux
         ;
 
 function: def ID '(' function_params ')' ':' function_return_type function_body
+        // | def ID '(' function_params ')' ':' VOID function_body
+        // | def ID '(' ')' ':' TYPES function_body
+        // | def ID '(' ')' ':' VOID function_body
         ;
 
 function_return_type: TYPES
@@ -126,8 +104,8 @@ call_function: ID '(' call_function_params ')'
         ;
 
 call_function_params: call_function_params ',' call_function_params
-        | var_array
-        | expression
+        | var_aux
+        | INT_CONSTANT
         | cast ID
         |
         ;
@@ -140,69 +118,58 @@ assignment: assignment_start '=' assignment_end
         | assignment_start '=' cast assignment_end
         ;
 
-assignment_start: expression
+assignment_start: ID
         | var_array
-        | field_access
+        // | field_access
         ;
 
 assignment_end: var_array
         | call_function
         | expression
         | CHAR_CONSTANT
-        | field_access
         ;
 
 cast: '(' TYPES ')'
         ;
 
 while: WHILE '(' conditions ')' ':' function_body 
-        | WHILE conditions ':' function_body 
         ;
 
-if: IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body
-        | IF '(' conditions ')' ':' ifelse_body                     %prec MENORQUEELSE
-        | IF conditions ':' ifelse_body ELSE ifelse_body
-        | IF conditions ':' ifelse_body                              %prec MENORQUEELSE
+if: IF '(' conditions ')' ifelse_body ELSE ifelse_body
+        | IF '(' conditions ')' ifelse_body               %prec MENORQUEELSE
         ;
 
 ifelse_body:  '{' definiciones '}'
         | definicion 
         ;
 
-conditions: condition '&''&' conditions
-        | condition '|''|' conditions
+conditions: conditions '&''&' condition
+        | conditions '|''|' condition
         | condition
         ;
 
-condition: condition_params '>' condition_params
-        | condition_params '>''=' condition_params
-        | condition_params '<' condition_params
-        | condition_params '<''=' condition_params
-        | condition_params '=''=' condition_params
-        | condition_params '!''=' condition_params
-        | '!' condition_params
-        | condition_params
+condition: ID '>' ID
+        | ID '>''=' ID
+        | ID '<' ID
+        | ID '<''=' ID
+        | ID '=''=' ID
+        | ID '!''=' ID
         ;
 
-condition_params: expression
-        | field_access
-        | var_array
+struct:  ':' STRUCT '{' struct_body '}'
         ;
 
-field_access: field_access '.' field_access_param
-        | field_access_param '.' field_access_param
-        ;
-
-field_access_param: ID
-        | var_array 
-        ;
-struct: var_aux ':' STRUCT '{' struct_body ';' '}'
-        ;
-
-struct_body: struct_body ';' struct_body
+struct_body: struct_body ',' struct_body
         | var
         | struct
         ;
+
+field_access: field_access_param
+        ;
+field_access_param: var_array
+        | var_aux
+        ;
+
 %%
 
 // * Código Java
@@ -216,7 +183,6 @@ struct_body: struct_body ';' struct_body
 //	void yyerror(String)
 
 // * Referencia al analizador léxico
-private ASTNode ast;
 private Scanner scanner;
 
 // * Llamada al analizador léxico
@@ -239,8 +205,4 @@ public void yyerror (String error) {
 // * Constructor del Sintáctico
 public Parser(Scanner scanner) {
 	this.scanner = scanner;
-}
-
-public ASTNode getAST() {
-        return ast;
 }
