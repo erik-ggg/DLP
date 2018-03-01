@@ -38,6 +38,7 @@ public Object getYylval() {
 
 // ************  Patrones (macros) ********************
 
+TOKENS = [%.+*/<>;(){}!=:,&|\[\](&&)(||)]  
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
 REAL = ({ConstanteEntera}*['.']{ConstanteEntera}*) 
@@ -50,7 +51,6 @@ IDENT = ({Word}|{ConstanteEntera}|_)*
 COMMENT = #.*
 ANYTHING = ({IDENT}|{JUMPS}|{NUMBER})*
 BIG_COMMENT = "\"\"\""{ANYTHING}"\"\"\""
-TOKENS = [%.+*/<>;(){}!=:,&|\[\](&&)(||)]  
 DEF = def
 RETURN = return
 WHILE = while
@@ -66,26 +66,26 @@ VOID = void
 %%
 // ************  Acciones ********************
 
-// * Constante Entera
+// * Constante Entera			 						 						 
 {VOID} 				{this.yylval = new String(yytext());
          			    return Parser.VOID;}
 {INT} 				{this.yylval = new String(yytext());
          			    return Parser.INT;}
-{REAL_TYPE} 				{this.yylval = new String(yytext());
+{REAL_TYPE} 		{this.yylval = new String(yytext());
          			    return Parser.REAL_TYPE;}
-{CHAR_TYPE} 				{this.yylval = new String(yytext());
+{CHAR_TYPE} 		{this.yylval = new String(yytext());
          			    return Parser.CHAR_TYPE;}
-{STRUCT} 				{this.yylval = new String(yytext());
+{STRUCT} 			{this.yylval = new String(yytext());
          			    return Parser.STRUCT;}
-{WHILE} 				{this.yylval = new String(yytext());
+{WHILE} 			{this.yylval = new String(yytext());
          			    return Parser.WHILE;}
 {IF} 				{this.yylval = new String(yytext());
          			    return Parser.IF;}
 {ELSE} 				{this.yylval = new String(yytext());
          			    return Parser.ELSE;}
-{PRINT} 				{this.yylval = new String(yytext());
+{PRINT} 			{this.yylval = new String(yytext());
          			    return Parser.PRINT;}
-{RETURN} 				{this.yylval = new String(yytext());
+{RETURN} 			{this.yylval = new String(yytext());
          			    return Parser.RETURN;}
 {DEF} 				{this.yylval = new String(yytext());
          			    return Parser.def;}

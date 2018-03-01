@@ -1,11 +1,11 @@
 
 import java.io.FileReader;
 import java.io.IOException;
+
 import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
-
-import scanner.Scanner;
 import parser.Parser;
+import scanner.Scanner;
 
 public class Main {
 

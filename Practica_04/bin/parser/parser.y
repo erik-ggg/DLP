@@ -51,7 +51,7 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
         | definicion                            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
         
-definicion: expression ';'                                                      
+definicion: expression ';'                                                     
         | var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
         | function
         | call_function ';'
@@ -72,7 +72,13 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | expression '/' expression     { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
         | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '=' definicion     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '>' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '<' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '=''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '>''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '<''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '!''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
         | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }     
         | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
@@ -97,59 +103,53 @@ function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDe
 
 function_params:  function_params ',' var        { $$ = $1; ((List)$$).add($3); }
         | var                                    { $$ = new ArrayList(); ((List)$$).add($1); }
-        |                                              { $$ = new ArrayList(); }
+        |                                        { $$ = new ArrayList(); }
         ;
 
 function_body: '{' '}'                          { $$ = new ArrayList(); }
         | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($2); }
         ;
                   
-call_function: ID '(' call_function_params ')'  //{ $$ = new Invocation((Variable)$1, (List<Expression>)$3); }
+call_function: ID '(' call_function_params ')'  { $$ = new Invocation((String)$1, (List<Expression>)$3); }
         ;
 
-call_function_params: call_function_params ',' expression       //{ $$ = $1; ((List)$$).add($2); }
-        | expression                                            //{ $$ = new ArrayList(); ((List)$$).add($1); }
+call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($2); }
+        | expression                                            { $$ = new ArrayList(); ((List)$$).add($1); }
+        |                                                       { $$ = new ArrayList(); }
         ;
 
 return: RETURN ';'
         ;
 
-while: WHILE '(' conditions ')' ':' function_body                               
-        | WHILE conditions ':' function_body                                    
+while: WHILE '(' condition ')' ':' function_body    { $$ = new While((Expression)$3, (List<Statement>)$6); }                           
+        | WHILE condition ':' function_body         { $$ = new While((Expression)$2, (List<Statement>)$4); }                            
         ;
 
-if: IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body
-        | IF '(' conditions ')' ':' ifelse_body                     %prec MENORQUEELSE
-        | IF conditions ':' ifelse_body ELSE ifelse_body
-        | IF conditions ':' ifelse_body                              %prec MENORQUEELSE
+if: IF '(' condition ')' ':' ifelse_body ELSE ifelse_body      { $$ = new IfStatement((List<Statement>)$8, (List<Statement>)$6, (Expression)$3); }      
+        | IF '(' condition ')' ':' ifelse_body                 { $$ = new IfStatement((List<Statement>)$6, (Expression)$3); }                      %prec MENORQUEELSE
+        | IF condition ':' ifelse_body ELSE ifelse_body        { $$ = new IfStatement((List<Statement>)$6, (List<Statement>)$4, (Expression)$2); }      
+        | IF condition ':' ifelse_body                         { $$ = new IfStatement((List<Statement>)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
-ifelse_body:  '{' definiciones '}'
-        | definicion 
+ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($2); }
+        | definicion                    { $$ = new ArrayList(); ((List)$$).add($1); }                                        
         ;
 
-conditions: condition '&''&' conditions
-        | condition '|''|' conditions
-        | condition
+condition: expression '|''|' expression { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '&''&' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression
         ;
 
-condition: condition_params '>' condition_params
-        | condition_params '>''=' condition_params
-        | condition_params '<' condition_params
-        | condition_params '<''=' condition_params
-        | condition_params '=''=' condition_params
-        | condition_params '!''=' condition_params
-        | '!' condition_params
-        | condition_params
+struct: expression ':' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$5); } 
         ;
 
-// struct: var_aux ':' STRUCT '{' struct_body ';' '}'
-//         ;
+struct_body: struct_body ';' struct_params      { $$ = $1; ((List)$$).add($3); }
+        | struct_params                         { $$ = new ArrayList(); ((List)$$).add($1); }
+        ;
 
-// struct_body: struct_body ';' struct_body
-//         | var
-//         | struct
-//         ;
+struct_params: var
+        | struct
+        ;
 
 type: INT                     { $$ = IntType.getInstance(); }
         | REAL_TYPE           { $$ = RealType.getInstance(); }

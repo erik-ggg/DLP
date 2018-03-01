@@ -2,7 +2,7 @@ package ast;
 
 import java.util.List;
 
-public class FunDefinition implements Definition {
+public class FunDefinition implements Definition, Expression {
 
     private String name;
     private List<Statement> statements, body;
@@ -23,5 +23,15 @@ public class FunDefinition implements Definition {
     @Override
     public Type getType() {
         return null;
+    }
+
+    @Override
+    public int getRow() {
+        return 0;
+    }
+
+    @Override
+    public int getColumn() {
+        return 0;
     }
 }

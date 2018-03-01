@@ -3,15 +3,20 @@ prueba: char;
 a[1]:int;
 a[][]:char;
 sensor, sensorAux : char;
-#def fun1(param1, param2 : int) : void {}
+# def fun1(param1, param2 : int) : void {} NO SE ADMITEN ESOS PARAMETROS
 def fun2(param1 : int, param2 : double) : double {
     sensor, sensorAux : char;
     4+5*8;
     # return sensor;
     return;
 }
-a = 4+5;
-b = (double)a;
+a = (int)2.1;;
+p2 : int;
+
+fun2();
+prueba = fun2((int)1.2, 3.5);;
+a = 4+5;;
+b = (double)a;;
 # Variable and function definitions
 i, j, n : char;
 c : double;
@@ -22,10 +27,39 @@ def p() : char { }
 def f(n : int, r :double ) : char {
   	real : int;
   	c1, c2 : double;
-	c1 = (char)n;
-  	real = c1 + n + r;
-  	# p(); # Invocation as a statement
+	c1 = (char)n;;
+  	real = c1 + n + r;;
+  	p(); # Invocation as a statement
   	# return (int)c1;
+}
+
+if(a != 2 && a != b): {
+    a = 2;;
+    def iff(param: int, perr: char) : int {
+       vr = (int)a;;
+       vr = p((int)2.3);;
+    }
+} else {
+    a = 2;;
+        def iff(param: int, perr: char) : int {
+           vr = (int)a;;
+           vr = p((int)2.3);;
+        }
+}
+s : struct {
+        fp : int;
+        rs : struct {
+            r1: int;
+            r2: char;
+            ps: struct {
+                prs : double;
+            };
+        };
+    };
+while (a > b) : {
+    s : struct {
+        fp : int;
+    };
 }
 
 #while (a < a && a > b || a >= c && a <= b) :  {

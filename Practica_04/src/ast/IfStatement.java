@@ -12,4 +12,9 @@ public class IfStatement implements Statement {
         this.ifbody = ifbody;
         this.expression = expression;
     }
+
+    public IfStatement(List<Statement> ifbody, Expression expression) {
+        this.ifbody = ifbody;
+        this.expression = expression;
+    }
 }
