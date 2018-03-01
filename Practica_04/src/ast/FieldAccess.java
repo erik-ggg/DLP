@@ -9,6 +9,11 @@ public class FieldAccess implements Expression {
         this.name = name;
     }
 
+    public FieldAccess(Expression leftop, Variable name) {
+        this.leftop = leftop;
+        this.name = name.getName();
+    }
+
     @Override
     public int getRow() {
         return 0;

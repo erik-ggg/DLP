@@ -1,67 +1,53 @@
-4+5*8;
-prueba: char;
-a[1]:int;
-a[][]:char;
-sensor, sensorAux : char;
-# def fun1(param1, param2 : int) : void {} NO SE ADMITEN ESOS PARAMETROS
-def fun2(param1 : int, param2 : double) : double {
-    sensor, sensorAux : char;
-    4+5*8;
-    # return sensor;
-    return;
-}
-a = (int)2.1;;
-p2 : int;
-
-fun2();
-prueba = fun2((int)1.2, 3.5);;
-a = 4+5;;
-b = (double)a;;
 # Variable and function definitions
-i, j, n : char;
-c : double;
+i, j, n: int;
+c: char;
 
 # Empty function
-def p() : char { }
+def p(): void { }
 
-def f(n : int, r :double ) : char {
-  	real : int;
-  	c1, c2 : double;
-	c1 = (char)n;;
-  	real = c1 + n + r;;
+def f(n: int,r: double): int {
+  	real: double;
+  	c1, c2: char;
+	c1 = (char)n;
+  	real = c1 + n + r;
   	p(); # Invocation as a statement
-  	# return (int)c1;
+  	return (int)c1;
 }
 
-if(a != 2 && a != b): {
-    a = 2;;
-    def iff(param: int, perr: char) : int {
-       vr = (int)a;;
-       vr = p((int)2.3);;
-    }
-} else {
-    a = 2;;
-        def iff(param: int, perr: char) : int {
-           vr = (int)a;;
-           vr = p((int)2.3);;
-        }
-}
-s : struct {
-        fp : int;
-        rs : struct {
-            r1: int;
-            r2: char;
-            ps: struct {
-                prs : double;
-            };
-        };
-    };
-while (a > b) : {
-    s : struct {
-        fp : int;
-    };
-}
+def main(): void {
+	# Record
+  	pair: struct {
+    	integer: int;
+    	character: char;
+  	};
 
-#while (a < a && a > b || a >= c && a <= b) :  {
+  	# Array
+  	vector: [10][5]double;
 
-# }
+  	i=0;
+  	j=0;
+  	while i<10 : {
+    	while j<5 : {
+      		vector[i][j] = i + j;
+      		j=j+1;
+		}
+		i=i+1;
+  	}
+  	i=0;
+  	b = !a.c;
+  	if (a%2 == c.d || !pair.character) : {
+  	    return a;
+  	}
+	pair.character = '0';
+  	pair.integer = '0';
+  	while pair.integer >= i: {
+    	if i%2==0 :
+      		print 't', 'r', 'u', 'e', '\n';
+    	else
+      		print 'f', 'a', 'l', 's', 'e', '\n';
+    	i=i+1;
+  	}
+  	print f(i, (double)i); # Invocation as an expression
+  	vector[9][(int)4.3] = 5.6;
+  	f(1, 2.2); # Invocation as a statement
+}

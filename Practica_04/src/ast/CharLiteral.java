@@ -1,10 +1,11 @@
 package ast;
 
 public class CharLiteral implements Expression {
-    private char value;
+    private String value;
 
-    public CharLiteral(char value) {
-        this.value = value;
+    public CharLiteral(String value) {
+        //System.out.println("Valor " + value);
+        this.value = value.replace("'", "");
     }
 
     @Override

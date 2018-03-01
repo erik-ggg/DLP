@@ -57,8 +57,9 @@ definicion: expression ';'
         | call_function ';'
         | struct ';'
         | array_init ';'        
-        | PRINT definicion
+        | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
         | statement
+        | RETURN expression ';'         { $$ = new Return((Expression)$2); }
         ;
 
 statement: while
@@ -72,18 +73,27 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | expression '/' expression     { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
         | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' definicion     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '['expression']' '=' expression                  { $$ = new Logical((Expression)$1, (Expression)$3); }      
+        | expression '['expression']''['expression']' '=' expression   { $$ = new Logical((Expression)$1, (Expression)$3); }
         | expression '>' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
         | expression '<' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
         | expression '=''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
         | expression '>''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
         | expression '<''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
         | expression '!''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }     
+        | '!' expression                { $$ = new Comparison((Expression)$2, (Expression)$2); }
+        | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }
+        //| function     
         | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
-        | CHAR_CONSTANT                 { $$ = new RealLiteral((String)$1); }
+        | CHAR_CONSTANT                 { $$ = new CharLiteral((String)$1); }
         | ID                            { $$ = new Variable((String)$1); }
+        ;
+
+print_values: print_values ',' expression       { $$ = $1; ((List)$$).add($3); }
+        | expression                            { $$ = new ArrayList(); ((List)$$).add($1); }
+        | call_function                         { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
 var_final: ID ',' var_final           { $$ = $3; ((List)$$).add($1); }
@@ -95,7 +105,10 @@ var: expression ':' type                                           { $$ = new Va
         | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, (Type)$9); }
         | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, (Type)$5); }   
         | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, (Type)$7); }
-        //| expression ',' var                                     { $$ = $2; ((List)$$).add(new VarDefinition((Variable)$1));}
+        ;
+
+array_init: expression ':' '['expression']' type                      { $$ = $1; }     
+        | expression ':' '['expression']''['expression']' type        { $$ = $1; }     
         ;
 
 function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
@@ -136,7 +149,7 @@ ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($
         ;
 
 condition: expression '|''|' expression { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '&''&' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '&&' expression  { $$ = new Comparison((Expression)$1, (Expression)$3); }
         | expression
         ;
 
