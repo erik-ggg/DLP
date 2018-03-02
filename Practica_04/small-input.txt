@@ -2,6 +2,8 @@
 i, j, n: int;
 c: char;
 
+a = vector[a][a];
+
 # Empty function
 def p(): void { }
 
@@ -33,15 +35,14 @@ def main(): void {
 		}
 		i=i+1;
   	}
+
   	i=0;
-  	b = !a.c;
-  	if (a%2 == c.d || !pair.character) : {
-  	    return a;
-  	}
+  	if pair.integer == vector[0][0] :
+  	    return true;
 	pair.character = '0';
   	pair.integer = '0';
   	while pair.integer >= i: {
-    	if i%2==0 :
+    	if pair.integer == vector[0][0] || !pair.character || i%2==0 :
       		print 't', 'r', 'u', 'e', '\n';
     	else
       		print 'f', 'a', 'l', 's', 'e', '\n';

@@ -25,6 +25,8 @@ import ast.*;
 %token REAL_TYPE
 %token CHAR_TYPE
 %token VOID
+%token AND
+%token OR
 
 
 %left '+''-'
@@ -74,16 +76,18 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
         | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
-        | expression '['expression']' '=' expression                  { $$ = new Logical((Expression)$1, (Expression)$3); }      
-        | expression '['expression']''['expression']' '=' expression   { $$ = new Logical((Expression)$1, (Expression)$3); }
+        //| expression '=' expression                  { $$ = new Logical((Expression)$1, (Expression)$3); }      
+        //| expression '['expression']''['expression']' '=' expression   { $$ = new Logical((Expression)$1, (Expression)$3); }
         | expression '>' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
         | expression '<' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | expression '=''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '>''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '<''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '!''=' expression    { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '=''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '>''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '<''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '!''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
         | '!' expression                { $$ = new Comparison((Expression)$2, (Expression)$2); }
         | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }
+        | expression '['expression']'
+        | expression '['expression']''['expression']'
         //| function     
         | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
@@ -148,8 +152,8 @@ ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($
         | definicion                    { $$ = new ArrayList(); ((List)$$).add($1); }                                        
         ;
 
-condition: expression '|''|' expression { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '&&' expression  { $$ = new Comparison((Expression)$1, (Expression)$3); }
+condition: condition OR expression { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | condition AND expression  { $$ = new Comparison((Expression)$1, (Expression)$3); }
         | expression
         ;
 

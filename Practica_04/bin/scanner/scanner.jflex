@@ -62,11 +62,17 @@ INT = int
 REAL_TYPE = double
 CHAR_TYPE = char
 VOID = void
+AND = &&
+OR = \|\|
 
 %%
 // ************  Acciones ********************
 
-// * Constante Entera			 						 						 
+// * Constante Entera
+{AND} 				{this.yylval = new String(yytext());
+         			    return Parser.AND;}
+{OR} 				{this.yylval = new String(yytext());
+         			    return Parser.OR;}			 						 						 
 {VOID} 				{this.yylval = new String(yytext());
          			    return Parser.VOID;}
 {INT} 				{this.yylval = new String(yytext());
