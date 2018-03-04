@@ -17,4 +17,9 @@ public class Logical implements Expression {
     public int getColumn() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return leftop + " " + rightop;
+    }
 }

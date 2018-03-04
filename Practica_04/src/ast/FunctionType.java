@@ -10,4 +10,9 @@ public class FunctionType implements Type {
         this.params = params;
         this.returnType = returnType;
     }
+
+    public FunctionType(Type returnType) {
+        this.params = params;
+        this.returnType = returnType;
+    }
 }

@@ -25,6 +25,8 @@ import ast.*;
 %token REAL_TYPE
 %token CHAR_TYPE
 %token VOID
+%token AND
+%token OR
 
 
 %left '+''-'
@@ -48,20 +50,23 @@ programa: definiciones                          { ast = new Program((List<Defini
         ;                       
 
 definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
-        | definicion                            { $$ = new ArrayList(); }
+        | definicion                            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
-//{ $$ = new While((List<Statement>)$1); }
-definicion: expression ';'                      { $$ = new ArrayList((List<Expression>)$1); }                      
-        | var ';'
+        
+definicion:  var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
+        | expression ';'                                                     
         | function
-        | assignment ';'
-        | while                                 
-        | if
         | call_function ';'
         | struct ';'
-        | field_access ';'
         | array_init ';'        
-        | PRINT definicion
+        | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
+        | statement
+        | RETURN expression ';'         { $$ = new Return((Expression)$2); }
+        ;
+
+statement: while
+        | if
+        | return
         ;
 
 expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
@@ -69,140 +74,103 @@ expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+',
         | expression '*' expression     { $$ = new Arithmetic((Expression)$1, '*', (Expression)$3); }
         | expression '/' expression     { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
         | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
+        | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
+        | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
+        //| expression '=' expression                  { $$ = new Logical((Expression)$1, (Expression)$3); }      
+        //| expression '['expression']''['expression']' '=' expression   { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '>' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '<' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '=''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '>''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '<''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '!''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | '!' expression                { $$ = new Comparison((Expression)$2, (Expression)$2); }
+        | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }
+        | expression '['expression']'                   { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3)); System.out.println("Entro mal " + $1 + " " + $3);}
+        | expression '['expression']''['expression']'   { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3)); System.out.println("Entro mal " + $1 + " " + $3 + " " + $6);}
+        //| function     
         | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
+        | CHAR_CONSTANT                 { $$ = new CharLiteral((String)$1); }
         | ID                            { $$ = new Variable((String)$1); }
         ;
 
-vars: var ',' var
-        | var
+print_values: print_values ',' expression       { $$ = $1; ((List)$$).add($3); }
+        | expression                            { $$ = new ArrayList(); ((List)$$).add($1); }
+        | call_function                         { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-var: var_aux ':' type 
+var_final: ID ',' var_final           { $$ = $3; ((List)$$).add($1); }
+        | var                         { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-var_array: ID '['array_params']'
-        | ID '['array_params']''['array_params']'
+var: expression ':' type                                           { $$ = new VarDefinition((Variable)$1, (Type)$3); System.out.println("Entro" + $1 + " " + $3);}   
+        | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3, (Type)$6)); System.out.println("Entro" + $1 + " " + $3 + " " +$6);}   
+        | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3, (Type)$9)); }
+        | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, new ArrayType((Type)$5)); }   
+        | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, new ArrayType((Type)$7)); }
         ;
 
-array_params: params
-        | cast params
+array_init: expression ':' '['expression']' type                      { $$ = $1; }     
+        | expression ':' '['expression']''['expression']' type        { $$ = $1; }     
         ;
 
-array_init: var_aux ":" '['array_params']' type
-        | var_aux ":" '['array_params']''['array_params']' type
+function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
         ;
 
-params: ID                                      { $$ = new VarDefinition((String)$1, CharType.getInstance()); }
-        | INT_CONSTANT                  
-        | REAL_CONSTANT
-        | field_access
-        | '\'' CHAR_CONSTANT '\''
-        |
+function_params:  function_params ',' var        { $$ = $1; ((List)$$).add($3); }
+        | var                                    { $$ = new ArrayList(); ((List)$$).add($1); }
+        |                                        { $$ = new ArrayList(); }
         ;
 
-var_aux: var_aux ',' var_aux
-        | var_array
-        | ID
+function_body: '{' '}'                          { $$ = new ArrayList(); }
+        | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($2); }
+        ;
+                  
+call_function: ID '(' call_function_params ')'  { $$ = new Invocation((String)$1, (List<Expression>)$3); }
         ;
 
-function: def ID '(' function_params ')' ':' type function_body
+call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($2); }
+        | expression                                            { $$ = new ArrayList(); ((List)$$).add($1); }
+        |                                                       { $$ = new ArrayList(); }
         ;
 
-function_params: vars
-        |
+return: RETURN ';'
         ;
 
-function_body: '{' '}' 
-        | '{' definiciones '}'
-        | '{' definiciones return ';' '}'
+while: WHILE '(' condition ')' ':' function_body    { $$ = new While((Expression)$3, (List<Statement>)$6); }                           
+        | WHILE condition ':' function_body         { $$ = new While((Expression)$2, (List<Statement>)$4); }                            
         ;
 
-call_function: ID '(' call_function_params ')'
+if: IF '(' condition ')' ':' ifelse_body ELSE ifelse_body      { $$ = new IfStatement((List<Statement>)$8, (List<Statement>)$6, (Expression)$3); }      
+        | IF '(' condition ')' ':' ifelse_body                 { $$ = new IfStatement((List<Statement>)$6, (Expression)$3); }                      %prec MENORQUEELSE
+        | IF condition ':' ifelse_body ELSE ifelse_body        { $$ = new IfStatement((List<Statement>)$6, (List<Statement>)$4, (Expression)$2); }      
+        | IF condition ':' ifelse_body                         { $$ = new IfStatement((List<Statement>)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
-call_function_params: call_function_params ',' call_function_params
-        | var_array
+ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($2); }
+        | definicion                    { $$ = new ArrayList(); ((List)$$).add($1); }                                        
+        ;
+
+condition: condition OR expression { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | condition AND expression  { $$ = new Logical((Expression)$1, (Expression)$3); }
         | expression
-        | cast ID
-        |
         ;
 
-return: RETURN ID
-        | RETURN cast ID
+struct: expression ':' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$5); } 
         ;
 
-assignment: assignment_start '=' assignment_end
-        | assignment_start '=' cast assignment_end
+struct_body: struct_body ';' struct_params      { $$ = $1; ((List)$$).add($3); }
+        | struct_params                         { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-assignment_start: expression
-        | var_array
-        | field_access
-        ;
-
-assignment_end: var_array
-        | call_function
-        | expression
-        | CHAR_CONSTANT
-        | field_access
-        ;
-
-cast: '(' type ')'
-        ;
-
-while: WHILE '(' conditions ')' ':' function_body                               
-        | WHILE conditions ':' function_body                                    
-        ;
-
-if: IF '(' conditions ')' ':' ifelse_body ELSE ifelse_body
-        | IF '(' conditions ')' ':' ifelse_body                     %prec MENORQUEELSE
-        | IF conditions ':' ifelse_body ELSE ifelse_body
-        | IF conditions ':' ifelse_body                              %prec MENORQUEELSE
-        ;
-
-ifelse_body:  '{' definiciones '}'
-        | definicion 
-        ;
-
-conditions: condition '&''&' conditions
-        | condition '|''|' conditions
-        | condition
-        ;
-
-condition: condition_params '>' condition_params
-        | condition_params '>''=' condition_params
-        | condition_params '<' condition_params
-        | condition_params '<''=' condition_params
-        | condition_params '=''=' condition_params
-        | condition_params '!''=' condition_params
-        | '!' condition_params
-        | condition_params
-        ;
-
-condition_params: expression
-        | field_access
-        | var_array
-        ;
-
-field_access: field_access '.' field_access_param
-        | field_access_param '.' field_access_param
-        ;
-
-field_access_param: ID
-        | var_array 
-        ;
-struct: var_aux ':' STRUCT '{' struct_body ';' '}'
-        ;
-
-struct_body: struct_body ';' struct_body
-        | var
+struct_params: var
         | struct
         ;
 
 type: INT                     { $$ = IntType.getInstance(); }
-        | REAL_TYPE                    { $$ = RealType.getInstance(); }
-        | CHAR_TYPE               { $$ = CharType.getInstance(); }
+        | REAL_TYPE           { $$ = RealType.getInstance(); }
+        | CHAR_TYPE           { $$ = CharType.getInstance(); }
         | VOID                { $$ = VoidType.getInstance(); }
         ;
 %%

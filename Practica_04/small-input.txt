@@ -1,8 +1,19 @@
 # Variable and function definitions
-i, j, n: int;
-c: char;
+def vars() : void {
+    a[1] : int;
+    a[1][1] : char;
+    i, j, n: int;
+    c: char;
+    a = b + c;
+    a+b;
+    a[][]: int;
+    vector[2][3];
+    vector[x][z] = i + j;
+}
 
-a = vector[a][a];
+def structs() : void {
+    a = p(a[1]);
+}
 
 # Empty function
 def p(): void { }
@@ -18,9 +29,15 @@ def f(n: int,r: double): int {
 
 def main(): void {
 	# Record
-  	pair: struct {
+  	pair, a: [][]struct {
     	integer: int;
     	character: char;
+    	a, b, c: []struct {
+    	 integer: int;
+    	 final: struct {
+    	    integer: int;
+    	 };
+    	};
   	};
 
   	# Array
@@ -37,8 +54,6 @@ def main(): void {
   	}
 
   	i=0;
-  	if pair.integer == vector[0][0] :
-  	    return true;
 	pair.character = '0';
   	pair.integer = '0';
   	while pair.integer >= i: {

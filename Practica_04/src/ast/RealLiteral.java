@@ -22,4 +22,9 @@ public class RealLiteral implements Expression {
     public int getColumn() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

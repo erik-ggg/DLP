@@ -53,11 +53,11 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
         | definicion                            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
         
-definicion: expression ';'                                                     
-        | var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
+definicion:  var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
+        | expression ';'                                                     
         | function
         | call_function ';'
-        | struct ';'
+        //| struct ';'
         | array_init ';'        
         | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
         | statement
@@ -69,26 +69,23 @@ statement: while
         | return
         ;
 
-expression: expression '+' expression	{ $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
-        | expression '-' expression     { $$ = new Arithmetic((Expression)$1, '-', (Expression)$3); }
-        | expression '*' expression     { $$ = new Arithmetic((Expression)$1, '*', (Expression)$3); }
-        | expression '/' expression     { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
-        | expression '%' expression     { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
-        | expression '.' ID             { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' expression     { $$ = new Logical((Expression)$1, (Expression)$3); }
-        //| expression '=' expression                  { $$ = new Logical((Expression)$1, (Expression)$3); }      
-        //| expression '['expression']''['expression']' '=' expression   { $$ = new Logical((Expression)$1, (Expression)$3); }
-        | expression '>' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | expression '<' expression     { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | expression '=''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '>''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '<''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '!''=' expression  { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | '!' expression                { $$ = new Comparison((Expression)$2, (Expression)$2); }
-        | '(' type ')' expression       { $$ = new Cast(((Expression)$4), (Type)$2); }
-        | expression '['expression']'
-        | expression '['expression']''['expression']'
-        //| function     
+expression: expression '+' expression	                        { $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
+        | expression '-' expression                             { $$ = new Arithmetic((Expression)$1, '-', (Expression)$3); }
+        | expression '*' expression                             { $$ = new Arithmetic((Expression)$1, '*', (Expression)$3); }
+        | expression '/' expression                             { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
+        | expression '%' expression                             { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
+        | expression '.' ID                                     { $$ = new FieldAccess((Expression)$1, (String)$3); }
+        | expression '=' expression                             { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '=' call_function                          { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '<' expression                             { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '>' expression                             { $$ = new Comparison((Expression)$1, (Expression)$3); }
+        | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '>''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '<''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | expression '!''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
+        | '!' expression                                        { $$ = new Comparison((Expression)$2, (Expression)$2); }
+        | '(' type ')' expression                               { $$ = new Cast(((Expression)$4), (Type)$2); }
+        | expression '['expression']'                           { $$ = new Variable((Variable)$1, (Expression)$3);}
         | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
         | CHAR_CONSTANT                 { $$ = new CharLiteral((String)$1); }
@@ -105,10 +102,13 @@ var_final: ID ',' var_final           { $$ = $3; ((List)$$).add($1); }
         ;
 
 var: expression ':' type                                           { $$ = new VarDefinition((Variable)$1, (Type)$3); }   
-        | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, (Type)$6); }   
-        | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, (Type)$9); }
-        | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, (Type)$5); }   
-        | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, (Type)$7); }
+        | expression '['expression']' ':' type                     { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3, (Type)$6)); System.out.println("Entro" + $1 + " " + $3 + " " +$6);}   
+        | expression '['expression']''['expression']' ':' type     { $$ = new VarDefinition((Variable)$1, new ArrayType((Expression)$3, (Type)$9)); }
+        | expression '['']' ':' type                               { $$ = new VarDefinition((Variable)$1, new ArrayType((Type)$5)); }   
+        | expression '['']''['']' ':' type                         { $$ = new VarDefinition((Variable)$1, new ArrayType((Type)$7)); }
+        | expression ':' '['']' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$7); } 
+        | expression ':' '['']''['']' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$9); } 
+        | expression ':' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$5); } 
         ;
 
 array_init: expression ':' '['expression']' type                      { $$ = $1; }     
@@ -127,10 +127,10 @@ function_body: '{' '}'                          { $$ = new ArrayList(); }
         | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($2); }
         ;
                   
-call_function: ID '(' call_function_params ')'  { $$ = new Invocation((String)$1, (List<Expression>)$3); }
+call_function: expression '(' call_function_params ')'  { $$ = new Invocation((Variable)$1, (List<Expression>)$3); }
         ;
 
-call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($2); }
+call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($3); }
         | expression                                            { $$ = new ArrayList(); ((List)$$).add($1); }
         |                                                       { $$ = new ArrayList(); }
         ;
@@ -152,20 +152,13 @@ ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($
         | definicion                    { $$ = new ArrayList(); ((List)$$).add($1); }                                        
         ;
 
-condition: condition OR expression { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | condition AND expression  { $$ = new Comparison((Expression)$1, (Expression)$3); }
+condition: condition OR expression { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | condition AND expression  { $$ = new Logical((Expression)$1, (Expression)$3); }
         | expression
         ;
 
-struct: expression ':' STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$5); } 
-        ;
-
-struct_body: struct_body ';' struct_params      { $$ = $1; ((List)$$).add($3); }
-        | struct_params                         { $$ = new ArrayList(); ((List)$$).add($1); }
-        ;
-
-struct_params: var
-        | struct
+struct_body: struct_body ';' var_final      { $$ = $1; ((List)$$).add($3); }
+        | var_final                         { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
 type: INT                     { $$ = IntType.getInstance(); }

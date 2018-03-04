@@ -18,4 +18,9 @@ public class Cast implements Expression {
     public int getColumn() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return expression + " " + type;
+    }
 }
