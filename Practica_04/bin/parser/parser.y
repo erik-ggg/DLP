@@ -19,6 +19,7 @@ import ast.*;
 %token WHILE
 %token IF
 %token ELSE
+%token INPUT
 %token PRINT
 %token STRUCT
 %token INT
@@ -56,10 +57,11 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
 definicion:  var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
         | expression ';'                                                     
         | function
-        | call_function ';'
+        //| call_function ';'
         //| struct ';'
         | array_init ';'        
         | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
+        | INPUT print_values ';'        { $$ = new Input((List<Expression>)$2); }
         | statement
         | RETURN expression ';'         { $$ = new Return((Expression)$2); }
         ;
@@ -76,25 +78,25 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '%' expression                             { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID                                     { $$ = new FieldAccess((Expression)$1, (String)$3); }
         | expression '=' expression                             { $$ = new Logical((Expression)$1, (Expression)$3); }
-        | expression '=' call_function                          { $$ = new Logical((Expression)$1, (Expression)$3); }
-        | expression '<' expression                             { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | expression '>' expression                             { $$ = new Comparison((Expression)$1, (Expression)$3); }
-        | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '>''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '<''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | expression '!''=' expression                          { $$ = new Comparison((Expression)$1, (Expression)$4); }
-        | '!' expression                                        { $$ = new Comparison((Expression)$2, (Expression)$2); }
+        //| expression '=' call_function                         { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '<' expression                             { $$ = new Comparison((Expression)$1, "<", (Expression)$3); }
+        | expression '>' expression                             { $$ = new Comparison((Expression)$1, ">", (Expression)$3); }
+        | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, "==", (Expression)$4); }
+        | expression '>''=' expression                          { $$ = new Comparison((Expression)$1, ">=", (Expression)$4); }
+        | expression '<''=' expression                          { $$ = new Comparison((Expression)$1, "<=", (Expression)$4); }
+        | expression '!''=' expression                          { $$ = new Comparison((Expression)$1, "!=", (Expression)$4); }
+        | '!' expression                                        { $$ = new Comparison((Expression)$2, "!", (Expression)$2); }
         | '(' type ')' expression                               { $$ = new Cast(((Expression)$4), (Type)$2); }
         | expression '['expression']'                           { $$ = new Variable((Variable)$1, (Expression)$3);}
-        | INT_CONSTANT	                { $$ = new IntLiteral((int)$1); } 
-        | REAL_CONSTANT                 { $$ = new RealLiteral((String)$1); }
-        | CHAR_CONSTANT                 { $$ = new CharLiteral((String)$1); }
-        | ID                            { $$ = new Variable((String)$1); }
+        | call_function
+        | INT_CONSTANT	                                        { $$ = new IntLiteral((int)$1); } 
+        | REAL_CONSTANT                                         { $$ = new RealLiteral((String)$1); }
+        | CHAR_CONSTANT                                         { $$ = new CharLiteral((String)$1); }
+        | ID                                                    { $$ = new Variable((String)$1); }
         ;
 
 print_values: print_values ',' expression       { $$ = $1; ((List)$$).add($3); }
-        | expression                            { $$ = new ArrayList(); ((List)$$).add($1); }
-        | call_function                         { $$ = new ArrayList(); ((List)$$).add($1); }
+        | expression                            { $$ = new ArrayList(); ((List)$$).add($1); }        
         ;
 
 var_final: ID ',' var_final           { $$ = $3; ((List)$$).add($1); }
@@ -127,7 +129,7 @@ function_body: '{' '}'                          { $$ = new ArrayList(); }
         | '{' definiciones '}'                  { $$ = new ArrayList(); ((List)$$).add($2); }
         ;
                   
-call_function: expression '(' call_function_params ')'  { $$ = new Invocation((Variable)$1, (List<Expression>)$3); }
+call_function: ID '(' call_function_params ')'  { $$ = new Invocation((String)$1, (List<Expression>)$3); }
         ;
 
 call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($3); }

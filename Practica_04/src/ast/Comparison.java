@@ -3,10 +3,12 @@ package ast;
 public class Comparison implements Expression {
 
     private Expression leftop, rightop;
+    private String op;
 
-    public Comparison(Expression left, Expression right) {
+    public Comparison(Expression left, String op, Expression right) {
         this.leftop = left;
         this.rightop = right;
+        this.op = op;
     }
 
     @Override
@@ -17,5 +19,10 @@ public class Comparison implements Expression {
     @Override
     public int getColumn() {
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return leftop + " " + op + " " + rightop;
     }
 }

@@ -38,7 +38,7 @@ public Object getYylval() {
 
 // ************  Patrones (macros) ********************
 
-TOKENS = [%.+*/<>;(){}!=:,&|\[\](&&)(||)]  
+TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)]  
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
 REAL = ({ConstanteEntera}*['.']{ConstanteEntera}*) 
@@ -57,6 +57,7 @@ WHILE = while
 IF = if
 ELSE = else
 PRINT = print
+INPUT = input
 STRUCT = struct
 INT = int
 REAL_TYPE = double
@@ -89,6 +90,8 @@ OR = \|\|
          			    return Parser.IF;}
 {ELSE} 				{this.yylval = new String(yytext());
          			    return Parser.ELSE;}
+{INPUT} 			{this.yylval = new String(yytext());
+         			    return Parser.INPUT;}						 
 {PRINT} 			{this.yylval = new String(yytext());
          			    return Parser.PRINT;}
 {RETURN} 			{this.yylval = new String(yytext());

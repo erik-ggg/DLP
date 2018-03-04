@@ -2,10 +2,12 @@ package ast;
 
 public class Logical implements Expression {
     private Expression leftop, rightop;
+    
 
     public Logical(Expression left, Expression right) {
         this.leftop = left;
         this.rightop = right;
+        
     }
 
     @Override

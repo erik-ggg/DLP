@@ -1,18 +1,12 @@
 # Variable and function definitions
-def vars() : void {
-    a[1] : int;
-    a[1][1] : char;
-    i, j, n: int;
-    c: char;
-    a = b + c;
-    a+b;
-    a[][]: int;
-    vector[2][3];
-    vector[x][z] = i + j;
-}
+i, j, n: int;
+c: char;
 
-def structs() : void {
-    a = p(a[1]);
+# Print function
+def pr(): void {
+    print a + p(), 58 + prueba;
+    input a + p(), 58 + prueba;
+    input 't', 'r', 'u', 'e', '\n';
 }
 
 # Empty function
@@ -22,6 +16,7 @@ def f(n: int,r: double): int {
   	real: double;
   	c1, c2: char;
 	c1 = (char)n;
+	return a;
   	real = c1 + n + r;
   	p(); # Invocation as a statement
   	return (int)c1;
@@ -29,15 +24,9 @@ def f(n: int,r: double): int {
 
 def main(): void {
 	# Record
-  	pair, a: [][]struct {
+  	pair: struct {
     	integer: int;
     	character: char;
-    	a, b, c: []struct {
-    	 integer: int;
-    	 final: struct {
-    	    integer: int;
-    	 };
-    	};
   	};
 
   	# Array
@@ -45,7 +34,7 @@ def main(): void {
 
   	i=0;
   	j=0;
-  	while i<10 : {
+  	while i<10 || p() && a != b && a == b && a >= b && a <= b : {
     	while j<5 : {
       		vector[i][j] = i + j;
       		j=j+1;
@@ -57,8 +46,14 @@ def main(): void {
 	pair.character = '0';
   	pair.integer = '0';
   	while pair.integer >= i: {
-    	if pair.integer == vector[0][0] || !pair.character || i%2==0 :
+    	if pair.integer == vector[0][0] || !pair.character || i%2==0 : {
       		print 't', 'r', 'u', 'e', '\n';
+      		return a;
+      		def in() : void {
+      		    a = main();
+      		    return;
+      		}
+      	}
     	else
       		print 'f', 'a', 'l', 's', 'e', '\n';
     	i=i+1;
