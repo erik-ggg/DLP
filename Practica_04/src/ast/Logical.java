@@ -2,12 +2,13 @@ package ast;
 
 public class Logical implements Expression {
     private Expression leftop, rightop;
+    private String op;
     
 
-    public Logical(Expression left, Expression right) {
+    public Logical(Expression left, String op, Expression right) {
         this.leftop = left;
         this.rightop = right;
-        
+        this.op = op;
     }
 
     @Override
@@ -22,6 +23,6 @@ public class Logical implements Expression {
 
     @Override
     public String toString() {
-        return leftop + " " + rightop;
+        return leftop + " " + op + " " + rightop;
     }
 }

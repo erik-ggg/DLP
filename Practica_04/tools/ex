@@ -1,0 +1,9 @@
+
+def getValue(row:int, column:int):int {
+	if (row < 0 || row >= MATRIXSIZE || column < 0 && column >= MATRIXSIZE): {
+		return -1;
+	}
+	else {	
+		return matrix[row][column];
+	}
+}

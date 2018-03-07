@@ -6,10 +6,10 @@ public class RealLiteral implements Expression {
     private double value;
 
     public RealLiteral(String value) {
-        System.out.println("Valor sin filtrar " + value);
+        //System.out.println("Valor sin filtrar " + value);
         value = value.replace("'", "");
         value = value.replace("\\", "");
-        System.out.println("Valor filtrado " + value );
+        //System.out.println("Valor filtrado " + value );
         this.value = Double.valueOf(value);
     }
 

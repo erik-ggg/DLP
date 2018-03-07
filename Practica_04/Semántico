@@ -1,0 +1,30 @@
+Función: tipos y detección de parámetros inválidos.
+En todos los puntos donde se encuentre un error se va a lanzar un error.
+Para todas las constantes enteras (INT_CONSTANT) su tipo va a ser INTYPE.
+
+Hacemos sistema de tipos. Si hay un error asignamos un typo: ERROR_TYPE
+
+            |---------|       |-------------|
+            | Type <I>|------>| AstNode <I> |
+            |---------|       |-------------|
+                |>
+                |
+                |
+                |
+                |------------------------------|1..*           |---------------------------|
+                |         Error type:          |<--------------| ErrorHandler<Singleton>   |                                      
+                |------------------------------|               |---------------------------|
+                | Message: String              |               | +HasErrors(): bool        |
+                | ERRORTYPE: (AstNode, String) |               | +AddError(ErrorType)      |
+                | ERRORTYPE: (int, int String) |               | +ShowErrors(PrintStream)  |
+                |------------------------------|               |---------------------------|
+
+Si a es un array y tengo: a + 4; El error se situa en la propia expresión.
+Cada vez que detectemos un error vamos a almacenarlo en una lista de errores.
+
+ErrorHandler (1 o muchos errores) (Singleton), tiene HasErrors() : boolean
++AddError (ErrorType)
++ShowErrors(PrintStream)
+
+ErrorType er = new ErrorTYpe(eyp, "")
+eh.INSTANCE.AddError(this); <- al constructor de error type

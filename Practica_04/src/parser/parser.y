@@ -15,6 +15,7 @@ import ast.*;
 %token CHAR_CONSTANT
 %token REAL_CONSTANT
 %token def
+%token MAIN
 %token RETURN
 %token WHILE
 %token IF
@@ -28,6 +29,7 @@ import ast.*;
 %token VOID
 %token AND
 %token OR
+%token BIG_COMMENT
 
 
 %left '+''-'
@@ -54,11 +56,10 @@ definiciones: definiciones definicion           { $$ = $1; ((List)$$).add($2); }
         | definicion                            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
         
-definicion:  var_final ';'                                { $$ = new VarList((List<VarDefinition>)$1); }
+definicion:  var_final ';'                                
         | expression ';'                                                     
         | function
-        //| call_function ';'
-        //| struct ';'
+        //| assigment ';'
         | array_init ';'        
         | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
         | INPUT print_values ';'        { $$ = new Input((List<Expression>)$2); }
@@ -77,8 +78,8 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '/' expression                             { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
         | expression '%' expression                             { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID                                     { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' expression                             { $$ = new Logical((Expression)$1, (Expression)$3); }
-        //| expression '=' call_function                         { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '=' expression                             { $$ = new Assignment((Expression)$1, (Expression)$3); }
+        //| expression '=' call_function                        { $$ = new Logical((Expression)$1, (Expression)$3); }
         | expression '<' expression                             { $$ = new Comparison((Expression)$1, "<", (Expression)$3); }
         | expression '>' expression                             { $$ = new Comparison((Expression)$1, ">", (Expression)$3); }
         | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, "==", (Expression)$4); }
@@ -93,6 +94,10 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | REAL_CONSTANT                                         { $$ = new RealLiteral((String)$1); }
         | CHAR_CONSTANT                                         { $$ = new CharLiteral((String)$1); }
         | ID                                                    { $$ = new Variable((String)$1); }
+        | '-' expression                                        { $$ = $2;}
+        ;
+
+assigment: ID '=' definicion
         ;
 
 print_values: print_values ',' expression       { $$ = $1; ((List)$$).add($3); }
@@ -115,6 +120,7 @@ var: expression ':' type                                           { $$ = new Va
 
 array_init: expression ':' '['expression']' type                      { $$ = $1; }     
         | expression ':' '['expression']''['expression']' type        { $$ = $1; }     
+        | expression ':' '['expression']''['expression']''['expression']' type        { $$ = $1; }     
         ;
 
 function: def ID '(' function_params ')' ':' type function_body { $$ = new FunDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<Statement>)$8); }
@@ -144,9 +150,9 @@ while: WHILE '(' condition ')' ':' function_body    { $$ = new While((Expression
         | WHILE condition ':' function_body         { $$ = new While((Expression)$2, (List<Statement>)$4); }                            
         ;
 
-if: IF '(' condition ')' ':' ifelse_body ELSE ifelse_body      { $$ = new IfStatement((List<Statement>)$8, (List<Statement>)$6, (Expression)$3); }      
-        | IF '(' condition ')' ':' ifelse_body                 { $$ = new IfStatement((List<Statement>)$6, (Expression)$3); }                      %prec MENORQUEELSE
-        | IF condition ':' ifelse_body ELSE ifelse_body        { $$ = new IfStatement((List<Statement>)$6, (List<Statement>)$4, (Expression)$2); }      
+if: //IF '(' condition ')' ':' ifelse_body ELSE ifelse_body      { $$ = new IfStatement((List<Statement>)$8, (List<Statement>)$6, (Expression)$3); }      
+        //| IF '(' condition ')' ':' ifelse_body                 { $$ = new IfStatement((List<Statement>)$6, (Expression)$3); }                      %prec MENORQUEELSE
+        IF condition ':' ifelse_body ELSE ifelse_body        { $$ = new IfStatement((List<Statement>)$6, (List<Statement>)$4, (Expression)$2); }      
         | IF condition ':' ifelse_body                         { $$ = new IfStatement((List<Statement>)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
@@ -154,8 +160,9 @@ ifelse_body:  '{' definiciones '}'      { $$ = new ArrayList(); ((List)$$).add($
         | definicion                    { $$ = new ArrayList(); ((List)$$).add($1); }                                        
         ;
 
-condition: condition OR expression { $$ = new Logical((Expression)$1, (Expression)$3); }
-        | condition AND expression  { $$ = new Logical((Expression)$1, (Expression)$3); }
+condition: condition OR expression { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
+        | condition AND expression  { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
+        | '('condition')' OR '('condition')' { $$ = new Logical((Expression)$2, (String)$4, (Expression)$6); }
         | expression
         ;
 

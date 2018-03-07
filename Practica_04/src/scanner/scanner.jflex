@@ -65,6 +65,7 @@ CHAR_TYPE = char
 VOID = void
 AND = &&
 OR = \|\|
+MAIN = main
 
 %%
 // ************  Acciones ********************
@@ -86,6 +87,8 @@ OR = \|\|
          			    return Parser.STRUCT;}
 {WHILE} 			{this.yylval = new String(yytext());
          			    return Parser.WHILE;}
+{MAIN} 				{this.yylval = new String(yytext());
+         			    return Parser.MAIN;}
 {IF} 				{this.yylval = new String(yytext());
          			    return Parser.IF;}
 {ELSE} 				{this.yylval = new String(yytext());

@@ -1,64 +1,66 @@
-# Variable and function definitions
-i, j, n: int;
-c: char;
 
-# Print function
-def pr(): void {
-    print a + p(), 58 + prueba;
-    input a + p(), 58 + prueba;
-    input 't', 'r', 'u', 'e', '\n';
+
+# Global variables
+integer, integer2, integer3:int;
+character:char;
+real:double;
+
+
+
+
+MATRIXSIZE:int;
+matrix:[10][10]int;
+
+# Functions
+def setValue(row:int, column:int, value:int):void {
+	if row >= 0 && row < MATRIXSIZE && column >= 0 && column < MATRIXSIZE: {
+		matrix[row][column] = value;
+	}
 }
-
-# Empty function
-def p(): void { }
-
-def f(n: int,r: double): int {
-  	real: double;
-  	c1, c2: char;
-	c1 = (char)n;
-	return a;
-  	real = c1 + n + r;
-  	p(); # Invocation as a statement
-  	return (int)c1;
+def getValue(row:int, column:int):int {
+	if (row < 0 || row >= MATRIXSIZE) || (column < 0 && column >= MATRIXSIZE): {
+		return -1;
+	}
+	else {
+		return matrix[row][column];
+	}
 }
-
-def main(): void {
-	# Record
-  	pair: struct {
-    	integer: int;
-    	character: char;
-  	};
-
-  	# Array
-  	vector: [10][5]double;
-
-  	i=0;
-  	j=0;
-  	while i<10 || p() && a != b && a == b && a >= b && a <= b : {
-    	while j<5 : {
-      		vector[i][j] = i + j;
-      		j=j+1;
+def fill(value:int):void {
+	i,j:int;  # Multiple variable definition
+	i = 0;	
+	while i < MATRIXSIZE: {
+		j = 0;
+		while j < MATRIXSIZE: {
+			setValue(i,j, value);
+			j = j + 1;
 		}
-		i=i+1;
-  	}
-
-  	i=0;
-	pair.character = '0';
-  	pair.integer = '0';
-  	while pair.integer >= i: {
-    	if pair.integer == vector[0][0] || !pair.character || i%2==0 : {
-      		print 't', 'r', 'u', 'e', '\n';
-      		return a;
-      		def in() : void {
-      		    a = main();
-      		    return;
-      		}
-      	}
-    	else
-      		print 'f', 'a', 'l', 's', 'e', '\n';
-    	i=i+1;
-  	}
-  	print f(i, (double)i); # Invocation as an expression
-  	vector[9][(int)4.3] = 5.6;
-  	f(1, 2.2); # Invocation as a statement
+		i = i + 1;
+	}
 }
+def show():void {
+	i,j:int;
+	i = 0;	
+	print '[','\n';
+	while i < MATRIXSIZE: {
+		j = 0;
+		print '\t','[';
+		while j < MATRIXSIZE: {
+			print getValue(i,j);
+			if j != MATRIXSIZE - 1: {
+				print ',';
+			}
+			j = j + 1;
+		}
+		print ']','\n';	
+		i = i + 1;
+	}	
+	print ']';	
+}
+
+# Record
+_date:struct {
+	day, mounth, year:int;	
+};
+
+# Main program
+# def no_function():void {} # Uncomment to test
