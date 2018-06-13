@@ -1,10 +1,14 @@
-package ast;
+package expressions;
+
+import ast.Expression;
 
 public class Indexing implements Expression{
     private Expression leftop, rightop;
+    private String op;
 
-    public Indexing(Expression left, Expression right) {
+    public Indexing(Expression left, String op, Expression right) {
         this.leftop = left;
+        this.op = op;
         this.rightop = right;
     }
 
@@ -17,4 +21,9 @@ public class Indexing implements Expression{
     public int getColumn() {
         return 0;
     }
+
+	@Override
+	public String toString() {
+		return "Indexing [leftop=" + leftop + ", op=" + op + ", rightop=" + rightop + "]";
+	}
 }

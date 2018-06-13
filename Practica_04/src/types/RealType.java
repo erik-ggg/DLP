@@ -1,4 +1,6 @@
-package ast;
+package types;
+
+import ast.Type;
 
 public class RealType implements Type {
     private static final RealType INSTANCE = new RealType();
@@ -8,4 +10,9 @@ public class RealType implements Type {
     public static RealType getInstance(){
         return INSTANCE;
     }
+
+	@Override
+	public String toString() {
+		return "RealType";
+	}
 }

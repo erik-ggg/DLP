@@ -17,4 +17,11 @@ public class IfStatement implements Statement {
         this.ifbody = ifbody;
         this.expression = expression;
     }
+
+	@Override
+	public String toString() {
+		return "IfStatement [elsebody=" + elsebody + ", ifbody=" + ifbody + ", expression=" + expression + "]";
+	}
+    
+    
 }

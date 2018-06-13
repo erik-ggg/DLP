@@ -1,11 +1,13 @@
-package ast;
+package expressions;
 
-public class Comparison implements Expression {
+import ast.Expression;
 
+public class Logical implements Expression {
     private Expression leftop, rightop;
     private String op;
+    
 
-    public Comparison(Expression left, String op, Expression right) {
+    public Logical(Expression left, String op, Expression right) {
         this.leftop = left;
         this.rightop = right;
         this.op = op;

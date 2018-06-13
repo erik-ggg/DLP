@@ -1,5 +1,7 @@
 package ast;
 
+import types.ArrayType;
+
 public class VarDefinition implements Definition, Statement, Type {
 
     private String name;
@@ -42,8 +44,10 @@ public class VarDefinition implements Definition, Statement, Type {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return name + " " + type;
-    }
+	@Override
+	public String toString() {
+		return name + " " + type;
+	}
+
+    
 }

@@ -1,4 +1,6 @@
-package ast;
+package types;
+
+import ast.Type;
 
 public class IntType implements Type {
     private static final IntType INSTANCE = new IntType();
@@ -13,4 +15,9 @@ public class IntType implements Type {
     public void setValue(int value) {
         this.value = value;
     }
+
+	@Override
+	public String toString() {
+		return "IntType";
+	}
 }

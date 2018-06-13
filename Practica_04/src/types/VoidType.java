@@ -1,4 +1,6 @@
-package ast;
+package types;
+
+import ast.Type;
 
 public class VoidType implements Type {
     private static final VoidType INSTANCE = new VoidType();
@@ -8,4 +10,9 @@ public class VoidType implements Type {
     public static VoidType getInstance(){
         return INSTANCE;
     }
+
+	@Override
+	public String toString() {
+		return "VoidType";
+	}
 }

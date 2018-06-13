@@ -19,7 +19,7 @@ public class Assignment implements Expression {
 
 	@Override
 	public String toString() {
-		return expression1.toString() + " = " + expression2.toString();
+		return "Assigment: " + expression1.toString() + " = " + expression2.toString();
 	}
 
 

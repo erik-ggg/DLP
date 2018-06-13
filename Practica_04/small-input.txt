@@ -5,9 +5,6 @@ integer, integer2, integer3:int;
 character:char;
 real:double;
 
-
-
-
 MATRIXSIZE:int;
 matrix:[10][10]int;
 
@@ -25,42 +22,8 @@ def getValue(row:int, column:int):int {
 		return matrix[row][column];
 	}
 }
-def fill(value:int):void {
-	i,j:int;  # Multiple variable definition
-	i = 0;	
-	while i < MATRIXSIZE: {
-		j = 0;
-		while j < MATRIXSIZE: {
-			setValue(i,j, value);
-			j = j + 1;
-		}
-		i = i + 1;
-	}
-}
-def show():void {
-	i,j:int;
-	i = 0;	
-	print '[','\n';
-	while i < MATRIXSIZE: {
-		j = 0;
-		print '\t','[';
-		while j < MATRIXSIZE: {
-			print getValue(i,j);
-			if j != MATRIXSIZE - 1: {
-				print ',';
-			}
-			j = j + 1;
-		}
-		print ']','\n';	
-		i = i + 1;
-	}	
-	print ']';	
-}
 
-# Record
-_date:struct {
-	day, mounth, year:int;	
-};
 
-# Main program
-# def no_function():void {} # Uncomment to test
+def main() : void {
+
+}

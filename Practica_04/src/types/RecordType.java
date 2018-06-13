@@ -1,6 +1,9 @@
-package ast;
+package types;
 
 import java.util.List;
+
+import ast.RecordField;
+import ast.Type;
 
 public class RecordType implements Type {
     private List<RecordField> types;

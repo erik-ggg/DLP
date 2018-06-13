@@ -1,4 +1,6 @@
-package ast;
+package expressions;
+
+import ast.Expression;
 
 public class Arithmetic implements Expression {
 	private Expression leftop, rightop;

@@ -1,1428 +1,1514 @@
    0  $accept : programa $end
 
-   1  programa : definiciones
+   1  programa : definiciones main
 
-   2  definiciones : definiciones definicion
-   3               | definicion
+   2  definiciones : definiciones definicionVariable
+   3               | definiciones function
+   4               |
 
-   4  definicion : var_final ';'
-   5             | expression ';'
+   5  definicion : definicionVariable
    6             | function
-   7             | array_init ';'
-   8             | PRINT print_values ';'
-   9             | INPUT print_values ';'
-  10             | statement
-  11             | RETURN expression ';'
 
-  12  statement : while
-  13            | if
-  14            | return
+   7  statement : if
+   8            | expression ';'
+   9            | RETURN expression ';'
 
-  15  expression : expression '+' expression
-  16             | expression '-' expression
-  17             | expression '*' expression
-  18             | expression '/' expression
-  19             | expression '%' expression
-  20             | expression '.' ID
-  21             | expression '=' expression
-  22             | expression '<' expression
-  23             | expression '>' expression
-  24             | expression '=' '=' expression
-  25             | expression '>' '=' expression
-  26             | expression '<' '=' expression
-  27             | expression '!' '=' expression
-  28             | '!' expression
-  29             | '(' type ')' expression
-  30             | expression '[' expression ']'
-  31             | call_function
-  32             | INT_CONSTANT
-  33             | REAL_CONSTANT
-  34             | CHAR_CONSTANT
-  35             | ID
-  36             | '-' expression
+  10  expression : expression '+' expression
+  11             | expression '-' expression
+  12             | expression '*' expression
+  13             | expression '/' expression
+  14             | expression '%' expression
+  15             | expression '.' ID
+  16             | expression '=' expression
+  17             | expression '<' expression
+  18             | expression '>' expression
+  19             | expression '=' '=' expression
+  20             | expression '>' '=' expression
+  21             | expression '<' '=' expression
+  22             | expression '!' '=' expression
+  23             | '!' expression
+  24             | '(' type ')' expression
+  25             | expression '[' expression ']'
+  26             | call_function
+  27             | INT_CONSTANT
+  28             | REAL_CONSTANT
+  29             | CHAR_CONSTANT
+  30             | ID
+  31             | '-' expression
 
-  37  assigment : ID '=' definicion
+  32  print_values : print_values ',' expression
+  33               | expression
 
-  38  print_values : print_values ',' expression
-  39               | expression
+  34  definicionVariable : ids ':' type ';'
 
-  40  var_final : ID ',' var_final
-  41            | var
+  35  parametrosFuncion : parametrosFuncion ',' definicionParametro
+  36                    | definicionParametro
+  37                    |
 
-  42  var : expression ':' type
-  43      | expression '[' expression ']' ':' type
-  44      | expression '[' expression ']' '[' expression ']' ':' type
-  45      | expression '[' ']' ':' type
-  46      | expression '[' ']' '[' ']' ':' type
-  47      | expression ':' '[' ']' STRUCT '{' struct_body ';' '}'
-  48      | expression ':' '[' ']' '[' ']' STRUCT '{' struct_body ';' '}'
-  49      | expression ':' STRUCT '{' struct_body ';' '}'
+  38  definicionParametro : ID ':' type
 
-  50  array_init : expression ':' '[' expression ']' type
-  51             | expression ':' '[' expression ']' '[' expression ']' type
-  52             | expression ':' '[' expression ']' '[' expression ']' '[' expression ']' type
+  39  ids : ids ',' ID
+  40      | ID
 
-  53  function : def ID '(' function_params ')' ':' type function_body
+  41  function : def ID '(' parametrosFuncion ')' ':' type '{' function_body '}'
 
-  54  function_params : function_params ',' var
-  55                  | var
-  56                  |
+  42  main : def MAIN '(' ')' ':' VOID '{' function_body '}'
 
-  57  function_body : '{' '}'
-  58                | '{' definiciones '}'
+  43  function_body : definicionVariable statements
+  44                | definicionVariable
+  45                | statements
+  46                |
 
-  59  call_function : ID '(' call_function_params ')'
+  47  statements : statements statement
+  48             | statement
 
-  60  call_function_params : call_function_params ',' expression
-  61                       | expression
-  62                       |
+  49  call_function : ID '(' call_function_params ')'
 
-  63  return : RETURN ';'
+  50  call_function_params : call_function_params ',' expression
+  51                       | expression
+  52                       |
 
-  64  while : WHILE '(' condition ')' ':' function_body
-  65        | WHILE condition ':' function_body
+  53  while : WHILE '(' condition ')' ':' function_body
+  54        | WHILE condition ':' function_body
 
-  66  if : IF condition ':' ifelse_body ELSE ifelse_body
-  67     | IF condition ':' ifelse_body
+  55  if : IF condition ':' ifelse_body ELSE ifelse_body
+  56     | IF condition ':' ifelse_body
 
-  68  ifelse_body : '{' definiciones '}'
-  69              | definicion
+  57  ifelse_body : '{' statements '}'
+  58              | statement
 
-  70  condition : condition OR expression
-  71            | condition AND expression
-  72            | '(' condition ')' OR '(' condition ')'
-  73            | expression
+  59  condition : condition OR expression
+  60            | condition AND expression
+  61            | '(' condition ')' OR '(' condition ')'
+  62            | '(' condition ')' AND '(' condition ')'
+  63            | expression
 
-  74  struct_body : struct_body ';' var_final
-  75              | var_final
+  64  struct_body : struct_body ';' definicionVariable
+  65              | definicionVariable
 
-  76  type : INT
-  77       | REAL_TYPE
-  78       | CHAR_TYPE
-  79       | VOID
+  66  type : INT
+  67       | REAL_TYPE
+  68       | CHAR_TYPE
+  69       | VOID
+  70       | '[' INT_CONSTANT ']' type
+  71       | STRUCT '{' struct_body ';' '}'
 
 state 0
 	$accept : . programa $end  (0)
+	definiciones : .  (4)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
+	.  reduce 4
 
-	programa  goto 14
-	definiciones  goto 15
-	definicion  goto 16
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
+	programa  goto 1
+	definiciones  goto 2
 
 
 state 1
-	expression : INT_CONSTANT .  (32)
-
-	.  reduce 32
-
-
-state 2
-	expression : ID .  (35)
-	var_final : ID . ',' var_final  (40)
-	call_function : ID . '(' call_function_params ')'  (59)
-
-	','  shift 27
-	'('  shift 28
-	'+'  reduce 35
-	'-'  reduce 35
-	'*'  reduce 35
-	'/'  reduce 35
-	'%'  reduce 35
-	'>'  reduce 35
-	'<'  reduce 35
-	':'  reduce 35
-	'='  reduce 35
-	';'  reduce 35
-	'.'  reduce 35
-	'['  reduce 35
-	'!'  reduce 35
-
-
-state 3
-	expression : CHAR_CONSTANT .  (34)
-
-	.  reduce 34
-
-
-state 4
-	expression : REAL_CONSTANT .  (33)
-
-	.  reduce 33
-
-
-state 5
-	function : def . ID '(' function_params ')' ':' type function_body  (53)
-
-	ID  shift 29
-	.  error
-
-
-state 6
-	definicion : RETURN . expression ';'  (11)
-	return : RETURN . ';'  (63)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	';'  shift 31
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 32
-	call_function  goto 25
-
-
-state 7
-	while : WHILE . '(' condition ')' ':' function_body  (64)
-	while : WHILE . condition ':' function_body  (65)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 33
-	'!'  shift 13
-	.  error
-
-	expression  goto 34
-	call_function  goto 25
-	condition  goto 35
-
-
-state 8
-	if : IF . condition ':' ifelse_body ELSE ifelse_body  (66)
-	if : IF . condition ':' ifelse_body  (67)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 36
-	'!'  shift 13
-	.  error
-
-	expression  goto 34
-	call_function  goto 25
-	condition  goto 37
-
-
-state 9
-	definicion : INPUT . print_values ';'  (9)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 38
-	print_values  goto 39
-	call_function  goto 25
-
-
-state 10
-	definicion : PRINT . print_values ';'  (8)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 38
-	print_values  goto 40
-	call_function  goto 25
-
-
-state 11
-	expression : '-' . expression  (36)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 41
-	call_function  goto 25
-
-
-state 12
-	expression : '(' . type ')' expression  (29)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 46
-
-
-state 13
-	expression : '!' . expression  (28)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 47
-	call_function  goto 25
-
-
-state 14
 	$accept : programa . $end  (0)
 
 	$end  accept
 
 
-state 15
-	programa : definiciones .  (1)
-	definiciones : definiciones . definicion  (2)
+state 2
+	programa : definiciones . main  (1)
+	definiciones : definiciones . definicionVariable  (2)
+	definiciones : definiciones . function  (3)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	$end  reduce 1
-
-	definicion  goto 48
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
-
-
-state 16
-	definiciones : definicion .  (3)
-
-	.  reduce 3
-
-
-state 17
-	definicion : var_final . ';'  (4)
-
-	';'  shift 49
+	ID  shift 3
+	def  shift 4
 	.  error
 
+	main  goto 5
+	definicionVariable  goto 6
+	function  goto 7
+	ids  goto 8
 
-state 18
-	definicion : expression . ';'  (5)
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	var : expression . ':' type  (42)
-	var : expression . '[' expression ']' ':' type  (43)
-	var : expression . '[' expression ']' '[' expression ']' ':' type  (44)
-	var : expression . '[' ']' ':' type  (45)
-	var : expression . '[' ']' '[' ']' ':' type  (46)
-	var : expression . ':' '[' ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression . ':' '[' ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-	var : expression . ':' STRUCT '{' struct_body ';' '}'  (49)
-	array_init : expression . ':' '[' expression ']' type  (50)
-	array_init : expression . ':' '[' expression ']' '[' expression ']' type  (51)
-	array_init : expression . ':' '[' expression ']' '[' expression ']' '[' expression ']' type  (52)
 
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	':'  shift 57
-	'='  shift 58
-	';'  shift 59
-	'.'  shift 60
-	'['  shift 61
-	'!'  shift 62
-	.  error
-
-
-state 19
-	definicion : function .  (6)
-
-	.  reduce 6
-
-
-state 20
-	definicion : array_init . ';'  (7)
-
-	';'  shift 63
-	.  error
-
-
-state 21
-	definicion : statement .  (10)
-
-	.  reduce 10
-
-
-state 22
-	statement : while .  (12)
-
-	.  reduce 12
-
-
-state 23
-	statement : if .  (13)
-
-	.  reduce 13
-
-
-state 24
-	statement : return .  (14)
-
-	.  reduce 14
-
-
-state 25
-	expression : call_function .  (31)
-
-	.  reduce 31
-
-
-state 26
-	var_final : var .  (41)
-
-	.  reduce 41
-
-
-state 27
-	var_final : ID ',' . var_final  (40)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	var_final  goto 64
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-
-
-state 28
-	call_function : ID '(' . call_function_params ')'  (59)
-	call_function_params : .  (62)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	','  reduce 62
-	')'  reduce 62
-
-	expression  goto 66
-	call_function  goto 25
-	call_function_params  goto 67
-
-
-state 29
-	function : def ID . '(' function_params ')' ':' type function_body  (53)
-
-	'('  shift 68
-	.  error
-
-
-state 30
-	expression : ID .  (35)
-	call_function : ID . '(' call_function_params ')'  (59)
-
-	'('  shift 28
-	AND  reduce 35
-	OR  reduce 35
-	'+'  reduce 35
-	'-'  reduce 35
-	'*'  reduce 35
-	'/'  reduce 35
-	'%'  reduce 35
-	'>'  reduce 35
-	'<'  reduce 35
-	':'  reduce 35
-	'='  reduce 35
-	';'  reduce 35
-	','  reduce 35
-	'.'  reduce 35
-	')'  reduce 35
-	'['  reduce 35
-	']'  reduce 35
-	'!'  reduce 35
-
-
-state 31
-	return : RETURN ';' .  (63)
-
-	.  reduce 63
-
-
-state 32
-	definicion : RETURN expression . ';'  (11)
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	';'  shift 69
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	.  error
-
-
-state 33
-	expression : '(' . type ')' expression  (29)
-	while : WHILE '(' . condition ')' ':' function_body  (64)
-	condition : '(' . condition ')' OR '(' condition ')'  (72)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'-'  shift 11
-	'('  shift 36
-	'!'  shift 13
-	.  error
-
-	expression  goto 34
-	type  goto 46
-	call_function  goto 25
-	condition  goto 71
-
-
-state 34
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	condition : expression .  (73)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 73
-	OR  reduce 73
-	':'  reduce 73
-	')'  reduce 73
-
-
-state 35
-	while : WHILE condition . ':' function_body  (65)
-	condition : condition . OR expression  (70)
-	condition : condition . AND expression  (71)
-
-	AND  shift 72
-	OR  shift 73
-	':'  shift 74
-	.  error
-
-
-state 36
-	expression : '(' . type ')' expression  (29)
-	condition : '(' . condition ')' OR '(' condition ')'  (72)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'-'  shift 11
-	'('  shift 36
-	'!'  shift 13
-	.  error
-
-	expression  goto 34
-	type  goto 46
-	call_function  goto 25
-	condition  goto 75
-
-
-state 37
-	if : IF condition . ':' ifelse_body ELSE ifelse_body  (66)
-	if : IF condition . ':' ifelse_body  (67)
-	condition : condition . OR expression  (70)
-	condition : condition . AND expression  (71)
-
-	AND  shift 72
-	OR  shift 73
-	':'  shift 76
-	.  error
-
-
-state 38
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	print_values : expression .  (39)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	';'  reduce 39
-	','  reduce 39
-
-
-state 39
-	definicion : INPUT print_values . ';'  (9)
-	print_values : print_values . ',' expression  (38)
-
-	';'  shift 77
-	','  shift 78
-	.  error
-
-
-state 40
-	definicion : PRINT print_values . ';'  (8)
-	print_values : print_values . ',' expression  (38)
-
-	';'  shift 79
-	','  shift 78
-	.  error
-
-
-state 41
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	expression : '-' expression .  (36)
-
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 36
-	OR  reduce 36
-	'+'  reduce 36
-	'-'  reduce 36
-	':'  reduce 36
-	';'  reduce 36
-	','  reduce 36
-	')'  reduce 36
-	']'  reduce 36
-
-
-state 42
-	type : INT .  (76)
-
-	.  reduce 76
-
-
-state 43
-	type : REAL_TYPE .  (77)
-
-	.  reduce 77
-
-
-state 44
-	type : CHAR_TYPE .  (78)
-
-	.  reduce 78
-
-
-state 45
-	type : VOID .  (79)
-
-	.  reduce 79
-
-
-state 46
-	expression : '(' type . ')' expression  (29)
-
-	')'  shift 80
-	.  error
-
-
-state 47
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : '!' expression .  (28)
-	expression : expression . '[' expression ']'  (30)
-
-	.  reduce 28
-
-
-state 48
-	definiciones : definiciones definicion .  (2)
-
-	.  reduce 2
-
-
-state 49
-	definicion : var_final ';' .  (4)
-
-	.  reduce 4
-
-
-state 50
-	expression : expression '+' . expression  (15)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 81
-	call_function  goto 25
-
-
-state 51
-	expression : expression '-' . expression  (16)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 82
-	call_function  goto 25
-
-
-state 52
-	expression : expression '*' . expression  (17)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 83
-	call_function  goto 25
-
-
-state 53
-	expression : expression '/' . expression  (18)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 84
-	call_function  goto 25
-
-
-state 54
-	expression : expression '%' . expression  (19)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 85
-	call_function  goto 25
-
-
-state 55
-	expression : expression '>' . expression  (23)
-	expression : expression '>' . '=' expression  (25)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'='  shift 86
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 87
-	call_function  goto 25
-
-
-state 56
-	expression : expression '<' . expression  (22)
-	expression : expression '<' . '=' expression  (26)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'='  shift 88
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 89
-	call_function  goto 25
-
-
-state 57
-	var : expression ':' . type  (42)
-	var : expression ':' . '[' ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression ':' . '[' ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-	var : expression ':' . STRUCT '{' struct_body ';' '}'  (49)
-	array_init : expression ':' . '[' expression ']' type  (50)
-	array_init : expression ':' . '[' expression ']' '[' expression ']' type  (51)
-	array_init : expression ':' . '[' expression ']' '[' expression ']' '[' expression ']' type  (52)
-
-	STRUCT  shift 90
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'['  shift 91
-	.  error
-
-	type  goto 92
-
-
-state 58
-	expression : expression '=' . expression  (21)
-	expression : expression '=' . '=' expression  (24)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'='  shift 93
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 94
-	call_function  goto 25
-
-
-state 59
-	definicion : expression ';' .  (5)
-
-	.  reduce 5
-
-
-state 60
-	expression : expression '.' . ID  (20)
-
-	ID  shift 95
-	.  error
-
-
-state 61
-	expression : expression '[' . expression ']'  (30)
-	var : expression '[' . expression ']' ':' type  (43)
-	var : expression '[' . expression ']' '[' expression ']' ':' type  (44)
-	var : expression '[' . ']' ':' type  (45)
-	var : expression '[' . ']' '[' ']' ':' type  (46)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	']'  shift 96
-	'!'  shift 13
-	.  error
-
-	expression  goto 97
-	call_function  goto 25
-
-
-state 62
-	expression : expression '!' . '=' expression  (27)
-
-	'='  shift 98
-	.  error
-
-
-state 63
-	definicion : array_init ';' .  (7)
-
-	.  reduce 7
-
-
-state 64
-	var_final : ID ',' var_final .  (40)
+state 3
+	ids : ID .  (40)
 
 	.  reduce 40
 
 
-state 65
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	var : expression . ':' type  (42)
-	var : expression . '[' expression ']' ':' type  (43)
-	var : expression . '[' expression ']' '[' expression ']' ':' type  (44)
-	var : expression . '[' ']' ':' type  (45)
-	var : expression . '[' ']' '[' ']' ':' type  (46)
-	var : expression . ':' '[' ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression . ':' '[' ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-	var : expression . ':' STRUCT '{' struct_body ';' '}'  (49)
+state 4
+	function : def . ID '(' parametrosFuncion ')' ':' type '{' function_body '}'  (41)
+	main : def . MAIN '(' ')' ':' VOID '{' function_body '}'  (42)
 
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	':'  shift 99
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 61
-	'!'  shift 62
+	ID  shift 9
+	MAIN  shift 10
 	.  error
 
 
-state 66
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	call_function_params : expression .  (61)
+state 5
+	programa : definiciones main .  (1)
 
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	','  reduce 61
-	')'  reduce 61
+	.  reduce 1
+
+
+state 6
+	definiciones : definiciones definicionVariable .  (2)
+
+	.  reduce 2
+
+
+state 7
+	definiciones : definiciones function .  (3)
+
+	.  reduce 3
+
+
+state 8
+	definicionVariable : ids . ':' type ';'  (34)
+	ids : ids . ',' ID  (39)
+
+	':'  shift 11
+	','  shift 12
+	.  error
+
+
+state 9
+	function : def ID . '(' parametrosFuncion ')' ':' type '{' function_body '}'  (41)
+
+	'('  shift 13
+	.  error
+
+
+state 10
+	main : def MAIN . '(' ')' ':' VOID '{' function_body '}'  (42)
+
+	'('  shift 14
+	.  error
+
+
+state 11
+	definicionVariable : ids ':' . type ';'  (34)
+
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'['  shift 20
+	.  error
+
+	type  goto 21
+
+
+state 12
+	ids : ids ',' . ID  (39)
+
+	ID  shift 22
+	.  error
+
+
+state 13
+	function : def ID '(' . parametrosFuncion ')' ':' type '{' function_body '}'  (41)
+	parametrosFuncion : .  (37)
+
+	ID  shift 23
+	','  reduce 37
+	')'  reduce 37
+
+	parametrosFuncion  goto 24
+	definicionParametro  goto 25
+
+
+state 14
+	main : def MAIN '(' . ')' ':' VOID '{' function_body '}'  (42)
+
+	')'  shift 26
+	.  error
+
+
+state 15
+	type : STRUCT . '{' struct_body ';' '}'  (71)
+
+	'{'  shift 27
+	.  error
+
+
+state 16
+	type : INT .  (66)
+
+	.  reduce 66
+
+
+state 17
+	type : REAL_TYPE .  (67)
+
+	.  reduce 67
+
+
+state 18
+	type : CHAR_TYPE .  (68)
+
+	.  reduce 68
+
+
+state 19
+	type : VOID .  (69)
+
+	.  reduce 69
+
+
+state 20
+	type : '[' . INT_CONSTANT ']' type  (70)
+
+	INT_CONSTANT  shift 28
+	.  error
+
+
+state 21
+	definicionVariable : ids ':' type . ';'  (34)
+
+	';'  shift 29
+	.  error
+
+
+state 22
+	ids : ids ',' ID .  (39)
+
+	.  reduce 39
+
+
+state 23
+	definicionParametro : ID . ':' type  (38)
+
+	':'  shift 30
+	.  error
+
+
+state 24
+	parametrosFuncion : parametrosFuncion . ',' definicionParametro  (35)
+	function : def ID '(' parametrosFuncion . ')' ':' type '{' function_body '}'  (41)
+
+	','  shift 31
+	')'  shift 32
+	.  error
+
+
+state 25
+	parametrosFuncion : definicionParametro .  (36)
+
+	.  reduce 36
+
+
+state 26
+	main : def MAIN '(' ')' . ':' VOID '{' function_body '}'  (42)
+
+	':'  shift 33
+	.  error
+
+
+state 27
+	type : STRUCT '{' . struct_body ';' '}'  (71)
+
+	ID  shift 3
+	.  error
+
+	definicionVariable  goto 34
+	ids  goto 8
+	struct_body  goto 35
+
+
+state 28
+	type : '[' INT_CONSTANT . ']' type  (70)
+
+	']'  shift 36
+	.  error
+
+
+state 29
+	definicionVariable : ids ':' type ';' .  (34)
+
+	.  reduce 34
+
+
+state 30
+	definicionParametro : ID ':' . type  (38)
+
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'['  shift 20
+	.  error
+
+	type  goto 37
+
+
+state 31
+	parametrosFuncion : parametrosFuncion ',' . definicionParametro  (35)
+
+	ID  shift 23
+	.  error
+
+	definicionParametro  goto 38
+
+
+state 32
+	function : def ID '(' parametrosFuncion ')' . ':' type '{' function_body '}'  (41)
+
+	':'  shift 39
+	.  error
+
+
+state 33
+	main : def MAIN '(' ')' ':' . VOID '{' function_body '}'  (42)
+
+	VOID  shift 40
+	.  error
+
+
+state 34
+	struct_body : definicionVariable .  (65)
+
+	.  reduce 65
+
+
+state 35
+	struct_body : struct_body . ';' definicionVariable  (64)
+	type : STRUCT '{' struct_body . ';' '}'  (71)
+
+	';'  shift 41
+	.  error
+
+
+state 36
+	type : '[' INT_CONSTANT ']' . type  (70)
+
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'['  shift 20
+	.  error
+
+	type  goto 42
+
+
+state 37
+	definicionParametro : ID ':' type .  (38)
+
+	.  reduce 38
+
+
+state 38
+	parametrosFuncion : parametrosFuncion ',' definicionParametro .  (35)
+
+	.  reduce 35
+
+
+state 39
+	function : def ID '(' parametrosFuncion ')' ':' . type '{' function_body '}'  (41)
+
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'['  shift 20
+	.  error
+
+	type  goto 43
+
+
+state 40
+	main : def MAIN '(' ')' ':' VOID . '{' function_body '}'  (42)
+
+	'{'  shift 44
+	.  error
+
+
+state 41
+	struct_body : struct_body ';' . definicionVariable  (64)
+	type : STRUCT '{' struct_body ';' . '}'  (71)
+
+	ID  shift 3
+	'}'  shift 45
+	.  error
+
+	definicionVariable  goto 46
+	ids  goto 8
+
+
+state 42
+	type : '[' INT_CONSTANT ']' type .  (70)
+
+	.  reduce 70
+
+
+state 43
+	function : def ID '(' parametrosFuncion ')' ':' type . '{' function_body '}'  (41)
+
+	'{'  shift 47
+	.  error
+
+
+state 44
+	main : def MAIN '(' ')' ':' VOID '{' . function_body '}'  (42)
+	function_body : .  (46)
+
+	INT_CONSTANT  shift 48
+	ID  shift 49
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  reduce 46
+
+	definicionVariable  goto 57
+	statement  goto 58
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	ids  goto 8
+	function_body  goto 62
+	statements  goto 63
+
+
+state 45
+	type : STRUCT '{' struct_body ';' '}' .  (71)
+
+	.  reduce 71
+
+
+state 46
+	struct_body : struct_body ';' definicionVariable .  (64)
+
+	.  reduce 64
+
+
+state 47
+	function : def ID '(' parametrosFuncion ')' ':' type '{' . function_body '}'  (41)
+	function_body : .  (46)
+
+	INT_CONSTANT  shift 48
+	ID  shift 49
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  reduce 46
+
+	definicionVariable  goto 57
+	statement  goto 58
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	ids  goto 8
+	function_body  goto 64
+	statements  goto 63
+
+
+state 48
+	expression : INT_CONSTANT .  (27)
+
+	.  reduce 27
+
+
+state 49
+	expression : ID .  (30)
+	ids : ID .  (40)
+	call_function : ID . '(' call_function_params ')'  (49)
+
+	'('  shift 65
+	'+'  reduce 30
+	'-'  reduce 30
+	'*'  reduce 30
+	'/'  reduce 30
+	'%'  reduce 30
+	'>'  reduce 30
+	'<'  reduce 30
+	':'  reduce 40
+	'='  reduce 30
+	';'  reduce 30
+	','  reduce 40
+	'.'  reduce 30
+	'['  reduce 30
+	'!'  reduce 30
+
+
+state 50
+	expression : CHAR_CONSTANT .  (29)
+
+	.  reduce 29
+
+
+state 51
+	expression : REAL_CONSTANT .  (28)
+
+	.  reduce 28
+
+
+state 52
+	statement : RETURN . expression ';'  (9)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 67
+	call_function  goto 61
+
+
+state 53
+	if : IF . condition ':' ifelse_body ELSE ifelse_body  (55)
+	if : IF . condition ':' ifelse_body  (56)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 68
+	'!'  shift 56
+	.  error
+
+	expression  goto 69
+	call_function  goto 61
+	condition  goto 70
+
+
+state 54
+	expression : '-' . expression  (31)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 71
+	call_function  goto 61
+
+
+state 55
+	expression : '(' . type ')' expression  (24)
+
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'['  shift 20
+	.  error
+
+	type  goto 72
+
+
+state 56
+	expression : '!' . expression  (23)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 73
+	call_function  goto 61
+
+
+state 57
+	function_body : definicionVariable . statements  (43)
+	function_body : definicionVariable .  (44)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  reduce 44
+
+	statement  goto 58
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	statements  goto 74
+
+
+state 58
+	statements : statement .  (48)
+
+	.  reduce 48
+
+
+state 59
+	statement : if .  (7)
+
+	.  reduce 7
+
+
+state 60
+	statement : expression . ';'  (8)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	';'  shift 83
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	.  error
+
+
+state 61
+	expression : call_function .  (26)
+
+	.  reduce 26
+
+
+state 62
+	main : def MAIN '(' ')' ':' VOID '{' function_body . '}'  (42)
+
+	'}'  shift 87
+	.  error
+
+
+state 63
+	function_body : statements .  (45)
+	statements : statements . statement  (47)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  reduce 45
+
+	statement  goto 88
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+
+
+state 64
+	function : def ID '(' parametrosFuncion ')' ':' type '{' function_body . '}'  (41)
+
+	'}'  shift 89
+	.  error
+
+
+state 65
+	call_function : ID '(' . call_function_params ')'  (49)
+	call_function_params : .  (52)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	','  reduce 52
+	')'  reduce 52
+
+	expression  goto 90
+	call_function  goto 61
+	call_function_params  goto 91
+
+
+state 66
+	expression : ID .  (30)
+	call_function : ID . '(' call_function_params ')'  (49)
+
+	'('  shift 65
+	AND  reduce 30
+	OR  reduce 30
+	'+'  reduce 30
+	'-'  reduce 30
+	'*'  reduce 30
+	'/'  reduce 30
+	'%'  reduce 30
+	'>'  reduce 30
+	'<'  reduce 30
+	':'  reduce 30
+	'='  reduce 30
+	';'  reduce 30
+	','  reduce 30
+	'.'  reduce 30
+	')'  reduce 30
+	'['  reduce 30
+	']'  reduce 30
+	'!'  reduce 30
 
 
 state 67
-	call_function : ID '(' call_function_params . ')'  (59)
-	call_function_params : call_function_params . ',' expression  (60)
+	statement : RETURN expression . ';'  (9)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	','  shift 100
-	')'  shift 101
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	';'  shift 92
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
 	.  error
 
 
 state 68
-	function : def ID '(' . function_params ')' ':' type function_body  (53)
-	function_params : .  (56)
+	expression : '(' . type ')' expression  (24)
+	condition : '(' . condition ')' OR '(' condition ')'  (61)
+	condition : '(' . condition ')' AND '(' condition ')'  (62)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	','  reduce 56
-	')'  reduce 56
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	STRUCT  shift 15
+	INT  shift 16
+	REAL_TYPE  shift 17
+	CHAR_TYPE  shift 18
+	VOID  shift 19
+	'-'  shift 54
+	'('  shift 68
+	'['  shift 20
+	'!'  shift 56
+	.  error
 
-	expression  goto 65
-	call_function  goto 25
-	var  goto 102
-	function_params  goto 103
+	expression  goto 69
+	type  goto 72
+	call_function  goto 61
+	condition  goto 93
 
 
 state 69
-	definicion : RETURN expression ';' .  (11)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	condition : expression .  (63)
 
-	.  reduce 11
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 63
+	OR  reduce 63
+	':'  reduce 63
+	')'  reduce 63
 
 
 state 70
-	expression : expression '[' . expression ']'  (30)
+	if : IF condition . ':' ifelse_body ELSE ifelse_body  (55)
+	if : IF condition . ':' ifelse_body  (56)
+	condition : condition . OR expression  (59)
+	condition : condition . AND expression  (60)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	AND  shift 94
+	OR  shift 95
+	':'  shift 96
 	.  error
-
-	expression  goto 104
-	call_function  goto 25
 
 
 state 71
-	while : WHILE '(' condition . ')' ':' function_body  (64)
-	condition : condition . OR expression  (70)
-	condition : condition . AND expression  (71)
-	condition : '(' condition . ')' OR '(' condition ')'  (72)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	expression : '-' expression .  (31)
 
-	AND  shift 72
-	OR  shift 73
-	')'  shift 105
-	.  error
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 31
+	OR  reduce 31
+	'+'  reduce 31
+	'-'  reduce 31
+	':'  reduce 31
+	';'  reduce 31
+	','  reduce 31
+	')'  reduce 31
+	']'  reduce 31
 
 
 state 72
-	condition : condition AND . expression  (71)
+	expression : '(' type . ')' expression  (24)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	')'  shift 97
 	.  error
-
-	expression  goto 106
-	call_function  goto 25
 
 
 state 73
-	condition : condition OR . expression  (70)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : '!' expression .  (23)
+	expression : expression . '[' expression ']'  (25)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 107
-	call_function  goto 25
+	.  reduce 23
 
 
 state 74
-	while : WHILE condition ':' . function_body  (65)
+	function_body : definicionVariable statements .  (43)
+	statements : statements . statement  (47)
 
-	'{'  shift 108
-	.  error
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  reduce 43
 
-	function_body  goto 109
+	statement  goto 88
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
 
 
 state 75
-	condition : condition . OR expression  (70)
-	condition : condition . AND expression  (71)
-	condition : '(' condition . ')' OR '(' condition ')'  (72)
+	expression : expression '+' . expression  (10)
 
-	AND  shift 72
-	OR  shift 73
-	')'  shift 110
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
+
+	expression  goto 98
+	call_function  goto 61
 
 
 state 76
-	if : IF condition ':' . ifelse_body ELSE ifelse_body  (66)
-	if : IF condition ':' . ifelse_body  (67)
+	expression : expression '-' . expression  (11)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'{'  shift 111
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	definicion  goto 112
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
-	ifelse_body  goto 113
+	expression  goto 99
+	call_function  goto 61
 
 
 state 77
-	definicion : INPUT print_values ';' .  (9)
+	expression : expression '*' . expression  (12)
 
-	.  reduce 9
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 100
+	call_function  goto 61
 
 
 state 78
-	print_values : print_values ',' . expression  (38)
+	expression : expression '/' . expression  (13)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	expression  goto 114
-	call_function  goto 25
+	expression  goto 101
+	call_function  goto 61
 
 
 state 79
-	definicion : PRINT print_values ';' .  (8)
+	expression : expression '%' . expression  (14)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 102
+	call_function  goto 61
+
+
+state 80
+	expression : expression '>' . expression  (18)
+	expression : expression '>' . '=' expression  (20)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'='  shift 103
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 104
+	call_function  goto 61
+
+
+state 81
+	expression : expression '<' . expression  (17)
+	expression : expression '<' . '=' expression  (21)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'='  shift 105
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 106
+	call_function  goto 61
+
+
+state 82
+	expression : expression '=' . expression  (16)
+	expression : expression '=' . '=' expression  (19)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'='  shift 107
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 108
+	call_function  goto 61
+
+
+state 83
+	statement : expression ';' .  (8)
 
 	.  reduce 8
 
 
-state 80
-	expression : '(' type ')' . expression  (29)
+state 84
+	expression : expression '.' . ID  (15)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	ID  shift 109
+	.  error
+
+
+state 85
+	expression : expression '[' . expression ']'  (25)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 110
+	call_function  goto 61
+
+
+state 86
+	expression : expression '!' . '=' expression  (22)
+
+	'='  shift 111
+	.  error
+
+
+state 87
+	main : def MAIN '(' ')' ':' VOID '{' function_body '}' .  (42)
+
+	.  reduce 42
+
+
+state 88
+	statements : statements statement .  (47)
+
+	.  reduce 47
+
+
+state 89
+	function : def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' .  (41)
+
+	.  reduce 41
+
+
+state 90
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	call_function_params : expression .  (51)
+
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	','  reduce 51
+	')'  reduce 51
+
+
+state 91
+	call_function : ID '(' call_function_params . ')'  (49)
+	call_function_params : call_function_params . ',' expression  (50)
+
+	','  shift 112
+	')'  shift 113
+	.  error
+
+
+state 92
+	statement : RETURN expression ';' .  (9)
+
+	.  reduce 9
+
+
+state 93
+	condition : condition . OR expression  (59)
+	condition : condition . AND expression  (60)
+	condition : '(' condition . ')' OR '(' condition ')'  (61)
+	condition : '(' condition . ')' AND '(' condition ')'  (62)
+
+	AND  shift 94
+	OR  shift 95
+	')'  shift 114
+	.  error
+
+
+state 94
+	condition : condition AND . expression  (60)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
 	expression  goto 115
-	call_function  goto 25
+	call_function  goto 61
 
 
-state 81
-	expression : expression . '+' expression  (15)
-	expression : expression '+' expression .  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 95
+	condition : condition OR . expression  (59)
 
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 15
-	OR  reduce 15
-	'+'  reduce 15
-	'-'  reduce 15
-	':'  reduce 15
-	';'  reduce 15
-	','  reduce 15
-	')'  reduce 15
-	']'  reduce 15
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 116
+	call_function  goto 61
 
 
-state 82
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression '-' expression .  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 96
+	if : IF condition ':' . ifelse_body ELSE ifelse_body  (55)
+	if : IF condition ':' . ifelse_body  (56)
 
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 16
-	OR  reduce 16
-	'+'  reduce 16
-	'-'  reduce 16
-	':'  reduce 16
-	';'  reduce 16
-	','  reduce 16
-	')'  reduce 16
-	']'  reduce 16
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'{'  shift 117
+	.  error
+
+	statement  goto 118
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	ifelse_body  goto 119
 
 
-state 83
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression '*' expression .  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 97
+	expression : '(' type ')' . expression  (24)
 
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 17
-	OR  reduce 17
-	'+'  reduce 17
-	'-'  reduce 17
-	'*'  reduce 17
-	'/'  reduce 17
-	'%'  reduce 17
-	':'  reduce 17
-	';'  reduce 17
-	','  reduce 17
-	')'  reduce 17
-	']'  reduce 17
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 120
+	call_function  goto 61
 
 
-state 84
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression '/' expression .  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 98
+	expression : expression . '+' expression  (10)
+	expression : expression '+' expression .  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 10
+	OR  reduce 10
+	'+'  reduce 10
+	'-'  reduce 10
+	':'  reduce 10
+	';'  reduce 10
+	','  reduce 10
+	')'  reduce 10
+	']'  reduce 10
+
+
+state 99
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression '-' expression .  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 11
+	OR  reduce 11
+	'+'  reduce 11
+	'-'  reduce 11
+	':'  reduce 11
+	';'  reduce 11
+	','  reduce 11
+	')'  reduce 11
+	']'  reduce 11
+
+
+state 100
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression '*' expression .  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 12
+	OR  reduce 12
+	'+'  reduce 12
+	'-'  reduce 12
+	'*'  reduce 12
+	'/'  reduce 12
+	'%'  reduce 12
+	':'  reduce 12
+	';'  reduce 12
+	','  reduce 12
+	')'  reduce 12
+	']'  reduce 12
+
+
+state 101
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression '/' expression .  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 13
+	OR  reduce 13
+	'+'  reduce 13
+	'-'  reduce 13
+	'*'  reduce 13
+	'/'  reduce 13
+	'%'  reduce 13
+	':'  reduce 13
+	';'  reduce 13
+	','  reduce 13
+	')'  reduce 13
+	']'  reduce 13
+
+
+state 102
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression '%' expression .  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 14
+	OR  reduce 14
+	'+'  reduce 14
+	'-'  reduce 14
+	'*'  reduce 14
+	'/'  reduce 14
+	'%'  reduce 14
+	':'  reduce 14
+	';'  reduce 14
+	','  reduce 14
+	')'  reduce 14
+	']'  reduce 14
+
+
+state 103
+	expression : expression '>' '=' . expression  (20)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	expression  goto 121
+	call_function  goto 61
+
+
+state 104
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression '>' expression .  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
 	AND  reduce 18
 	OR  reduce 18
 	'+'  reduce 18
@@ -1430,6 +1516,8 @@ state 84
 	'*'  reduce 18
 	'/'  reduce 18
 	'%'  reduce 18
+	'>'  reduce 18
+	'<'  reduce 18
 	':'  reduce 18
 	';'  reduce 18
 	','  reduce 18
@@ -1437,219 +1525,403 @@ state 84
 	']'  reduce 18
 
 
-state 85
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression '%' expression .  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 105
+	expression : expression '<' '=' . expression  (21)
 
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 19
-	OR  reduce 19
-	'+'  reduce 19
-	'-'  reduce 19
-	'*'  reduce 19
-	'/'  reduce 19
-	'%'  reduce 19
-	':'  reduce 19
-	';'  reduce 19
-	','  reduce 19
-	')'  reduce 19
-	']'  reduce 19
-
-
-state 86
-	expression : expression '>' '=' . expression  (25)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	expression  goto 116
-	call_function  goto 25
+	expression  goto 122
+	call_function  goto 61
 
 
-state 87
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression '>' expression .  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 106
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression '<' expression .  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 23
-	OR  reduce 23
-	'+'  reduce 23
-	'-'  reduce 23
-	'*'  reduce 23
-	'/'  reduce 23
-	'%'  reduce 23
-	'>'  reduce 23
-	'<'  reduce 23
-	':'  reduce 23
-	';'  reduce 23
-	','  reduce 23
-	')'  reduce 23
-	']'  reduce 23
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 17
+	OR  reduce 17
+	'+'  reduce 17
+	'-'  reduce 17
+	'*'  reduce 17
+	'/'  reduce 17
+	'%'  reduce 17
+	'>'  reduce 17
+	'<'  reduce 17
+	':'  reduce 17
+	';'  reduce 17
+	','  reduce 17
+	')'  reduce 17
+	']'  reduce 17
 
 
-state 88
-	expression : expression '<' '=' . expression  (26)
+state 107
+	expression : expression '=' '=' . expression  (19)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	expression  goto 117
-	call_function  goto 25
+	expression  goto 123
+	call_function  goto 61
 
 
-state 89
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression '<' expression .  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 108
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression '=' expression .  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 22
-	OR  reduce 22
-	'+'  reduce 22
-	'-'  reduce 22
-	'*'  reduce 22
-	'/'  reduce 22
-	'%'  reduce 22
-	'>'  reduce 22
-	'<'  reduce 22
-	':'  reduce 22
-	';'  reduce 22
-	','  reduce 22
-	')'  reduce 22
-	']'  reduce 22
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 16
+	OR  reduce 16
+	'+'  reduce 16
+	'-'  reduce 16
+	'*'  reduce 16
+	'/'  reduce 16
+	'%'  reduce 16
+	'>'  reduce 16
+	'<'  reduce 16
+	':'  reduce 16
+	'='  reduce 16
+	';'  reduce 16
+	','  reduce 16
+	')'  reduce 16
+	']'  reduce 16
 
 
-state 90
-	var : expression ':' STRUCT . '{' struct_body ';' '}'  (49)
+state 109
+	expression : expression '.' ID .  (15)
 
-	'{'  shift 118
+	.  reduce 15
+
+
+state 110
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	expression : expression '[' expression . ']'  (25)
+
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	']'  shift 124
+	'!'  shift 86
 	.  error
 
 
-state 91
-	var : expression ':' '[' . ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression ':' '[' . ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-	array_init : expression ':' '[' . expression ']' type  (50)
-	array_init : expression ':' '[' . expression ']' '[' expression ']' type  (51)
-	array_init : expression ':' '[' . expression ']' '[' expression ']' '[' expression ']' type  (52)
+state 111
+	expression : expression '!' '=' . expression  (22)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	']'  shift 119
-	'!'  shift 13
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	expression  goto 120
-	call_function  goto 25
+	expression  goto 125
+	call_function  goto 61
 
 
-state 92
-	var : expression ':' type .  (42)
+state 112
+	call_function_params : call_function_params ',' . expression  (50)
 
-	.  reduce 42
-
-
-state 93
-	expression : expression '=' '=' . expression  (24)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
 	.  error
 
-	expression  goto 121
-	call_function  goto 25
+	expression  goto 126
+	call_function  goto 61
 
 
-state 94
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression '=' expression .  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
+state 113
+	call_function : ID '(' call_function_params ')' .  (49)
 
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
+	.  reduce 49
+
+
+state 114
+	condition : '(' condition ')' . OR '(' condition ')'  (61)
+	condition : '(' condition ')' . AND '(' condition ')'  (62)
+
+	AND  shift 127
+	OR  shift 128
+	.  error
+
+
+state 115
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	condition : condition AND expression .  (60)
+
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 60
+	OR  reduce 60
+	':'  reduce 60
+	')'  reduce 60
+
+
+state 116
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	condition : condition OR expression .  (59)
+
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 59
+	OR  reduce 59
+	':'  reduce 59
+	')'  reduce 59
+
+
+state 117
+	ifelse_body : '{' . statements '}'  (57)
+
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	.  error
+
+	statement  goto 58
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	statements  goto 129
+
+
+state 118
+	ifelse_body : statement .  (58)
+
+	.  reduce 58
+
+
+state 119
+	if : IF condition ':' ifelse_body . ELSE ifelse_body  (55)
+	if : IF condition ':' ifelse_body .  (56)
+
+	ELSE  shift 130
+	INT_CONSTANT  reduce 56
+	ID  reduce 56
+	CHAR_CONSTANT  reduce 56
+	REAL_CONSTANT  reduce 56
+	RETURN  reduce 56
+	IF  reduce 56
+	'-'  reduce 56
+	'('  reduce 56
+	'!'  reduce 56
+	'}'  reduce 56
+
+
+state 120
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : '(' type ')' expression .  (24)
+	expression : expression . '[' expression ']'  (25)
+
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 24
+	OR  reduce 24
+	'+'  reduce 24
+	'-'  reduce 24
+	'*'  reduce 24
+	'/'  reduce 24
+	'%'  reduce 24
+	'>'  reduce 24
+	'<'  reduce 24
+	':'  reduce 24
+	'='  reduce 24
+	';'  reduce 24
+	','  reduce 24
+	'.'  reduce 24
+	')'  reduce 24
+	']'  reduce 24
+
+
+state 121
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression '>' '=' expression .  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 20
+	OR  reduce 20
+	'+'  reduce 20
+	'-'  reduce 20
+	'*'  reduce 20
+	'/'  reduce 20
+	'%'  reduce 20
+	'>'  reduce 20
+	'<'  reduce 20
+	':'  reduce 20
+	'='  reduce 20
+	';'  reduce 20
+	','  reduce 20
+	')'  reduce 20
+	']'  reduce 20
+
+
+state 122
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression '<' '=' expression .  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
 	AND  reduce 21
 	OR  reduce 21
 	'+'  reduce 21
@@ -1667,1391 +1939,264 @@ state 94
 	']'  reduce 21
 
 
-state 95
-	expression : expression '.' ID .  (20)
-
-	.  reduce 20
-
-
-state 96
-	var : expression '[' ']' . ':' type  (45)
-	var : expression '[' ']' . '[' ']' ':' type  (46)
-
-	':'  shift 122
-	'['  shift 123
-	.  error
-
-
-state 97
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	expression : expression '[' expression . ']'  (30)
-	var : expression '[' expression . ']' ':' type  (43)
-	var : expression '[' expression . ']' '[' expression ']' ':' type  (44)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 124
-	'!'  shift 62
-	.  error
-
-
-state 98
-	expression : expression '!' '=' . expression  (27)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 125
-	call_function  goto 25
-
-
-state 99
-	var : expression ':' . type  (42)
-	var : expression ':' . '[' ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression ':' . '[' ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-	var : expression ':' . STRUCT '{' struct_body ';' '}'  (49)
-
-	STRUCT  shift 90
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'['  shift 126
-	.  error
-
-	type  goto 92
-
-
-state 100
-	call_function_params : call_function_params ',' . expression  (60)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 127
-	call_function  goto 25
-
-
-state 101
-	call_function : ID '(' call_function_params ')' .  (59)
-
-	.  reduce 59
-
-
-state 102
-	function_params : var .  (55)
-
-	.  reduce 55
-
-
-state 103
-	function : def ID '(' function_params . ')' ':' type function_body  (53)
-	function_params : function_params . ',' var  (54)
-
-	','  shift 128
-	')'  shift 129
-	.  error
-
-
-state 104
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	expression : expression '[' expression . ']'  (30)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 130
-	'!'  shift 62
-	.  error
-
-
-state 105
-	while : WHILE '(' condition ')' . ':' function_body  (64)
-	condition : '(' condition ')' . OR '(' condition ')'  (72)
-
-	OR  shift 131
-	':'  shift 132
-	.  error
-
-
-state 106
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	condition : condition AND expression .  (71)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 71
-	OR  reduce 71
-	':'  reduce 71
-	')'  reduce 71
-
-
-state 107
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	condition : condition OR expression .  (70)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 70
-	OR  reduce 70
-	':'  reduce 70
-	')'  reduce 70
-
-
-state 108
-	function_body : '{' . '}'  (57)
-	function_body : '{' . definiciones '}'  (58)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 133
-	.  error
-
-	definiciones  goto 134
-	definicion  goto 16
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
-
-
-state 109
-	while : WHILE condition ':' function_body .  (65)
-
-	.  reduce 65
-
-
-state 110
-	condition : '(' condition ')' . OR '(' condition ')'  (72)
-
-	OR  shift 131
-	.  error
-
-
-state 111
-	ifelse_body : '{' . definiciones '}'  (68)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	definiciones  goto 135
-	definicion  goto 16
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
-
-
-state 112
-	ifelse_body : definicion .  (69)
-
-	.  reduce 69
-
-
-state 113
-	if : IF condition ':' ifelse_body . ELSE ifelse_body  (66)
-	if : IF condition ':' ifelse_body .  (67)
-
-	ELSE  shift 136
-	$end  reduce 67
-	INT_CONSTANT  reduce 67
-	ID  reduce 67
-	CHAR_CONSTANT  reduce 67
-	REAL_CONSTANT  reduce 67
-	def  reduce 67
-	RETURN  reduce 67
-	WHILE  reduce 67
-	IF  reduce 67
-	INPUT  reduce 67
-	PRINT  reduce 67
-	'-'  reduce 67
-	'('  reduce 67
-	'!'  reduce 67
-	'}'  reduce 67
-
-
-state 114
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	print_values : print_values ',' expression .  (38)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	';'  reduce 38
-	','  reduce 38
-
-
-state 115
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : '(' type ')' expression .  (29)
-	expression : expression . '[' expression ']'  (30)
-
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 29
-	OR  reduce 29
-	'+'  reduce 29
-	'-'  reduce 29
-	'*'  reduce 29
-	'/'  reduce 29
-	'%'  reduce 29
-	'>'  reduce 29
-	'<'  reduce 29
-	':'  reduce 29
-	'='  reduce 29
-	';'  reduce 29
-	','  reduce 29
-	'.'  reduce 29
-	')'  reduce 29
-	']'  reduce 29
-
-
-state 116
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression '>' '=' expression .  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 25
-	OR  reduce 25
-	'+'  reduce 25
-	'-'  reduce 25
-	'*'  reduce 25
-	'/'  reduce 25
-	'%'  reduce 25
-	'>'  reduce 25
-	'<'  reduce 25
-	':'  reduce 25
-	'='  reduce 25
-	';'  reduce 25
-	','  reduce 25
-	')'  reduce 25
-	']'  reduce 25
-
-
-state 117
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression '<' '=' expression .  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 26
-	OR  reduce 26
-	'+'  reduce 26
-	'-'  reduce 26
-	'*'  reduce 26
-	'/'  reduce 26
-	'%'  reduce 26
-	'>'  reduce 26
-	'<'  reduce 26
-	':'  reduce 26
-	'='  reduce 26
-	';'  reduce 26
-	','  reduce 26
-	')'  reduce 26
-	']'  reduce 26
-
-
-state 118
-	var : expression ':' STRUCT '{' . struct_body ';' '}'  (49)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	var_final  goto 137
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-	struct_body  goto 138
-
-
-state 119
-	var : expression ':' '[' ']' . STRUCT '{' struct_body ';' '}'  (47)
-	var : expression ':' '[' ']' . '[' ']' STRUCT '{' struct_body ';' '}'  (48)
-
-	STRUCT  shift 139
-	'['  shift 140
-	.  error
-
-
-state 120
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	array_init : expression ':' '[' expression . ']' type  (50)
-	array_init : expression ':' '[' expression . ']' '[' expression ']' type  (51)
-	array_init : expression ':' '[' expression . ']' '[' expression ']' '[' expression ']' type  (52)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 141
-	'!'  shift 62
-	.  error
-
-
-state 121
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression '=' '=' expression .  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 24
-	OR  reduce 24
-	'+'  reduce 24
-	'-'  reduce 24
-	'*'  reduce 24
-	'/'  reduce 24
-	'%'  reduce 24
-	'>'  reduce 24
-	'<'  reduce 24
-	':'  reduce 24
-	'='  reduce 24
-	';'  reduce 24
-	','  reduce 24
-	')'  reduce 24
-	']'  reduce 24
-
-
-state 122
-	var : expression '[' ']' ':' . type  (45)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 142
-
-
 state 123
-	var : expression '[' ']' '[' . ']' ':' type  (46)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression '=' '=' expression .  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	']'  shift 143
-	.  error
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 19
+	OR  reduce 19
+	'+'  reduce 19
+	'-'  reduce 19
+	'*'  reduce 19
+	'/'  reduce 19
+	'%'  reduce 19
+	'>'  reduce 19
+	'<'  reduce 19
+	':'  reduce 19
+	'='  reduce 19
+	';'  reduce 19
+	','  reduce 19
+	')'  reduce 19
+	']'  reduce 19
 
 
 state 124
-	expression : expression '[' expression ']' .  (30)
-	var : expression '[' expression ']' . ':' type  (43)
-	var : expression '[' expression ']' . '[' expression ']' ':' type  (44)
+	expression : expression '[' expression ']' .  (25)
 
-	.  reduce 30
+	.  reduce 25
 
 
 state 125
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression '!' '=' expression .  (27)
-	expression : expression . '[' expression ']'  (30)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression '!' '=' expression .  (22)
+	expression : expression . '[' expression ']'  (25)
 
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	AND  reduce 27
-	OR  reduce 27
-	'+'  reduce 27
-	'-'  reduce 27
-	'*'  reduce 27
-	'/'  reduce 27
-	'%'  reduce 27
-	'>'  reduce 27
-	'<'  reduce 27
-	':'  reduce 27
-	'='  reduce 27
-	';'  reduce 27
-	','  reduce 27
-	')'  reduce 27
-	']'  reduce 27
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	AND  reduce 22
+	OR  reduce 22
+	'+'  reduce 22
+	'-'  reduce 22
+	'*'  reduce 22
+	'/'  reduce 22
+	'%'  reduce 22
+	'>'  reduce 22
+	'<'  reduce 22
+	':'  reduce 22
+	'='  reduce 22
+	';'  reduce 22
+	','  reduce 22
+	')'  reduce 22
+	']'  reduce 22
 
 
 state 126
-	var : expression ':' '[' . ']' STRUCT '{' struct_body ';' '}'  (47)
-	var : expression ':' '[' . ']' '[' ']' STRUCT '{' struct_body ';' '}'  (48)
+	expression : expression . '+' expression  (10)
+	expression : expression . '-' expression  (11)
+	expression : expression . '*' expression  (12)
+	expression : expression . '/' expression  (13)
+	expression : expression . '%' expression  (14)
+	expression : expression . '.' ID  (15)
+	expression : expression . '=' expression  (16)
+	expression : expression . '<' expression  (17)
+	expression : expression . '>' expression  (18)
+	expression : expression . '=' '=' expression  (19)
+	expression : expression . '>' '=' expression  (20)
+	expression : expression . '<' '=' expression  (21)
+	expression : expression . '!' '=' expression  (22)
+	expression : expression . '[' expression ']'  (25)
+	call_function_params : call_function_params ',' expression .  (50)
 
-	']'  shift 119
-	.  error
+	'+'  shift 75
+	'-'  shift 76
+	'*'  shift 77
+	'/'  shift 78
+	'%'  shift 79
+	'>'  shift 80
+	'<'  shift 81
+	'='  shift 82
+	'.'  shift 84
+	'['  shift 85
+	'!'  shift 86
+	','  reduce 50
+	')'  reduce 50
 
 
 state 127
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	call_function_params : call_function_params ',' expression .  (60)
+	condition : '(' condition ')' AND . '(' condition ')'  (62)
 
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	'!'  shift 62
-	','  reduce 60
-	')'  reduce 60
+	'('  shift 131
+	.  error
 
 
 state 128
-	function_params : function_params ',' . var  (54)
+	condition : '(' condition ')' OR . '(' condition ')'  (61)
 
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
+	'('  shift 132
 	.  error
-
-	expression  goto 65
-	call_function  goto 25
-	var  goto 146
 
 
 state 129
-	function : def ID '(' function_params ')' . ':' type function_body  (53)
+	statements : statements . statement  (47)
+	ifelse_body : '{' statements . '}'  (57)
 
-	':'  shift 147
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'}'  shift 133
 	.  error
+
+	statement  goto 88
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
 
 
 state 130
-	expression : expression '[' expression ']' .  (30)
+	if : IF condition ':' ifelse_body ELSE . ifelse_body  (55)
 
-	.  reduce 30
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	RETURN  shift 52
+	IF  shift 53
+	'-'  shift 54
+	'('  shift 55
+	'!'  shift 56
+	'{'  shift 117
+	.  error
+
+	statement  goto 118
+	if  goto 59
+	expression  goto 60
+	call_function  goto 61
+	ifelse_body  goto 134
 
 
 state 131
-	condition : '(' condition ')' OR . '(' condition ')'  (72)
+	condition : '(' condition ')' AND '(' . condition ')'  (62)
 
-	'('  shift 148
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 68
+	'!'  shift 56
 	.  error
+
+	expression  goto 69
+	call_function  goto 61
+	condition  goto 135
 
 
 state 132
-	while : WHILE '(' condition ')' ':' . function_body  (64)
+	condition : '(' condition ')' OR '(' . condition ')'  (61)
 
-	'{'  shift 108
+	INT_CONSTANT  shift 48
+	ID  shift 66
+	CHAR_CONSTANT  shift 50
+	REAL_CONSTANT  shift 51
+	'-'  shift 54
+	'('  shift 68
+	'!'  shift 56
 	.  error
 
-	function_body  goto 149
+	expression  goto 69
+	call_function  goto 61
+	condition  goto 136
 
 
 state 133
-	function_body : '{' '}' .  (57)
+	ifelse_body : '{' statements '}' .  (57)
 
 	.  reduce 57
 
 
 state 134
-	definiciones : definiciones . definicion  (2)
-	function_body : '{' definiciones . '}'  (58)
+	if : IF condition ':' ifelse_body ELSE ifelse_body .  (55)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 150
-	.  error
-
-	definicion  goto 48
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
+	.  reduce 55
 
 
 state 135
-	definiciones : definiciones . definicion  (2)
-	ifelse_body : '{' definiciones . '}'  (68)
+	condition : condition . OR expression  (59)
+	condition : condition . AND expression  (60)
+	condition : '(' condition ')' AND '(' condition . ')'  (62)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 151
+	AND  shift 94
+	OR  shift 95
+	')'  shift 137
 	.  error
-
-	definicion  goto 48
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
 
 
 state 136
-	if : IF condition ':' ifelse_body ELSE . ifelse_body  (66)
+	condition : condition . OR expression  (59)
+	condition : condition . AND expression  (60)
+	condition : '(' condition ')' OR '(' condition . ')'  (61)
 
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	def  shift 5
-	RETURN  shift 6
-	WHILE  shift 7
-	IF  shift 8
-	INPUT  shift 9
-	PRINT  shift 10
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'{'  shift 111
+	AND  shift 94
+	OR  shift 95
+	')'  shift 138
 	.  error
-
-	definicion  goto 112
-	var_final  goto 17
-	expression  goto 18
-	function  goto 19
-	array_init  goto 20
-	statement  goto 21
-	while  goto 22
-	if  goto 23
-	return  goto 24
-	call_function  goto 25
-	var  goto 26
-	ifelse_body  goto 152
 
 
 state 137
-	struct_body : var_final .  (75)
+	condition : '(' condition ')' AND '(' condition ')' .  (62)
 
-	.  reduce 75
+	.  reduce 62
 
 
 state 138
-	var : expression ':' STRUCT '{' struct_body . ';' '}'  (49)
-	struct_body : struct_body . ';' var_final  (74)
+	condition : '(' condition ')' OR '(' condition ')' .  (61)
 
-	';'  shift 153
-	.  error
-
-
-state 139
-	var : expression ':' '[' ']' STRUCT . '{' struct_body ';' '}'  (47)
-
-	'{'  shift 154
-	.  error
-
-
-state 140
-	var : expression ':' '[' ']' '[' . ']' STRUCT '{' struct_body ';' '}'  (48)
-
-	']'  shift 155
-	.  error
-
-
-state 141
-	array_init : expression ':' '[' expression ']' . type  (50)
-	array_init : expression ':' '[' expression ']' . '[' expression ']' type  (51)
-	array_init : expression ':' '[' expression ']' . '[' expression ']' '[' expression ']' type  (52)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'['  shift 156
-	.  error
-
-	type  goto 157
-
-
-state 142
-	var : expression '[' ']' ':' type .  (45)
-
-	.  reduce 45
-
-
-state 143
-	var : expression '[' ']' '[' ']' . ':' type  (46)
-
-	':'  shift 158
-	.  error
-
-
-state 144
-	var : expression '[' expression ']' ':' . type  (43)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 159
-
-
-state 145
-	var : expression '[' expression ']' '[' . expression ']' ':' type  (44)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 160
-	call_function  goto 25
-
-
-state 146
-	function_params : function_params ',' var .  (54)
-
-	.  reduce 54
-
-
-state 147
-	function : def ID '(' function_params ')' ':' . type function_body  (53)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 161
-
-
-state 148
-	condition : '(' condition ')' OR '(' . condition ')'  (72)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 36
-	'!'  shift 13
-	.  error
-
-	expression  goto 34
-	call_function  goto 25
-	condition  goto 162
-
-
-state 149
-	while : WHILE '(' condition ')' ':' function_body .  (64)
-
-	.  reduce 64
-
-
-state 150
-	function_body : '{' definiciones '}' .  (58)
-
-	.  reduce 58
-
-
-state 151
-	ifelse_body : '{' definiciones '}' .  (68)
-
-	.  reduce 68
-
-
-state 152
-	if : IF condition ':' ifelse_body ELSE ifelse_body .  (66)
-
-	.  reduce 66
-
-
-state 153
-	var : expression ':' STRUCT '{' struct_body ';' . '}'  (49)
-	struct_body : struct_body ';' . var_final  (74)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 163
-	.  error
-
-	var_final  goto 164
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-
-
-state 154
-	var : expression ':' '[' ']' STRUCT '{' . struct_body ';' '}'  (47)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	var_final  goto 137
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-	struct_body  goto 165
-
-
-state 155
-	var : expression ':' '[' ']' '[' ']' . STRUCT '{' struct_body ';' '}'  (48)
-
-	STRUCT  shift 166
-	.  error
-
-
-state 156
-	array_init : expression ':' '[' expression ']' '[' . expression ']' type  (51)
-	array_init : expression ':' '[' expression ']' '[' . expression ']' '[' expression ']' type  (52)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 167
-	call_function  goto 25
-
-
-state 157
-	array_init : expression ':' '[' expression ']' type .  (50)
-
-	.  reduce 50
-
-
-state 158
-	var : expression '[' ']' '[' ']' ':' . type  (46)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 168
-
-
-state 159
-	var : expression '[' expression ']' ':' type .  (43)
-
-	.  reduce 43
-
-
-state 160
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	var : expression '[' expression ']' '[' expression . ']' ':' type  (44)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 169
-	'!'  shift 62
-	.  error
-
-
-state 161
-	function : def ID '(' function_params ')' ':' type . function_body  (53)
-
-	'{'  shift 108
-	.  error
-
-	function_body  goto 170
-
-
-state 162
-	condition : condition . OR expression  (70)
-	condition : condition . AND expression  (71)
-	condition : '(' condition ')' OR '(' condition . ')'  (72)
-
-	AND  shift 72
-	OR  shift 73
-	')'  shift 171
-	.  error
-
-
-state 163
-	var : expression ':' STRUCT '{' struct_body ';' '}' .  (49)
-
-	.  reduce 49
-
-
-state 164
-	struct_body : struct_body ';' var_final .  (74)
-
-	.  reduce 74
-
-
-state 165
-	var : expression ':' '[' ']' STRUCT '{' struct_body . ';' '}'  (47)
-	struct_body : struct_body . ';' var_final  (74)
-
-	';'  shift 172
-	.  error
-
-
-state 166
-	var : expression ':' '[' ']' '[' ']' STRUCT . '{' struct_body ';' '}'  (48)
-
-	'{'  shift 173
-	.  error
-
-
-state 167
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	array_init : expression ':' '[' expression ']' '[' expression . ']' type  (51)
-	array_init : expression ':' '[' expression ']' '[' expression . ']' '[' expression ']' type  (52)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 174
-	'!'  shift 62
-	.  error
-
-
-state 168
-	var : expression '[' ']' '[' ']' ':' type .  (46)
-
-	.  reduce 46
-
-
-state 169
-	var : expression '[' expression ']' '[' expression ']' . ':' type  (44)
-
-	':'  shift 175
-	.  error
-
-
-state 170
-	function : def ID '(' function_params ')' ':' type function_body .  (53)
-
-	.  reduce 53
-
-
-state 171
-	condition : '(' condition ')' OR '(' condition ')' .  (72)
-
-	.  reduce 72
-
-
-state 172
-	var : expression ':' '[' ']' STRUCT '{' struct_body ';' . '}'  (47)
-	struct_body : struct_body ';' . var_final  (74)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 176
-	.  error
-
-	var_final  goto 164
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-
-
-state 173
-	var : expression ':' '[' ']' '[' ']' STRUCT '{' . struct_body ';' '}'  (48)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	var_final  goto 137
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-	struct_body  goto 177
-
-
-state 174
-	array_init : expression ':' '[' expression ']' '[' expression ']' . type  (51)
-	array_init : expression ':' '[' expression ']' '[' expression ']' . '[' expression ']' type  (52)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	'['  shift 178
-	.  error
-
-	type  goto 179
-
-
-state 175
-	var : expression '[' expression ']' '[' expression ']' ':' . type  (44)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 180
-
-
-state 176
-	var : expression ':' '[' ']' STRUCT '{' struct_body ';' '}' .  (47)
-
-	.  reduce 47
-
-
-state 177
-	var : expression ':' '[' ']' '[' ']' STRUCT '{' struct_body . ';' '}'  (48)
-	struct_body : struct_body . ';' var_final  (74)
-
-	';'  shift 181
-	.  error
-
-
-state 178
-	array_init : expression ':' '[' expression ']' '[' expression ']' '[' . expression ']' type  (52)
-
-	INT_CONSTANT  shift 1
-	ID  shift 30
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	.  error
-
-	expression  goto 182
-	call_function  goto 25
-
-
-state 179
-	array_init : expression ':' '[' expression ']' '[' expression ']' type .  (51)
-
-	.  reduce 51
-
-
-state 180
-	var : expression '[' expression ']' '[' expression ']' ':' type .  (44)
-
-	.  reduce 44
-
-
-state 181
-	var : expression ':' '[' ']' '[' ']' STRUCT '{' struct_body ';' . '}'  (48)
-	struct_body : struct_body ';' . var_final  (74)
-
-	INT_CONSTANT  shift 1
-	ID  shift 2
-	CHAR_CONSTANT  shift 3
-	REAL_CONSTANT  shift 4
-	'-'  shift 11
-	'('  shift 12
-	'!'  shift 13
-	'}'  shift 183
-	.  error
-
-	var_final  goto 164
-	expression  goto 65
-	call_function  goto 25
-	var  goto 26
-
-
-state 182
-	expression : expression . '+' expression  (15)
-	expression : expression . '-' expression  (16)
-	expression : expression . '*' expression  (17)
-	expression : expression . '/' expression  (18)
-	expression : expression . '%' expression  (19)
-	expression : expression . '.' ID  (20)
-	expression : expression . '=' expression  (21)
-	expression : expression . '<' expression  (22)
-	expression : expression . '>' expression  (23)
-	expression : expression . '=' '=' expression  (24)
-	expression : expression . '>' '=' expression  (25)
-	expression : expression . '<' '=' expression  (26)
-	expression : expression . '!' '=' expression  (27)
-	expression : expression . '[' expression ']'  (30)
-	array_init : expression ':' '[' expression ']' '[' expression ']' '[' expression . ']' type  (52)
-
-	'+'  shift 50
-	'-'  shift 51
-	'*'  shift 52
-	'/'  shift 53
-	'%'  shift 54
-	'>'  shift 55
-	'<'  shift 56
-	'='  shift 58
-	'.'  shift 60
-	'['  shift 70
-	']'  shift 184
-	'!'  shift 62
-	.  error
-
-
-state 183
-	var : expression ':' '[' ']' '[' ']' STRUCT '{' struct_body ';' '}' .  (48)
-
-	.  reduce 48
-
-
-state 184
-	array_init : expression ':' '[' expression ']' '[' expression ']' '[' expression ']' . type  (52)
-
-	INT  shift 42
-	REAL_TYPE  shift 43
-	CHAR_TYPE  shift 44
-	VOID  shift 45
-	.  error
-
-	type  goto 185
-
-
-state 185
-	array_init : expression ':' '[' expression ']' '[' expression ']' '[' expression ']' type .  (52)
-
-	.  reduce 52
+	.  reduce 61
 
 
 Rules never reduced:
-	assigment : ID '=' definicion  (37)
+	definicion : definicionVariable  (5)
+	definicion : function  (6)
+	print_values : print_values ',' expression  (32)
+	print_values : expression  (33)
+	while : WHILE '(' condition ')' ':' function_body  (53)
+	while : WHILE condition ':' function_body  (54)
 
 
 48 terminals, 23 nonterminals
-80 grammar rules, 186 states
+72 grammar rules, 139 states

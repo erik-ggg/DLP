@@ -6,4 +6,9 @@ public class Return implements Statement {
     public Return(Expression expression) {
         this.expression = expression;
     }
+
+	@Override
+	public String toString() {
+		return "Return [expression=" + expression + "]";
+	}   
 }
