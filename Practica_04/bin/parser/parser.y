@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.ArrayList;
 import scanner.Scanner;
 import java.io.Reader;
-import ast.*;
-import expressions.*;
-import types.*;
+import ast.main.*;
+import ast.expressions.*;
+import ast.statements.*;
+import ast.types.*;
 %}
 
 // * Declaraciones Yacc

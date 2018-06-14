@@ -6,6 +6,7 @@ import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
 import parser.Parser;
 import scanner.Scanner;
+import errorhandler.EH;
 
 public class Main {
 
@@ -24,11 +25,21 @@ public class Main {
 			return;
 		}
 		
-		Scanner scanner = new Scanner(fr);
-		Parser parser = new Parser(scanner);
+		// * Scanner and parser creation
+		Scanner lexico = new Scanner(fr);
+		Parser parser = new Parser(lexico);
+		// * Parsing
 		parser.run();	
-		
-		IntrospectorModel model=new IntrospectorModel("Program",parser.getAST());
-		new IntrospectorTree("Introspector", model);
+				
+		// * Check errors 
+		if(EH.getEH().hasErrors()){
+			// * Show errors
+			EH.getEH().showErrors(System.err);
+		}
+		else{			
+			// * Show AST
+			IntrospectorModel model=new IntrospectorModel("Program",parser.getAST());
+			new IntrospectorTree("Introspector", model);
+		}
 	}
 }
