@@ -25,4 +25,9 @@ public class Invocation implements Statement, Expression {
     public int getColumn() {
         return 0;
     }
+
+	@Override
+	public String toString() {
+		return "Invocation [expressions=" + expressions + ", function=" + function + "]";
+	}
 }

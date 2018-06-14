@@ -1,4 +1,4 @@
-package ast;
+package types;
 
 public interface Type {
 }

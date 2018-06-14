@@ -1,14 +1,20 @@
 package types;
 
 import java.util.List;
-
 import ast.RecordField;
-import ast.Type;
 
 public class RecordType implements Type {
-    private List<RecordField> types;
+	private List<RecordField> body;
 
-    public RecordType(List<RecordField> types) {
-        this.types = types;
-    }
+	public RecordType(List<RecordField> body) {
+		super();
+		this.body = body;
+	}
+
+	@Override
+	public String toString() {
+		return "RecordType [body=" + body + "]";
+	}
+	
+	
 }

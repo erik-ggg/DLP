@@ -2,6 +2,8 @@ package ast;
 
 import java.util.List;
 
+import types.Type;
+
 public class FunctionDefinition implements Definition, Expression {
 
     private String name;

@@ -34,14 +34,14 @@ import types.*;
 %token BIG_COMMENT
 
 
+%right '='
+%left AND OR
+%left '>' '>=' '<' '<=' '!=' '=='
 %left '+''-'
 %left '*''/''%'
-%left '>' '>=' '<' '<=' '!=' '=='
-%left '&&' '||'
+%left '.'
 %left ':'
-%left '='
 %left ';'
-%left ',''.'
 %nonassoc '('')'
 %nonassoc '['']'
 %nonassoc '!'
@@ -50,8 +50,8 @@ import types.*;
 
 %%
 // * Gramática y acciones Yacc
+// System.out.println()
 
-// faltaria el main
 programa: definiciones main                     { ast = new Program((List<Definition>)$1); ((List)$1).add($2);  }
         ;                       
 
@@ -61,15 +61,21 @@ definiciones: definiciones definicionVariable           { $$ = $1; ((List)$$).ad
         ;
         
 definicion:  definicionVariable                                
-        | function       
-        // | PRINT print_values ';'        { $$ = new Print((List<Expression>)$2); }
-        // | INPUT print_values ';'        { $$ = new Input((List<Expression>)$2); }
+        | function
+        // | INPUT expressions ';'        { $$ = new Input((List<Expression>)$2); }
         ;
-// System.out.println()
-statement: if                   { $$ = $1; }
+
+statement: if                           { $$ = $1; }
+        | while                         { $$ = $1; }
         | expression ';'                { $$ = $1; }
+        | call_function                 { $$ = $1; }
         | RETURN expression ';'         { $$ = new Return((Expression)$2); }
-// while
+        | PRINT expressions ';'         { $$ = new Print((List<Expression>)$2); }
+        ;
+
+composedStatement: statement { $$ = new ArrayList(); ((List)$$).add((List) $1);}
+        | '{' statements '}' { $$ = $2; }
+        | '{' '}' { $$ = new ArrayList(); }
         ;
 
 expression: expression '+' expression	                        { $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
@@ -78,8 +84,7 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '/' expression                             { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
         | expression '%' expression                             { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
         | expression '.' ID                                     { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' expression                               { $$ = new Assignment((Expression)$1, (Expression)$3); }
-        //| expression '=' call_function                        { $$ = new Logical((Expression)$1, (Expression)$3); }
+        | expression '=' expression                             { $$ = new Assignment((Expression)$1, (Expression)$3); }
         | expression '<' expression                             { $$ = new Comparison((Expression)$1, "<", (Expression)$3); }
         | expression '>' expression                             { $$ = new Comparison((Expression)$1, ">", (Expression)$3); }
         | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, "==", (Expression)$4); }
@@ -87,9 +92,12 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '<''=' expression                          { $$ = new Comparison((Expression)$1, "<=", (Expression)$4); }
         | expression '!''=' expression                          { $$ = new Comparison((Expression)$1, "!=", (Expression)$4); }
         | '!' expression                                        { $$ = new Comparison((Expression)$2, "!", (Expression)$2); }
+        | expression OR expression                              { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
+        | expression AND expression                             { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
         | '(' type ')' expression                               { $$ = new Cast(((Expression)$4), (Type)$2); }
+        | ID '(' expressions_or_empty ')'                       { $$ = new Invocation((String)$1, (List<Expression>)$3); }
+        | '(' expression ')'                                    { $$ = $2; }
         | expression '['expression']'                           { $$ = new Indexing((Expression)$1, "[]", (Expression)$3);}
-        | call_function
         | INT_CONSTANT	                                        { $$ = new IntLiteral((int)$1); } 
         | REAL_CONSTANT                                         { $$ = new RealLiteral((String)$1); }
         | CHAR_CONSTANT                                         { $$ = new CharLiteral((String)$1); }
@@ -97,12 +105,16 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | '-' expression                                        { $$ = $2;}
         ;
 
-print_values: print_values ',' expression       { $$ = $1; ((List)$$).add($3); }
+expressions: expressions ',' expression         { $$ = $1; ((List)$$).add($3); }
         | expression                            { $$ = new ArrayList(); ((List)$$).add($1); }        
         ;
 
+expressions_or_empty: expressions               { $$ = $1; }
+        |                                       { $$ = new ArrayList(); }
+        ;
 
-definicionVariable: ids ':' type ';'     { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List<VarDefinition>)$$).add(new VarDefinition(id, (Type)$3)); }
+
+definicionVariable: ids ':' type ';'     { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new VarDefinition(id, (Type)$3)); }
         ;
 
 parametrosFuncion: parametrosFuncion ',' definicionParametro            { $$ = $1; ((List)$$).add($3); }
@@ -110,70 +122,52 @@ parametrosFuncion: parametrosFuncion ',' definicionParametro            { $$ = $
         |                                                               { $$ = new ArrayList(); }
         ;
 
-// definicionParametro: ids ':' type         { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List<VarDefinition>)$$).add(new VarDefinition(id, (Type)$3)); }
-//         |                                 { $$ = new ArrayList(); }
-//         ;
-
 definicionParametro: ID ':' type        { $$ = new VarDefinition((String)$1, (Type)$3); }
         ;
 
 ids: ids ',' ID         { $$ = $1; ((List)$$).add($3); }
-        | ID            { $$ = new ArrayList<String>(); ((List)$$).add($1); }
+        | ID            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition((String)$2, (List<Statement>)$4, (Type)$7, (List<VarDefinition>)((Object[]) $9)[0], (List<Statement>)((Object[])$9)[1]); }
+function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition((String)$2, (List)$4, (Type)$7, (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
         ;
 
-main: def MAIN '(' ')' ':' VOID '{' function_body '}' { $$ = new FunctionDefinition("main", null, VoidType.getInstance(), (List<VarDefinition>)((Object[]) $8)[0], (List<Statement>)((Object[])$8)[1]);  } 
+main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition("main", null, VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
         ;
 
-function_body: definicionVariable statements    { $$ = new Object[] {$1, $2}; }
-        | definicionVariable                    { $$ = new Object[] {$1, new ArrayList<Statement>()}; }
-        | statements                            { $$ = new Object[] {new ArrayList<VarDefinition>(), $1}; }
-        |                                       { $$ = new Object[] {new ArrayList<VarDefinition>(), new ArrayList<Statement>()}; }
+function_body: definicionVariable statements            { $$ = new Object[] {$1, $2}; }
+        | definicionVariable                            { $$ = new Object[] {$1, new ArrayList<Statement>()}; }
+        | statements                                    { $$ = new Object[] {new ArrayList<VarDefinition>(), $1}; }
+        |                                               { $$ = new Object[] {new ArrayList(), new ArrayList()}; }
         ;
         
-statements: statements statement                { $$ = $1; ((List)$$).add($2); }
-        | statement                             { $$ = new ArrayList(); ((List)$$).add($1); }
+statements: statements statement                        { $$ = $1; ((List)$$).add($2); }
+        | statement                                     { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
                   
-call_function: ID '(' call_function_params ')'  { $$ = new Invocation((String)$1, (List<Expression>)$3); }
+call_function: ID '(' expressions_or_empty ')' ';'                      { $$ = new Invocation((String)$1, (List)$3); }
         ;
 
-call_function_params: call_function_params ',' expression       { $$ = $1; ((List)$$).add($3); }
-        | expression                                            { $$ = new ArrayList(); ((List)$$).add($1); }
-        |                                                       { $$ = new ArrayList(); }
+while: WHILE expression ':' composedStatement                           { $$ = new While((Expression)$2, (List)$4); }                            
         ;
 
-while: WHILE '(' condition ')' ':' function_body    { $$ = new While((Expression)$3, (List<Statement>)$6); }                           
-        | WHILE condition ':' function_body         { $$ = new While((Expression)$2, (List<Statement>)$4); }                            
+if: IF expression ':' composedStatement ELSE composedStatement          { $$ = new IfStatement((List)$6, (List)$4, (Expression)$2); }      
+        | IF expression ':' composedStatement                           { $$ = new IfStatement((List)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
-if: IF condition ':' ifelse_body ELSE ifelse_body           { $$ = new IfStatement((List<Statement>)$6, (List<Statement>)$4, (Expression)$2); }      
-        | IF condition ':' ifelse_body                      { $$ = new IfStatement((List<Statement>)$4, (Expression)$2); }                      %prec MENORQUEELSE
+struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).add($2); }
+        | definicionStruct                              { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-ifelse_body:  '{' statements '}'      { $$ = $2; }//$$ = new ArrayList(); ((List)$$).add($2); }
-        | statement                   { $$ = $1; }//$$ = new ArrayList(); ((List)$$).add($1); }                                        
+definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new RecordField(id, (Type)$3)); }
         ;
-
-condition: condition OR expression              { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
-        | condition AND expression              { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
-        | '('condition')' OR '('condition')'    { $$ = new Logical((Expression)$2, (String)$4, (Expression)$6); }
-        | '('condition')' AND '('condition')'   { $$ = new Logical((Expression)$2, (String)$4, (Expression)$6); }
-        | expression
-        ;
-
-struct_body: struct_body ';' definicionVariable      { $$ = $1; ((List)$$).add($3); }
-        | definicionVariable                         { $$ = new ArrayList(); ((List)$$).add($1); }
-        ;
-
-type: INT                     { $$ = IntType.getInstance(); }
-        | REAL_TYPE           { $$ = RealType.getInstance(); }
-        | CHAR_TYPE           { $$ = CharType.getInstance(); }
-        | VOID                { $$ = VoidType.getInstance(); }
-        | '[' INT_CONSTANT ']' type        { $$ = new ArrayType((int)$2, (Type)$4); }
-        | STRUCT '{' struct_body ';' '}'   { $$ = new Struct((Variable)$1, (List<Definition>)$5); } 
+        
+type: INT                                               { $$ = IntType.getInstance(); }
+        | REAL_TYPE                                     { $$ = RealType.getInstance(); }
+        | CHAR_TYPE                                     { $$ = CharType.getInstance(); }
+        | VOID                                          { $$ = VoidType.getInstance(); }
+        | '[' INT_CONSTANT ']' type                     { $$ = new ArrayType((int)$2, (Type)$4); }
+        | STRUCT '{' struct_body '}'                    { $$ = new RecordType((List)$3); } 
         ;
 %%
 

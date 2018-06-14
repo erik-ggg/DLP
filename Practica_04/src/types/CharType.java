@@ -1,7 +1,5 @@
 package types;
 
-import ast.Type;
-
 public class CharType implements Type {
     private static final CharType INSTANCE = new CharType();
 

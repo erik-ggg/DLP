@@ -10,4 +10,9 @@ public class While implements Statement{
         this.statements = statements;
         this.condition = condition;
     }
+
+	@Override
+	public String toString() {
+		return "While [statements=" + statements + ", condition=" + condition + "]";
+	}
 }

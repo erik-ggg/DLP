@@ -1,5 +1,7 @@
 package ast;
 
+import types.Type;
+
 public class Operation implements Definition {
     private Expression expression;
 

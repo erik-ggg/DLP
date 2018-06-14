@@ -1,5 +1,7 @@
 package ast;
 
+import types.Type;
+
 public class Cast implements Expression {
     private Expression expression;
     private Type type;

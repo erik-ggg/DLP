@@ -1,7 +1,5 @@
 package types;
 
-import ast.Type;
-
 public class ArrayType implements Type {
     private static final ArrayType INSTANCE = new ArrayType();
     private int size;

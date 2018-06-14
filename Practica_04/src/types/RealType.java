@@ -1,7 +1,5 @@
 package types;
 
-import ast.Type;
-
 public class RealType implements Type {
     private static final RealType INSTANCE = new RealType();
 

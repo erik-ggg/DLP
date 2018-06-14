@@ -1,6 +1,7 @@
 package ast;
 
 import types.ArrayType;
+import types.Type;
 
 public class VarDefinition implements Definition, Statement, Type {
 
@@ -25,13 +26,6 @@ public class VarDefinition implements Definition, Statement, Type {
     public VarDefinition(String name, Type type) {
         this.name = name;
         this.type = type;
-    }
-
-    public VarDefinition(Variable var, Type type) {
-        this.name = var.getName();
-        if (var.getI() != null) this.type = new ArrayType(var.getI(), type);
-        else if (var.getJ() != null) this.type = new ArrayType(var.getJ(), type);
-        else this.type = type;
     }
 
     @Override
