@@ -130,10 +130,10 @@ ids: ids ',' ID         { $$ = $1; ((List)$$).add($3); }
         | ID            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)$2, (List)$4, (Type)$7, (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
+function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)$2, new FunctionType(scanner.getLine(), scanner.getColumn(), (List<VarDefinition>)$4, (Type)$7), (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
         ;
 
-main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new ArrayList(), VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
+main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new FunctionType(scanner.getLine(), scanner.getColumn(), new ArrayList(), VoidType.getInstance()), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
         ;
 
 function_body: definicionVariable statements            { $$ = new Object[] {$1, $2}; }

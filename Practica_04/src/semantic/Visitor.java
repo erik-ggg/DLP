@@ -67,4 +67,5 @@ public interface Visitor<TP, TR> {
 	TR visit(Return ret, TP p);
 	TR visit(While whl, TP p);
 	TR visit(Write write, TP p);
+	TR visit(VoidType voidType, TP p);
 }

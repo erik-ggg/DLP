@@ -5,7 +5,9 @@ import semantic.Visitor;
 public class RealType extends AbstractType {
     private static final RealType INSTANCE = new RealType();
 
-    private RealType(){}
+    public RealType() {
+    	super(0, 0);
+    }
 
     public static RealType getInstance(){
         return INSTANCE;

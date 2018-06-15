@@ -38,7 +38,6 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	
 	public TR visit(FunctionDefinition functionDefinition, TP p) {
 		functionDefinition.getType().accept(this, p);
-		functionDefinition.getParameters().forEach(x -> x.accept(this, p));
 		functionDefinition.getVars().forEach(x -> x.accept(this, p));
 		functionDefinition.getBody().forEach(x -> x.accept(this, p));
 		return null;

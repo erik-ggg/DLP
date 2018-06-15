@@ -13,13 +13,12 @@ public class FunctionDefinition extends ConcreteASTNode implements Definition, E
     private String name;
     private List<Statement> body;
     private Type type;
-    private List<VarDefinition> vars, parameters;
+    private List<VarDefinition> vars;
     private Definition definition;
 
-    public FunctionDefinition(int row, int column, String name, List<VarDefinition> parameters, Type type, List<VarDefinition> vars, List<Statement> body) {
+    public FunctionDefinition(int row, int column, String name, Type type, List<VarDefinition> vars, List<Statement> body) {
 		super(row, column);
         this.name = name;
-        this.parameters = parameters;
         this.type = type;
         this.vars = vars;
         this.body = body;
@@ -33,14 +32,6 @@ public class FunctionDefinition extends ConcreteASTNode implements Definition, E
 	@Override
 	public String toString() {
 		return "FunctionDefinition [name=" + name + ", type=" + type + "]";
-	}
-
-	public List<VarDefinition> getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(List<VarDefinition> parameters) {
-		this.parameters = parameters;
 	}
 
 	public List<Statement> getBody() {

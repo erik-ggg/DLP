@@ -13,9 +13,6 @@ public class ArrayType extends AbstractType {
         this.type = type;
     }
 
-    public ArrayType() {
-    }
-
 	@Override
 	public String toString() {
 		return "ArrayType " + "size: " + size;

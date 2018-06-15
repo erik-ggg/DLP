@@ -923,11 +923,11 @@ case 51:
 break;
 case 52:
 //#line 133 "../../src/parser/parser.y"
-{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)val_peek(8), (List)val_peek(6), (Type)val_peek(3), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]); }
+{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)val_peek(8), new FunctionType(scanner.getLine(), scanner.getColumn(), (List<VarDefinition>)val_peek(6), (Type)val_peek(3)), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]); }
 break;
 case 53:
 //#line 136 "../../src/parser/parser.y"
-{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new ArrayList(), VoidType.getInstance(), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
+{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new FunctionType(scanner.getLine(), scanner.getColumn(), new ArrayList(), VoidType.getInstance()), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
 break;
 case 54:
 //#line 139 "../../src/parser/parser.y"

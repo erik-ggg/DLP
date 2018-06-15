@@ -15,10 +15,6 @@ public class FunctionType extends AbstractType {
         this.returnType = returnType;
     }
 
-    public FunctionType(Type returnType) {
-        this.returnType = returnType;
-    }
-
 	@Override
 	public String toString() {
 		return "FunctionType";

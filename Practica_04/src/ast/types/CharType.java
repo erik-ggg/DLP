@@ -5,7 +5,9 @@ import semantic.Visitor;
 public class CharType extends AbstractType {
     private static final CharType INSTANCE = new CharType();
 
-    private CharType(){}
+    public CharType() {
+    	super(0, 0);
+    }
 
     public static CharType getInstance(){
         return INSTANCE;

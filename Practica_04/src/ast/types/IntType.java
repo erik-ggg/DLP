@@ -6,7 +6,9 @@ public class IntType extends AbstractType {
     private static final IntType INSTANCE = new IntType();
     private int value;
 
-    private IntType(){}
+    public IntType() {
+    	super(0, 0);
+    }
 
     public static IntType getInstance(){
         return INSTANCE;

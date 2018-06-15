@@ -5,7 +5,9 @@ import semantic.Visitor;
 public class VoidType extends AbstractType {
     private static final VoidType INSTANCE = new VoidType();
 
-    private VoidType(){}
+    public VoidType() {
+    	super(0, 0);
+    }
 
     public static VoidType getInstance(){
         return INSTANCE;
@@ -18,7 +20,6 @@ public class VoidType extends AbstractType {
 
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		return null;
+		return visitor.visit(this, p);
 	}
 }
