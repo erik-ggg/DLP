@@ -11,16 +11,16 @@ public class IdentificationVisitor<TP, TR> extends DefaultVisitor<TP, TR> {
 
 	@Override
 	public TR visit(FunctionDefinition functionDefinition, TP p) {
-		if(!Contexts.getInstance().add(functionDefinition)) new ErrorType("Funcion ya definida", functionDefinition);
+		if(!Contexts.getInstance().add(functionDefinition)) new ErrorType("Funcion already defined: " + functionDefinition.getName(), functionDefinition);
 		Contexts.getInstance().set();
 		super.visit(functionDefinition, p);
-		Contexts.getInstance().reset();;
+		Contexts.getInstance().reset();
 		return null;
 	}
 
 	@Override
 	public TR visit(VarDefinition varDefinition, TP p) {
-		if (!Contexts.getInstance().add(varDefinition)) new ErrorType("Variable ya definida", varDefinition);
+		if (!Contexts.getInstance().add(varDefinition)) new ErrorType("Variable already defined: " + varDefinition.getName(), varDefinition);
 		return null;
 	}
 
@@ -29,7 +29,7 @@ public class IdentificationVisitor<TP, TR> extends DefaultVisitor<TP, TR> {
 		Definition def = Contexts.getInstance().search(variable.getName());
 		if (def != null) variable.setDefinition(def);
 		else {
-			variable.setDefinition(new VarDefinition(variable.getRow(), variable.getColumn(), variable.getName(), new ErrorType("Simbolo no definido: " + variable.getName(), variable)));			
+			variable.setDefinition(new VarDefinition(variable.getRow(), variable.getColumn(), variable.getName(), new ErrorType("Symbol not defined: " + variable.getName(), variable)));			
 		}
 		return null;
 	}

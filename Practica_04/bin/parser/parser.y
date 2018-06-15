@@ -133,7 +133,7 @@ ids: ids ',' ID         { $$ = $1; ((List)$$).add($3); }
 function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)$2, (List)$4, (Type)$7, (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
         ;
 
-main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),   "main", null, VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
+main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new ArrayList(), VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
         ;
 
 function_body: definicionVariable statements            { $$ = new Object[] {$1, $2}; }

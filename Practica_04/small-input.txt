@@ -4,17 +4,24 @@ integer:int;
 character:char;
 real:double;
 
-integer: int;
-
 MATRIXSIZE:int;
 matrix:[10][10]int;
+
+integer: int; # repetido
+character: char; #repetido
 
 # Functions
 def setValue(row:int, column:int, value:int):void {
 	if row >= 0 && row < MATRIXSIZE && column >= 0 && column < MATRIXSIZE: {
 		matrix[row][column] = value;
+		casca1 = cascaFunction1(cascaParam1, cascaParam2);
 	}
 }
+
+def setValue(row:int, column:int, value:int):void { # variable ya definida
+}
+
+
 def getValue(row:int, column:int):int {
 	if (row < 0 || row >= MATRIXSIZE) || (column < 0 && column >= MATRIXSIZE): {
 		return -1;
@@ -81,8 +88,9 @@ def main():void { # Uncomment to test
 	date.year = 2016;
 	
 	character = (char)date.day;
-	real = 4.5 + 4. * 3e+3 - 5.4E-3;
-	
+	# real = 4.5 + 4. * 3e+3 - 5.4E-3;
+	real = 4.5 + 4;
+	casca2 = real;
 	#error:int; # Uncomment to test
 }
 # def no_function():void {} # Uncomment to test

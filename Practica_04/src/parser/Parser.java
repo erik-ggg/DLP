@@ -927,7 +927,7 @@ case 52:
 break;
 case 53:
 //#line 136 "../../src/parser/parser.y"
-{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),   "main", null, VoidType.getInstance(), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
+{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),  "main", new ArrayList(), VoidType.getInstance(), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
 break;
 case 54:
 //#line 139 "../../src/parser/parser.y"

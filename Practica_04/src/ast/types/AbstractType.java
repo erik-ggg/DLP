@@ -2,7 +2,7 @@ package ast.types;
 
 import ast.main.ConcreteASTNode;
 
-public abstract class AbstractType extends ConcreteASTNode implements Type {
+public abstract class AbstractType<TP, TR> extends ConcreteASTNode<TP, TR> implements Type {
 	
 	public AbstractType(int row, int column) {
 		super(row, column);

@@ -4,10 +4,8 @@ import ast.main.ASTNode;
 import errorhandler.EH;
 import semantic.Visitor;
 
-public class ErrorType extends AbstractType {
+public class ErrorType<TP, TR> extends AbstractType<TP, TR> {
 	private String message;
-	private int row;
-	private int column;
 
 	public ErrorType(String message, ASTNode node) {
 		super(node.getRow(), node.getColumn());
@@ -17,7 +15,7 @@ public class ErrorType extends AbstractType {
 
 	@Override
 	public String toString() {
-		return String.format("Error semantico: %s (linea %d, columna %d)", message, row, column);
+		return String.format("Semantic error: %s (row %d, column %d)", message, getRow(), getColumn());
 	}
 
 	@Override

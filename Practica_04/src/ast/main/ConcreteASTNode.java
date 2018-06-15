@@ -1,8 +1,5 @@
 package ast.main;
 
-import semantic.DefaultVisitor;
-import semantic.Visitor;
-
 public abstract class ConcreteASTNode<TP, TR> implements ASTNode {
 	
 	private int row, column;

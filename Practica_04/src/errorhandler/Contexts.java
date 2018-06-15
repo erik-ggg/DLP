@@ -3,11 +3,9 @@ package errorhandler;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Stack;
 
 import ast.main.Definition;
-import ast.main.VarDefinition;
 
 public class Contexts {
 	
@@ -20,8 +18,8 @@ public class Contexts {
 	}
 	
 	public boolean add(Definition definition) {
-		Map<String, Definition> currentContext = contexts.firstElement();
-		if (currentContext.containsValue(definition)) return false;
+		Map<String, Definition> currentContext = contexts.lastElement();
+		if (currentContext.containsKey(definition.getName())) return false;
 		else {
 			currentContext.put(definition.getName(), definition);
 			return true;

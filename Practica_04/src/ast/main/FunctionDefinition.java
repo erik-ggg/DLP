@@ -11,12 +11,12 @@ import semantic.Visitor;
 public class FunctionDefinition extends ConcreteASTNode implements Definition, Expression {
 
     private String name;
-    private List<Statement> parameters, body;
+    private List<Statement> body;
     private Type type;
-    private List<VarDefinition> vars;
+    private List<VarDefinition> vars, parameters;
     private Definition definition;
 
-    public FunctionDefinition(int row, int column, String name, List<Statement> parameters, Type type, List<VarDefinition> vars, List<Statement> body) {
+    public FunctionDefinition(int row, int column, String name, List<VarDefinition> parameters, Type type, List<VarDefinition> vars, List<Statement> body) {
 		super(row, column);
         this.name = name;
         this.parameters = parameters;
@@ -35,11 +35,11 @@ public class FunctionDefinition extends ConcreteASTNode implements Definition, E
 		return "FunctionDefinition [name=" + name + ", type=" + type + "]";
 	}
 
-	public List<Statement> getParameters() {
+	public List<VarDefinition> getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(List<Statement> parameters) {
+	public void setParameters(List<VarDefinition> parameters) {
 		this.parameters = parameters;
 	}
 
