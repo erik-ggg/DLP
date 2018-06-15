@@ -4,6 +4,7 @@ import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
 public class UnaryMinus extends ConcreteASTNode implements Expression{
+	
 	private Expression expression;
 
 	public UnaryMinus(int row, int col, Expression expression) {
@@ -16,11 +17,15 @@ public class UnaryMinus extends ConcreteASTNode implements Expression{
 		return expression.toString();
 	}
 
-	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
-	}	
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
 	
-
+	@Override
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
+	}
 }

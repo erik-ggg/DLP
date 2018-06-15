@@ -4,11 +4,13 @@ import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
 public class Logical extends ConcreteASTNode implements Expression {
+
     private Expression leftop, rightop;
     private String op;
     
 
-    public Logical(Expression left, String op, Expression right) {
+    public Logical(int row, int column, Expression left, String op, Expression right) {
+        super(row, column);
         this.leftop = left;
         this.rightop = right;
         this.op = op;
@@ -19,9 +21,22 @@ public class Logical extends ConcreteASTNode implements Expression {
         return leftop + " " + op + " " + rightop;
     }
 
-	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+    /**
+     * @return the leftop
+     */
+    public Expression getLeftop() {
+        return leftop;
+    }
+
+    /**
+     * @return the rightop
+     */
+    public Expression getRightop() {
+        return rightop;
+    }
+    
+    @Override
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

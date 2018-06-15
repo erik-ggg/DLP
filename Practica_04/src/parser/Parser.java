@@ -727,7 +727,7 @@ boolean doaction;
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
 //#line 56 "../../src/parser/parser.y"
-{ ast = new Program((List<Definition>)val_peek(1)); ((List)val_peek(1)).add(val_peek(0));  }
+{ ast = new Program(scanner.getLine(), scanner.getColumn(), (List<Definition>)val_peek(1)); ((List)val_peek(1)).add(val_peek(0));  }
 break;
 case 2:
 //#line 59 "../../src/parser/parser.y"
@@ -759,11 +759,11 @@ case 10:
 break;
 case 11:
 //#line 73 "../../src/parser/parser.y"
-{ yyval = new Return((Expression)val_peek(1)); }
+{ yyval = new Return(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(1)); }
 break;
 case 12:
 //#line 74 "../../src/parser/parser.y"
-{ yyval = new Print((List<Expression>)val_peek(1)); }
+{ yyval = new Print(scanner.getLine(), scanner.getColumn(), (List<Expression>)val_peek(1)); }
 break;
 case 13:
 //#line 77 "../../src/parser/parser.y"
@@ -779,75 +779,75 @@ case 15:
 break;
 case 16:
 //#line 82 "../../src/parser/parser.y"
-{ yyval = new Arithmetic((Expression)val_peek(2), '+', (Expression)val_peek(0)); }
+{ yyval = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), '+', (Expression)val_peek(0)); }
 break;
 case 17:
 //#line 83 "../../src/parser/parser.y"
-{ yyval = new Arithmetic((Expression)val_peek(2), '-', (Expression)val_peek(0)); }
+{ yyval = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), '-', (Expression)val_peek(0)); }
 break;
 case 18:
 //#line 84 "../../src/parser/parser.y"
-{ yyval = new Arithmetic((Expression)val_peek(2), '*', (Expression)val_peek(0)); }
+{ yyval = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), '*', (Expression)val_peek(0)); }
 break;
 case 19:
 //#line 85 "../../src/parser/parser.y"
-{ yyval = new Arithmetic((Expression)val_peek(2), '/', (Expression)val_peek(0)); }
+{ yyval = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), '/', (Expression)val_peek(0)); }
 break;
 case 20:
 //#line 86 "../../src/parser/parser.y"
-{ yyval = new Arithmetic((Expression)val_peek(2), '%', (Expression)val_peek(0)); }
+{ yyval = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), '%', (Expression)val_peek(0)); }
 break;
 case 21:
 //#line 87 "../../src/parser/parser.y"
-{ yyval = new FieldAccess((Expression)val_peek(2), (String)val_peek(0)); }
+{ yyval = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), (String)val_peek(0)); }
 break;
 case 22:
 //#line 88 "../../src/parser/parser.y"
-{ yyval = new Assignment((Expression)val_peek(2), (Expression)val_peek(0)); }
+{ yyval = new Assignment(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), (Expression)val_peek(0)); }
 break;
 case 23:
 //#line 89 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(2), "<", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), "<", (Expression)val_peek(0)); }
 break;
 case 24:
 //#line 90 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(2), ">", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), ">", (Expression)val_peek(0)); }
 break;
 case 25:
 //#line 91 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(3), "==", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(3), "==", (Expression)val_peek(0)); }
 break;
 case 26:
 //#line 92 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(3), ">=", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(3), ">=", (Expression)val_peek(0)); }
 break;
 case 27:
 //#line 93 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(3), "<=", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(3), "<=", (Expression)val_peek(0)); }
 break;
 case 28:
 //#line 94 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(3), "!=", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(3), "!=", (Expression)val_peek(0)); }
 break;
 case 29:
 //#line 95 "../../src/parser/parser.y"
-{ yyval = new Comparison((Expression)val_peek(0), "!", (Expression)val_peek(0)); }
+{ yyval = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(0), "!", (Expression)val_peek(0)); }
 break;
 case 30:
 //#line 96 "../../src/parser/parser.y"
-{ yyval = new Logical((Expression)val_peek(2), (String)val_peek(1), (Expression)val_peek(0)); }
+{ yyval = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), (String)val_peek(1), (Expression)val_peek(0)); }
 break;
 case 31:
 //#line 97 "../../src/parser/parser.y"
-{ yyval = new Logical((Expression)val_peek(2), (String)val_peek(1), (Expression)val_peek(0)); }
+{ yyval = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), (String)val_peek(1), (Expression)val_peek(0)); }
 break;
 case 32:
 //#line 98 "../../src/parser/parser.y"
-{ yyval = new Cast(((Expression)val_peek(0)), (Type)val_peek(2)); }
+{ yyval = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)val_peek(0)), (Type)val_peek(2)); }
 break;
 case 33:
 //#line 99 "../../src/parser/parser.y"
-{ yyval = new Invocation((String)val_peek(3), (List<Expression>)val_peek(1)); }
+{ yyval = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)val_peek(3)), (List<Expression>)val_peek(1)); }
 break;
 case 34:
 //#line 100 "../../src/parser/parser.y"
@@ -855,23 +855,23 @@ case 34:
 break;
 case 35:
 //#line 101 "../../src/parser/parser.y"
-{ yyval = new Indexing((Expression)val_peek(3), "[]", (Expression)val_peek(1));}
+{ yyval = new Indexing(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(3), "[]", (Expression)val_peek(1));}
 break;
 case 36:
 //#line 102 "../../src/parser/parser.y"
-{ yyval = new IntLiteral((int)val_peek(0)); }
+{ yyval = new IntLiteral(scanner.getLine(), scanner.getColumn(), (int)val_peek(0)); }
 break;
 case 37:
 //#line 103 "../../src/parser/parser.y"
-{ yyval = new RealLiteral((String)val_peek(0)); }
+{ yyval = new RealLiteral(scanner.getLine(), scanner.getColumn(),(double)val_peek(0)); }
 break;
 case 38:
 //#line 104 "../../src/parser/parser.y"
-{ yyval = new CharLiteral((String)val_peek(0)); }
+{ yyval = new CharLiteral(scanner.getLine(), scanner.getColumn(), (String)val_peek(0)); }
 break;
 case 39:
 //#line 105 "../../src/parser/parser.y"
-{ yyval = new Variable((String)val_peek(0)); }
+{ yyval = new Variable(scanner.getLine(), scanner.getColumn(), (String)val_peek(0)); }
 break;
 case 40:
 //#line 106 "../../src/parser/parser.y"
@@ -895,7 +895,7 @@ case 44:
 break;
 case 45:
 //#line 118 "../../src/parser/parser.y"
-{ yyval = new ArrayList(); for(String id : (List<String>)val_peek(3)) ((List)yyval).add(new VarDefinition(id, (Type)val_peek(1))); }
+{ yyval = new ArrayList(); for(String id : (List<String>)val_peek(3)) ((List)yyval).add(new VarDefinition(scanner.getLine(), scanner.getColumn(), id, (Type)val_peek(1))); }
 break;
 case 46:
 //#line 121 "../../src/parser/parser.y"
@@ -911,7 +911,7 @@ case 48:
 break;
 case 49:
 //#line 126 "../../src/parser/parser.y"
-{ yyval = new VarDefinition((String)val_peek(2), (Type)val_peek(0)); }
+{ yyval = new VarDefinition(scanner.getLine(), scanner.getColumn(), (String)val_peek(2), (Type)val_peek(0)); }
 break;
 case 50:
 //#line 129 "../../src/parser/parser.y"
@@ -923,11 +923,11 @@ case 51:
 break;
 case 52:
 //#line 133 "../../src/parser/parser.y"
-{ yyval = new FunctionDefinition((String)val_peek(8), (List)val_peek(6), (Type)val_peek(3), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]); }
+{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)val_peek(8), (List)val_peek(6), (Type)val_peek(3), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]); }
 break;
 case 53:
 //#line 136 "../../src/parser/parser.y"
-{ yyval = new FunctionDefinition("main", null, VoidType.getInstance(), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
+{ yyval = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),   "main", null, VoidType.getInstance(), (List)((Object[]) val_peek(1))[0], (List)((Object[])val_peek(1))[1]);  }
 break;
 case 54:
 //#line 139 "../../src/parser/parser.y"
@@ -955,19 +955,19 @@ case 59:
 break;
 case 60:
 //#line 149 "../../src/parser/parser.y"
-{ yyval = new Invocation((String)val_peek(4), (List)val_peek(2)); }
+{ yyval = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)val_peek(4)), (List)val_peek(2)); }
 break;
 case 61:
 //#line 152 "../../src/parser/parser.y"
-{ yyval = new While((Expression)val_peek(2), (List)val_peek(0)); }
+{ yyval = new While(scanner.getLine(), scanner.getColumn(), (Expression)val_peek(2), (List)val_peek(0)); }
 break;
 case 62:
 //#line 155 "../../src/parser/parser.y"
-{ yyval = new IfStatement((List)val_peek(0), (List)val_peek(2), (Expression)val_peek(4)); }
+{ yyval = new IfStatement(scanner.getLine(), scanner.getColumn(), (List)val_peek(0), (List)val_peek(2), (Expression)val_peek(4)); }
 break;
 case 63:
 //#line 156 "../../src/parser/parser.y"
-{ yyval = new IfStatement((List)val_peek(0), (Expression)val_peek(2)); }
+{ yyval = new IfStatement(scanner.getLine(), scanner.getColumn(), new ArrayList(), (List)val_peek(0), (Expression)val_peek(2)); }
 break;
 case 64:
 //#line 159 "../../src/parser/parser.y"
@@ -979,7 +979,7 @@ case 65:
 break;
 case 66:
 //#line 163 "../../src/parser/parser.y"
-{ yyval = new ArrayList(); for(String id : (List<String>)val_peek(3)) ((List)yyval).add(new RecordField(id, (Type)val_peek(1))); }
+{ yyval = new ArrayList(); for(String id : (List<String>)val_peek(3)) ((List)yyval).add(new RecordField(scanner.getLine(), scanner.getColumn(), id, (Type)val_peek(1))); }
 break;
 case 67:
 //#line 166 "../../src/parser/parser.y"
@@ -999,11 +999,11 @@ case 70:
 break;
 case 71:
 //#line 170 "../../src/parser/parser.y"
-{ yyval = new ArrayType((int)val_peek(2), (Type)val_peek(0)); }
+{ yyval = new ArrayType(scanner.getLine(), scanner.getColumn(), (int)val_peek(2), (Type)val_peek(0)); }
 break;
 case 72:
 //#line 171 "../../src/parser/parser.y"
-{ yyval = new RecordType((List)val_peek(1)); }
+{ yyval = new RecordType(scanner.getLine(), scanner.getColumn(), (List)val_peek(1)); }
 break;
 //#line 940 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########

@@ -1,26 +1,35 @@
 package ast.expressions;
 
 import ast.main.ConcreteASTNode;
-import ast.main.Variable;
 import semantic.Visitor;
 
 public class FieldAccess extends ConcreteASTNode implements Expression {
     private Expression leftop;
     private String name;
 
-    public FieldAccess(Expression leftop, String name) {
-        this.leftop = leftop;
-        this.name = name;
+    public FieldAccess(int row, int column, Expression leftop, String name) {
+		super(row, column);
+        this.setLeftop(leftop);
+        this.setName(name);
     }
 
-    public FieldAccess(Expression leftop, Variable name) {
-        this.leftop = leftop;
-        this.name = name.getName();
-    }
+	public Expression getLeftop() {
+		return leftop;
+	}
 
+	public void setLeftop(Expression leftop) {
+		this.leftop = leftop;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

@@ -2,10 +2,12 @@
 import java.io.FileReader;
 import java.io.IOException;
 
+import ast.main.ASTNode;
 import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
 import parser.Parser;
 import scanner.Scanner;
+import semantic.IdentificationVisitor;
 import errorhandler.EH;
 
 public class Main {
@@ -30,6 +32,10 @@ public class Main {
 		Parser parser = new Parser(lexico);
 		// * Parsing
 		parser.run();	
+
+		ASTNode ast = parser.getAST();
+		IdentificationVisitor identificationVisitor = new IdentificationVisitor();
+		ast.accept(identificationVisitor, null);
 				
 		// * Check errors 
 		if(EH.getEH().hasErrors()){

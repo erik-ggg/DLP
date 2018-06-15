@@ -1,12 +1,15 @@
 package ast.main;
 
-public abstract class ConcreteASTNode implements ASTNode {
+import semantic.DefaultVisitor;
+import semantic.Visitor;
+
+public abstract class ConcreteASTNode<TP, TR> implements ASTNode {
 	
 	private int row, column;
 	
-	public ConcreteASTNode(int fila, int columna) {
-		this.row = fila;
-		this.column = columna;
+	public ConcreteASTNode(int row, int column) {
+		this.row = row;
+		this.column = column;
 	}
 	
 	public ConcreteASTNode() {
@@ -27,4 +30,6 @@ public abstract class ConcreteASTNode implements ASTNode {
 	public String toString() {
 		return "ConcreteASTNode [fila=" + row + ", columna=" + column + "]";
 	}
+	
+	
 }

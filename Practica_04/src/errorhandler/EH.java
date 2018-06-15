@@ -24,4 +24,8 @@ public class EH {
 		return instance;
 	}
 
+	public void addError(ErrorType errorType) {
+		errors.add(errorType);
+	}
+
 }

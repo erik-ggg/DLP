@@ -3,24 +3,17 @@ package ast.expressions;
 import java.util.List;
 
 import ast.main.ConcreteASTNode;
-import ast.main.Definition;
-import ast.main.Variable;
 import ast.statements.Statement;
 import errorhandler.Contexts;
 import semantic.Visitor;
 
 public class Invocation extends ConcreteASTNode implements Statement, Expression {
 	
-	private Definition definition;
     private List<Expression> expressions;
     private Variable function;
 
-    public Invocation(String function, List<Expression> expressions) {
-        this.expressions = expressions;
-        this.function = new Variable(function);
-    }
-
-    public Invocation(Variable function, List<Expression> expressions) {
+    public Invocation(int row, int column, Variable function, List<Expression> expressions) {
+		super(row, column);
         this.expressions = expressions;
         this.function = function;
     }
@@ -30,8 +23,23 @@ public class Invocation extends ConcreteASTNode implements Statement, Expression
 		return "Invocation [expressions=" + expressions + ", function=" + function + "]";
 	}
 
+	public Variable getFunction() {
+		return function;
+	}
+
+	public void setFunction(Variable function) {
+		this.function = function;
+	}
+
+	/**
+	 * @return the expressions
+	 */
+	public List<Expression> getExpressions() {
+		return expressions;
+	}
+
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		definition = Contexts.getInstance().search(function.getName());
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

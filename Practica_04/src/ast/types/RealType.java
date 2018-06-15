@@ -1,6 +1,8 @@
 package ast.types;
 
-public class RealType implements Type {
+import semantic.Visitor;
+
+public class RealType extends AbstractType {
     private static final RealType INSTANCE = new RealType();
 
     private RealType(){}
@@ -12,5 +14,19 @@ public class RealType implements Type {
 	@Override
 	public String toString() {
 		return "RealType";
+	}
+	
+	@Override
+	public Type arithmetic(Type type) {
+		if (type instanceof ErrorType) return type;
+		if (type instanceof IntType) return RealType.getInstance();;
+		if (type instanceof RealType) return RealType.getInstance();
+		if (type instanceof CharType) return RealType.getInstance();
+		else return null;
+	}
+	
+	@Override
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

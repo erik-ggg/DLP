@@ -5,12 +5,18 @@ import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
 public class Write extends ConcreteASTNode implements Statement {
-	private int row, column;
 	private Expression expression;
 
 	public Write(int row, int column, Expression expression) {
 		super(row, column);
 		this.expression = expression;
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
 	}
 
 	@Override
@@ -19,11 +25,7 @@ public class Write extends ConcreteASTNode implements Statement {
 	}
 
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
-	
-	
-
 }

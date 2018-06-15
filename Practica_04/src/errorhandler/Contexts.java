@@ -1,10 +1,13 @@
 package errorhandler;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 import ast.main.Definition;
+import ast.main.VarDefinition;
 
 public class Contexts {
 	
@@ -12,8 +15,12 @@ public class Contexts {
 	
 	private static final Contexts INSTANCE = new Contexts();
 	
+	private Contexts() {
+		contexts.push(new HashMap<String, Definition>());
+	}
+	
 	public boolean add(Definition definition) {
-		Map<String, Definition> currentContext = this.contexts.firstElement();
+		Map<String, Definition> currentContext = contexts.firstElement();
 		if (currentContext.containsValue(definition)) return false;
 		else {
 			currentContext.put(definition.getName(), definition);
@@ -27,19 +34,23 @@ public class Contexts {
 	 * @return the definition if exists in the current context, null if not.
 	 */
 	public Definition search(String name) {
-		return this.contexts.firstElement().get(name);
+		Iterator<Map<String, Definition>> iterator = contexts.iterator();
+		while(iterator.hasNext()) {
+			Map<String, Definition> context = iterator.next();
+			if (context.containsKey(name)) return context.get(name);
+		}
+		return null;
 	}
 	
 	public void set() {
-		Map<String, Definition> context = new HashMap<>();
-		this.contexts.push(new HashMap<String, Definition>());
+		contexts.push(new HashMap<String, Definition>());
 	}
 	
 	public void reset() {
-		this.contexts.pop();
+		contexts.pop();
 	}
 	
-	public static Contexts getInstance() {
+	public static Contexts getInstance() {		
 		return INSTANCE;
 	}
 }

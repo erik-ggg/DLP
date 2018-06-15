@@ -11,19 +11,21 @@ public class Read extends ConcreteASTNode implements Statement {
 		super(row, col);
 		this.expression = expression;
 	}
+	
+	/**
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
 
 	@Override
 	public String toString() {
 		return "input " + expression.toString();
 	}
-
+	
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
-	
-	
-	
-	
 }

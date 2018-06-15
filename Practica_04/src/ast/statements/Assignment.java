@@ -5,7 +5,6 @@ import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
 public class Assignment extends ConcreteASTNode implements Statement {
-	private int row, column;
 	private Expression left;
 	private Expression right;
 	
@@ -15,19 +14,27 @@ public class Assignment extends ConcreteASTNode implements Statement {
 		this.right = right;
 	}
 
-	public Assignment(Expression expression1, Expression expression2) {
-		this.left = expression1;
-		this.right = expression2;
+	/**
+	 * @return the right
+	 */
+	public Expression getRight() {
+		return right;
+	}
+
+	/**
+	 * @return the left
+	 */
+	public Expression getLeft() {
+		return left;
 	}
 
 	@Override
 	public String toString() {
 		return "Assigment: " + left.toString() + " = " + right.toString();
 	}
-
+	
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

@@ -5,27 +5,13 @@ import ast.types.Type;
 import errorhandler.Contexts;
 import semantic.Visitor;
 
-public class VarDefinition extends ConcreteASTNode implements Definition, Statement, Type {
+public class VarDefinition extends ConcreteASTNode implements Definition, Statement {
 
     private String name;
-    private int offset;
-    private int scope;
     private Type type;
 
-    public VarDefinition(Variable var) {
-        this.name = var.getName();
-    }
-
-    public VarDefinition(String name) {
-        this.name = name;
-    }
-
-    public VarDefinition(VarDefinition var) {
-        this.name = var.getName();
-        this.type = var.getType();
-    }
-
-    public VarDefinition(String name, Type type) {
+    public VarDefinition(int row, int column, String name, Type type) {
+        super(row, column);
         this.name = name;
         this.type = type;
     }
@@ -37,7 +23,7 @@ public class VarDefinition extends ConcreteASTNode implements Definition, Statem
 
 	@Override
     public String getName() {
-        return null;
+        return name;
     }
 
 	@Override
@@ -46,9 +32,7 @@ public class VarDefinition extends ConcreteASTNode implements Definition, Statem
 	}
 
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		Contexts.getInstance().add(this);
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
-
-    
 }

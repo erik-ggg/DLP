@@ -1,11 +1,14 @@
 package ast.types;
 
-public class RecordField {
+import semantic.Visitor;
+
+public class RecordField extends AbstractType {
     private String name;
     private int offset;
     private Type type;
 
-    public RecordField(String name, Type type) {
+    public RecordField(int row, int column, String name, Type type) {
+		super(row, column);
         this.name = name;
         this.type = type;
     }
@@ -13,5 +16,10 @@ public class RecordField {
 	@Override
 	public String toString() {
 		return "RecordField [name=" + name + ", offset=" + offset + ", type=" + type + "]";
+	}
+	
+	@Override
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
 }

@@ -113,7 +113,7 @@ MAIN = main
 						return Parser.ID; }
 {IDENT} {this.yylval = new String(yytext());
 						return Parser.ID; }
-{REAL_EXPONENTE} {this.yylval = new String(yytext());
+{REAL_EXPONENTE} {this.yylval = new Double(yytext());
 						return Parser.REAL_CONSTANT; }
 		  
 // * Cualquier otro carácter

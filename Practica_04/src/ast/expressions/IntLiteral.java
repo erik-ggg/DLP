@@ -19,13 +19,10 @@ public class IntLiteral extends ConcreteASTNode implements Expression {
 	public String toString() {
 		return String.valueOf(value);
 	}
-
 	@Override
-	public <TP, TR> void accept(Visitor<TP, TR> visitor, TP p) {
-		// TODO Auto-generated method stub
-		
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
 	}
-	
 	
 
 }

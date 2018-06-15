@@ -1,4 +1,7 @@
 package ast.types;
 
-public interface Type {
+import ast.main.ASTNode;
+
+public interface Type extends ASTNode {
+	Type arithmetic(Type targetType);
 }

@@ -53,7 +53,7 @@ import ast.types.*;
 // * Gramática y acciones Yacc
 // System.out.println()
 
-programa: definiciones main                     { ast = new Program((List<Definition>)$1); ((List)$1).add($2);  }
+programa: definiciones main                     { ast = new Program(scanner.getLine(), scanner.getColumn(), (List<Definition>)$1); ((List)$1).add($2);  }
         ;                       
 
 definiciones: definiciones definicionVariable           { $$ = $1; ((List)$$).addAll((List)$2); }
@@ -63,15 +63,15 @@ definiciones: definiciones definicionVariable           { $$ = $1; ((List)$$).ad
         
 definicion:  definicionVariable                                
         | function
-        // | INPUT expressions ';'        { $$ = new Input((List<Expression>)$2); }
+        // | INPUT expressions ';'        { $$ = new Input(scanner.getLine(), scanner.getColumn(), (List<Expression>)$2); }
         ;
 
 statement: if                           { $$ = $1; }
         | while                         { $$ = $1; }
         | expression ';'                { $$ = $1; }
         | call_function                 { $$ = $1; }
-        | RETURN expression ';'         { $$ = new Return((Expression)$2); }
-        | PRINT expressions ';'         { $$ = new Print((List<Expression>)$2); }
+        | RETURN expression ';'         { $$ = new Return(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
+        | PRINT expressions ';'         { $$ = new Print(scanner.getLine(), scanner.getColumn(), (List<Expression>)$2); }
         ;
 
 composedStatement: statement { $$ = new ArrayList(); ((List)$$).add((List) $1);}
@@ -79,30 +79,30 @@ composedStatement: statement { $$ = new ArrayList(); ((List)$$).add((List) $1);}
         | '{' '}' { $$ = new ArrayList(); }
         ;
 
-expression: expression '+' expression	                        { $$ = new Arithmetic((Expression)$1, '+', (Expression)$3); }
-        | expression '-' expression                             { $$ = new Arithmetic((Expression)$1, '-', (Expression)$3); }
-        | expression '*' expression                             { $$ = new Arithmetic((Expression)$1, '*', (Expression)$3); }
-        | expression '/' expression                             { $$ = new Arithmetic((Expression)$1, '/', (Expression)$3); }
-        | expression '%' expression                             { $$ = new Arithmetic((Expression)$1, '%', (Expression)$3); }
-        | expression '.' ID                                     { $$ = new FieldAccess((Expression)$1, (String)$3); }
-        | expression '=' expression                             { $$ = new Assignment((Expression)$1, (Expression)$3); }
-        | expression '<' expression                             { $$ = new Comparison((Expression)$1, "<", (Expression)$3); }
-        | expression '>' expression                             { $$ = new Comparison((Expression)$1, ">", (Expression)$3); }
-        | expression '=''=' expression                          { $$ = new Comparison((Expression)$1, "==", (Expression)$4); }
-        | expression '>''=' expression                          { $$ = new Comparison((Expression)$1, ">=", (Expression)$4); }
-        | expression '<''=' expression                          { $$ = new Comparison((Expression)$1, "<=", (Expression)$4); }
-        | expression '!''=' expression                          { $$ = new Comparison((Expression)$1, "!=", (Expression)$4); }
-        | '!' expression                                        { $$ = new Comparison((Expression)$2, "!", (Expression)$2); }
-        | expression OR expression                              { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
-        | expression AND expression                             { $$ = new Logical((Expression)$1, (String)$2, (Expression)$3); }
-        | '(' type ')' expression                               { $$ = new Cast(((Expression)$4), (Type)$2); }
-        | ID '(' expressions_or_empty ')'                       { $$ = new Invocation((String)$1, (List<Expression>)$3); }
+expression: expression '+' expression	                        { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '+', (Expression)$3); }
+        | expression '-' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '-', (Expression)$3); }
+        | expression '*' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '*', (Expression)$3); }
+        | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '/', (Expression)$3); }
+        | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '%', (Expression)$3); }
+        | expression '.' ID                                     { $$ = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$3); }
+        | expression '=' expression                             { $$ = new Assignment(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3); }
+        | expression '<' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
+        | expression '>' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">", (Expression)$3); }
+        | expression '=''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "==", (Expression)$4); }
+        | expression '>''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">=", (Expression)$4); }
+        | expression '<''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<=", (Expression)$4); }
+        | expression '!''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "!=", (Expression)$4); }
+        | '!' expression                                        { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$2, "!", (Expression)$2); }
+        | expression OR expression                              { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
+        | expression AND expression                             { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
+        | '(' type ')' expression                               { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
+        | ID '(' expressions_or_empty ')'                       { $$ = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List<Expression>)$3); }
         | '(' expression ')'                                    { $$ = $2; }
-        | expression '['expression']'                           { $$ = new Indexing((Expression)$1, "[]", (Expression)$3);}
-        | INT_CONSTANT	                                        { $$ = new IntLiteral((int)$1); } 
-        | REAL_CONSTANT                                         { $$ = new RealLiteral((String)$1); }
-        | CHAR_CONSTANT                                         { $$ = new CharLiteral((String)$1); }
-        | ID                                                    { $$ = new Variable((String)$1); }
+        | expression '['expression']'                           { $$ = new Indexing(scanner.getLine(), scanner.getColumn(), (Expression)$1, "[]", (Expression)$3);}
+        | INT_CONSTANT	                                        { $$ = new IntLiteral(scanner.getLine(), scanner.getColumn(), (int)$1); } 
+        | REAL_CONSTANT                                         { $$ = new RealLiteral(scanner.getLine(), scanner.getColumn(),(double)$1); }
+        | CHAR_CONSTANT                                         { $$ = new CharLiteral(scanner.getLine(), scanner.getColumn(), (String)$1); }
+        | ID                                                    { $$ = new Variable(scanner.getLine(), scanner.getColumn(), (String)$1); }
         | '-' expression                                        { $$ = $2;}
         ;
 
@@ -115,7 +115,7 @@ expressions_or_empty: expressions               { $$ = $1; }
         ;
 
 
-definicionVariable: ids ':' type ';'     { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new VarDefinition(id, (Type)$3)); }
+definicionVariable: ids ':' type ';'     { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new VarDefinition(scanner.getLine(), scanner.getColumn(), id, (Type)$3)); }
         ;
 
 parametrosFuncion: parametrosFuncion ',' definicionParametro            { $$ = $1; ((List)$$).add($3); }
@@ -123,17 +123,17 @@ parametrosFuncion: parametrosFuncion ',' definicionParametro            { $$ = $
         |                                                               { $$ = new ArrayList(); }
         ;
 
-definicionParametro: ID ':' type        { $$ = new VarDefinition((String)$1, (Type)$3); }
+definicionParametro: ID ':' type        { $$ = new VarDefinition(scanner.getLine(), scanner.getColumn(), (String)$1, (Type)$3); }
         ;
 
 ids: ids ',' ID         { $$ = $1; ((List)$$).add($3); }
         | ID            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition((String)$2, (List)$4, (Type)$7, (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
+function: def ID '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (String)$2, (List)$4, (Type)$7, (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
         ;
 
-main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition("main", null, VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
+main: def MAIN '(' ')' ':' VOID '{' function_body '}'   { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(),   "main", null, VoidType.getInstance(), (List)((Object[]) $8)[0], (List)((Object[])$8)[1]);  } 
         ;
 
 function_body: definicionVariable statements            { $$ = new Object[] {$1, $2}; }
@@ -146,29 +146,29 @@ statements: statements statement                        { $$ = $1; ((List)$$).ad
         | statement                                     { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
                   
-call_function: ID '(' expressions_or_empty ')' ';'                      { $$ = new Invocation((String)$1, (List)$3); }
+call_function: ID '(' expressions_or_empty ')' ';'                      { $$ = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List)$3); }
         ;
 
-while: WHILE expression ':' composedStatement                           { $$ = new While((Expression)$2, (List)$4); }                            
+while: WHILE expression ':' composedStatement                           { $$ = new While(scanner.getLine(), scanner.getColumn(), (Expression)$2, (List)$4); }                            
         ;
 
-if: IF expression ':' composedStatement ELSE composedStatement          { $$ = new IfStatement((List)$6, (List)$4, (Expression)$2); }      
-        | IF expression ':' composedStatement                           { $$ = new IfStatement((List)$4, (Expression)$2); }                      %prec MENORQUEELSE
+if: IF expression ':' composedStatement ELSE composedStatement          { $$ = new IfStatement(scanner.getLine(), scanner.getColumn(), (List)$6, (List)$4, (Expression)$2); }      
+        | IF expression ':' composedStatement                           { $$ = new IfStatement(scanner.getLine(), scanner.getColumn(), new ArrayList(), (List)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
 struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).add($2); }
         | definicionStruct                              { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new RecordField(id, (Type)$3)); }
+definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new RecordField(scanner.getLine(), scanner.getColumn(), id, (Type)$3)); }
         ;
         
 type: INT                                               { $$ = IntType.getInstance(); }
         | REAL_TYPE                                     { $$ = RealType.getInstance(); }
         | CHAR_TYPE                                     { $$ = CharType.getInstance(); }
         | VOID                                          { $$ = VoidType.getInstance(); }
-        | '[' INT_CONSTANT ']' type                     { $$ = new ArrayType((int)$2, (Type)$4); }
-        | STRUCT '{' struct_body '}'                    { $$ = new RecordType((List)$3); } 
+        | '[' INT_CONSTANT ']' type                     { $$ = new ArrayType(scanner.getLine(), scanner.getColumn(), (int)$2, (Type)$4); }
+        | STRUCT '{' struct_body '}'                    { $$ = new RecordType(scanner.getLine(), scanner.getColumn(), (List)$3); } 
         ;
 %%
 
