@@ -17,6 +17,20 @@ public class RecordField extends AbstractType {
 	public String toString() {
 		return "RecordField [name=" + name + ", offset=" + offset + ", type=" + type + "]";
 	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public Type getType() {
+		return type;
+	}
 	
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {

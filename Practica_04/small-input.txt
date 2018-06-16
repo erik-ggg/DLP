@@ -10,8 +10,18 @@ matrix:[10][10]int;
 # integer: int; # repetido
 # character: char; #repetido
 
+# Record
+date:struct { 
+	day, mounth, year:int;	
+};
+
 # Functions
 def setValue(row:int, column:int, value:int):void {
+	date.day = 9;
+	date.mounth = 3;
+	date.year = 2016;
+	
+	character = (char)date.day;
 	if row >= 0 && row < MATRIXSIZE && column >= 0 && column < MATRIXSIZE: {
 		matrix[row][column] = value;
 		# casca1 = cascaFunction1(cascaParam1, cascaParam2);
@@ -62,11 +72,6 @@ def show():void {
 	print ']';	
 }
 
-# Record
-date:struct { 
-	day, mounth, year:int;	
-};
-
 # Main program
 # def no_main ():void{ # Uncomment to test
 def main():void { # Uncomment to test
@@ -83,11 +88,7 @@ def main():void { # Uncomment to test
 	}
 	show();
 	
-	date.day = 9;
-	date.mounth = 3;
-	date.year = 2016;
 	
-	character = (char)date.day;
 	# real = 4.5 + 4. * 3e+3 - 5.4E-3;
 	real = 4.5 + 4;
 	# casca2 = real;

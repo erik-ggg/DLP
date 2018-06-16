@@ -2,11 +2,11 @@ package ast.expressions;
 
 import semantic.Visitor;
 
-public class UnaryMinus extends AbstractExpression {
-	
-	private Expression expression;
+public class UnaryNot extends AbstractExpression {
 
-	public UnaryMinus(int row, int col, Expression expression) {
+    private Expression expression;
+
+	public UnaryNot(int row, int col, Expression expression) {
 		super(row, col);
 		this.expression = expression;
 	}
@@ -27,4 +27,5 @@ public class UnaryMinus extends AbstractExpression {
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);
 	}
+
 }

@@ -33,6 +33,13 @@ public class ArrayType extends AbstractType {
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);
+    }
+    
+    @Override
+	public Type squareBrackets( Type index ) {
+		if (index instanceof IntType) return type;
+		if (index instanceof ErrorType) return index;
+		return null;
 	}
     
 }

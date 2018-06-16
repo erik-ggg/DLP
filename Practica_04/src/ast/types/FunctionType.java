@@ -44,4 +44,20 @@ public class FunctionType extends AbstractType {
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);
 	}
+
+	@Override
+	public int getNumberOfBytes() {
+		return 0;
+	}
+
+	@Override
+	public Type parenthesys(List types) {
+		if (types.size() != params.size()) 
+			return null;
+		for (int i = 0; i < params.size(); i++) 
+			if (((AbstractType) types.get(i)).promotesTo(params.get(i).getType()) == null) return null;
+		
+		return returnType;
+	}
+	
 }

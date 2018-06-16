@@ -7,10 +7,10 @@ import ast.expressions.Comparison;
 import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
-import ast.expressions.Invocation;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
 import ast.expressions.UnaryMinus;
+import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
 import ast.main.FunctionDefinition;
 import ast.main.Operation;
@@ -19,6 +19,7 @@ import ast.main.VarDefinition;
 import ast.statements.Assignment;
 import ast.statements.IfStatement;
 import ast.statements.Input;
+import ast.statements.Invocation;
 import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
@@ -68,4 +69,5 @@ public interface Visitor<TP, TR> {
 	TR visit(While whl, TP p);
 	TR visit(Write write, TP p);
 	TR visit(VoidType voidType, TP p);
+	TR visit(UnaryNot unaryNot, TP p);
 }

@@ -7,6 +7,7 @@ import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
 import parser.Parser;
 import scanner.Scanner;
+import semantic.ComprobacionTiposVisitor;
 import semantic.IdentificationVisitor;
 import errorhandler.EH;
 
@@ -36,6 +37,8 @@ public class Main {
 		ASTNode ast = parser.getAST();
 		IdentificationVisitor identificationVisitor = new IdentificationVisitor();
 		ast.accept(identificationVisitor, null);
+		ComprobacionTiposVisitor comprobacionTiposVisitor = new ComprobacionTiposVisitor();
+		ast.accept(comprobacionTiposVisitor, null);
 				
 		// * Check errors 
 		if(EH.getEH().hasErrors()){

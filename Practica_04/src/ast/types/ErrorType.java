@@ -23,5 +23,13 @@ public class ErrorType<TP, TR> extends AbstractType<TP, TR> {
 		return visitor.visit(this, p);
 	}
 	
-	
+	@Override
+	public int getNumberOfBytes() {
+		return 0;
+	}
+
+	@Override
+	public Type promotesTo(Type type) {
+		return this;
+	}
 }

@@ -1,13 +1,13 @@
-package ast.expressions;
+package ast.statements;
 
 import java.util.List;
 
-import ast.main.ConcreteASTNode;
-import ast.statements.Statement;
-import errorhandler.Contexts;
+import ast.expressions.AbstractExpression;
+import ast.expressions.Expression;
+import ast.expressions.Variable;
 import semantic.Visitor;
 
-public class Invocation extends ConcreteASTNode implements Statement, Expression {
+public class Invocation extends AbstractExpression implements Statement {
 	
     private List<Expression> expressions;
     private Variable function;

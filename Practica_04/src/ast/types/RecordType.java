@@ -28,4 +28,24 @@ public class RecordType extends AbstractType {
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);
 	}
+
+	@Override
+	public Type dot(String field) {
+		for (RecordField record : (List<RecordField>)body.get(0))
+			if (record.getName().equals(field))
+				return record.getType();
+		return null;
+	}
+	
+	@Override
+	public RecordField getField(String name) {
+		for(RecordField record: body) 
+			if (record.getName().equals(name)) return record;
+		return null;
+	}
+
+	@Override
+	public int getNumberOfBytes() {
+		return body.stream().mapToInt(x -> ((Integer) x.getType().getNumberOfBytes())).sum();
+	}
 }

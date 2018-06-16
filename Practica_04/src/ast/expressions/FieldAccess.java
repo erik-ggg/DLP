@@ -1,9 +1,8 @@
 package ast.expressions;
 
-import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
-public class FieldAccess extends ConcreteASTNode implements Expression {
+public class FieldAccess extends AbstractExpression{
     private Expression leftop;
     private String name;
 
@@ -31,5 +30,10 @@ public class FieldAccess extends ConcreteASTNode implements Expression {
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);
+	}
+
+	@Override
+	public String toString() {
+		return "FieldAccess: Leftop " + leftop + ", Name " + name;
 	}
 }

@@ -1,14 +1,20 @@
 package ast.expressions;
 
-import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
-public class RealLiteral extends ConcreteASTNode implements Expression {
+public class RealLiteral extends AbstractExpression {
     private double value;
 
     public RealLiteral(int row, int column, double value) {
         super(row, column);
         this.value = value;
+    }
+
+    /**
+     * @return the value
+     */
+    public double getValue() {
+        return value;
     }
 
     @Override

@@ -21,22 +21,12 @@ public abstract class AbstractType<TP, TR> extends ConcreteASTNode<TP, TR> imple
 	}
 
 	@Override
-	public Type arithmetic() {
-		return null;
-	}
-
-	@Override
 	public Type comparison(Type type) {
 		return null;
 	}
 
 	@Override
 	public Type logical(Type type) {
-		return null;
-	}
-
-	@Override
-	public Type logical() {
 		return null;
 	}
 
@@ -83,6 +73,16 @@ public abstract class AbstractType<TP, TR> extends ConcreteASTNode<TP, TR> imple
 	
 	@Override
 	public Type superType(Type type) {
+		return null;
+	}
+	
+	@Override
+	public Type arithmetic() {
+		return null;
+	}
+
+	@Override
+	public Type logical() {
 		return null;
 	}
 }

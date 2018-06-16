@@ -3,7 +3,7 @@ package ast.expressions;
 import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
-public class CharLiteral extends ConcreteASTNode implements Expression {
+public class CharLiteral extends AbstractExpression {
     private char value;
 
     public CharLiteral(int row, int column, String value) {

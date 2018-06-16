@@ -40,6 +40,9 @@ import ast.types.*;
 %left '>' '>=' '<' '<=' '!=' '=='
 %left '+''-'
 %left '*''/''%'
+%nonassoc '!'
+%right UNARY_MINUS
+%nonassoc CAST
 %left '.'
 %left ':'
 %left ';'
@@ -79,11 +82,11 @@ composedStatement: statement { $$ = new ArrayList(); ((List)$$).add((List) $1);}
         | '{' '}' { $$ = new ArrayList(); }
         ;
 
-expression: expression '+' expression	                        { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '+', (Expression)$3); }
-        | expression '-' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '-', (Expression)$3); }
-        | expression '*' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '*', (Expression)$3); }
-        | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '/', (Expression)$3); }
-        | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, '%', (Expression)$3); }
+expression: expression '+' expression	                        { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "+", (Expression)$3); }
+        | expression '-' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "-", (Expression)$3); }
+        | expression '*' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "*", (Expression)$3); }
+        | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "/", (Expression)$3); }
+        | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "%", (Expression)$3); }
         | expression '.' ID                                     { $$ = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$3); }
         | expression '=' expression                             { $$ = new Assignment(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3); }
         | expression '<' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
@@ -92,18 +95,18 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '>''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">=", (Expression)$4); }
         | expression '<''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<=", (Expression)$4); }
         | expression '!''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "!=", (Expression)$4); }
-        | '!' expression                                        { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$2, "!", (Expression)$2); }
         | expression OR expression                              { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
         | expression AND expression                             { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
-        | '(' type ')' expression                               { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
+        | '(' type ')' expression %prec CAST                    { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
         | ID '(' expressions_or_empty ')'                       { $$ = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List<Expression>)$3); }
         | '(' expression ')'                                    { $$ = $2; }
+        | '-' expression        %prec UNARY_MINUS               { $$ = new UnaryMinus(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
+        | '!' expression                                        { $$ = new UnaryNot(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
         | expression '['expression']'                           { $$ = new Indexing(scanner.getLine(), scanner.getColumn(), (Expression)$1, "[]", (Expression)$3);}
         | INT_CONSTANT	                                        { $$ = new IntLiteral(scanner.getLine(), scanner.getColumn(), (int)$1); } 
         | REAL_CONSTANT                                         { $$ = new RealLiteral(scanner.getLine(), scanner.getColumn(),(double)$1); }
         | CHAR_CONSTANT                                         { $$ = new CharLiteral(scanner.getLine(), scanner.getColumn(), (String)$1); }
         | ID                                                    { $$ = new Variable(scanner.getLine(), scanner.getColumn(), (String)$1); }
-        | '-' expression                                        { $$ = $2;}
         ;
 
 expressions: expressions ',' expression         { $$ = $1; ((List)$$).add($3); }
@@ -160,7 +163,7 @@ struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).ad
         | definicionStruct                              { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List)$$).add(new RecordField(scanner.getLine(), scanner.getColumn(), id, (Type)$3)); }
+definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List<RecordField>)$$).add(new RecordField(scanner.getLine(), scanner.getColumn(), id, (Type)$3)); }
         ;
         
 type: INT                                               { $$ = IntType.getInstance(); }

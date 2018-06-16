@@ -33,18 +33,18 @@
   26             | expression '>' '=' expression
   27             | expression '<' '=' expression
   28             | expression '!' '=' expression
-  29             | '!' expression
-  30             | expression OR expression
-  31             | expression AND expression
-  32             | '(' type ')' expression
-  33             | ID '(' expressions_or_empty ')'
-  34             | '(' expression ')'
-  35             | expression '[' expression ']'
-  36             | INT_CONSTANT
-  37             | REAL_CONSTANT
-  38             | CHAR_CONSTANT
-  39             | ID
-  40             | '-' expression
+  29             | expression OR expression
+  30             | expression AND expression
+  31             | '(' type ')' expression
+  32             | ID '(' expressions_or_empty ')'
+  33             | '(' expression ')'
+  34             | '-' expression
+  35             | '!' expression
+  36             | expression '[' expression ']'
+  37             | INT_CONSTANT
+  38             | REAL_CONSTANT
+  39             | CHAR_CONSTANT
+  40             | ID
 
   41  expressions : expressions ',' expression
   42              | expression
@@ -488,8 +488,8 @@ state 47
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  reduce 57
 
 	definicionVariable  goto 61
@@ -523,8 +523,8 @@ state 49
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  reduce 57
 
 	definicionVariable  goto 61
@@ -539,46 +539,46 @@ state 49
 
 
 state 50
-	expression : INT_CONSTANT .  (36)
+	expression : INT_CONSTANT .  (37)
 
-	.  reduce 36
+	.  reduce 37
 
 
 state 51
-	expression : ID . '(' expressions_or_empty ')'  (33)
-	expression : ID .  (39)
+	expression : ID . '(' expressions_or_empty ')'  (32)
+	expression : ID .  (40)
 	ids : ID .  (51)
 	call_function : ID . '(' expressions_or_empty ')' ';'  (60)
 
 	'('  shift 71
-	AND  reduce 39
-	OR  reduce 39
-	'='  reduce 39
-	'>'  reduce 39
-	'<'  reduce 39
-	'+'  reduce 39
-	'-'  reduce 39
-	'*'  reduce 39
-	'/'  reduce 39
-	'%'  reduce 39
-	'.'  reduce 39
+	AND  reduce 40
+	OR  reduce 40
+	'='  reduce 40
+	'>'  reduce 40
+	'<'  reduce 40
+	'+'  reduce 40
+	'-'  reduce 40
+	'*'  reduce 40
+	'/'  reduce 40
+	'%'  reduce 40
+	'!'  reduce 40
+	'.'  reduce 40
 	':'  reduce 51
-	';'  reduce 39
-	'['  reduce 39
-	'!'  reduce 39
+	';'  reduce 40
+	'['  reduce 40
 	','  reduce 51
 
 
 state 52
-	expression : CHAR_CONSTANT .  (38)
+	expression : CHAR_CONSTANT .  (39)
 
-	.  reduce 38
+	.  reduce 39
 
 
 state 53
-	expression : REAL_CONSTANT .  (37)
+	expression : REAL_CONSTANT .  (38)
 
-	.  reduce 37
+	.  reduce 38
 
 
 state 54
@@ -589,8 +589,8 @@ state 54
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 73
@@ -604,8 +604,8 @@ state 55
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 74
@@ -620,8 +620,8 @@ state 56
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 75
@@ -635,8 +635,8 @@ state 57
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 76
@@ -644,23 +644,38 @@ state 57
 
 
 state 58
-	expression : '-' . expression  (40)
+	expression : '-' . expression  (34)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 78
 
 
 state 59
-	expression : '(' . type ')' expression  (32)
-	expression : '(' . expression ')'  (34)
+	expression : '!' . expression  (35)
+
+	INT_CONSTANT  shift 50
+	ID  shift 72
+	CHAR_CONSTANT  shift 52
+	REAL_CONSTANT  shift 53
+	'-'  shift 58
+	'!'  shift 59
+	'('  shift 60
+	.  error
+
+	expression  goto 79
+
+
+state 60
+	expression : '(' . type ')' expression  (31)
+	expression : '(' . expression ')'  (33)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
@@ -672,28 +687,13 @@ state 59
 	CHAR_TYPE  shift 18
 	VOID  shift 19
 	'-'  shift 58
-	'('  shift 59
+	'!'  shift 59
+	'('  shift 60
 	'['  shift 20
-	'!'  shift 60
 	.  error
 
-	expression  goto 79
-	type  goto 80
-
-
-state 60
-	expression : '!' . expression  (29)
-
-	INT_CONSTANT  shift 50
-	ID  shift 72
-	CHAR_CONSTANT  shift 52
-	REAL_CONSTANT  shift 53
-	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
-	.  error
-
-	expression  goto 81
+	expression  goto 80
+	type  goto 81
 
 
 state 61
@@ -709,8 +709,8 @@ state 61
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  reduce 55
 
 	statement  goto 62
@@ -754,9 +754,9 @@ state 65
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -768,10 +768,10 @@ state 65
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	';'  shift 95
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	';'  shift 96
+	'['  shift 97
 	.  error
 
 
@@ -794,8 +794,8 @@ state 67
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  reduce 56
 
 	statement  goto 98
@@ -826,7 +826,7 @@ state 70
 
 
 state 71
-	expression : ID '(' . expressions_or_empty ')'  (33)
+	expression : ID '(' . expressions_or_empty ')'  (32)
 	call_function : ID '(' . expressions_or_empty ')' ';'  (60)
 	expressions_or_empty : .  (44)
 
@@ -835,8 +835,8 @@ state 71
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	')'  reduce 44
 
 	expression  goto 76
@@ -845,28 +845,28 @@ state 71
 
 
 state 72
-	expression : ID . '(' expressions_or_empty ')'  (33)
-	expression : ID .  (39)
+	expression : ID . '(' expressions_or_empty ')'  (32)
+	expression : ID .  (40)
 
 	'('  shift 103
-	AND  reduce 39
-	OR  reduce 39
-	'='  reduce 39
-	'>'  reduce 39
-	'<'  reduce 39
-	'+'  reduce 39
-	'-'  reduce 39
-	'*'  reduce 39
-	'/'  reduce 39
-	'%'  reduce 39
-	'.'  reduce 39
-	':'  reduce 39
-	';'  reduce 39
-	')'  reduce 39
-	'['  reduce 39
-	']'  reduce 39
-	'!'  reduce 39
-	','  reduce 39
+	AND  reduce 40
+	OR  reduce 40
+	'='  reduce 40
+	'>'  reduce 40
+	'<'  reduce 40
+	'+'  reduce 40
+	'-'  reduce 40
+	'*'  reduce 40
+	'/'  reduce 40
+	'%'  reduce 40
+	'!'  reduce 40
+	'.'  reduce 40
+	':'  reduce 40
+	';'  reduce 40
+	')'  reduce 40
+	'['  reduce 40
+	']'  reduce 40
+	','  reduce 40
 
 
 state 73
@@ -884,9 +884,9 @@ state 73
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -898,10 +898,10 @@ state 73
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
+	'!'  shift 94
+	'.'  shift 95
 	';'  shift 104
-	'['  shift 96
-	'!'  shift 97
+	'['  shift 97
 	.  error
 
 
@@ -919,9 +919,9 @@ state 74
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 	while : WHILE expression . ':' composedStatement  (61)
 
 	AND  shift 84
@@ -934,10 +934,10 @@ state 74
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
+	'!'  shift 94
+	'.'  shift 95
 	':'  shift 105
-	'['  shift 96
-	'!'  shift 97
+	'['  shift 97
 	.  error
 
 
@@ -955,9 +955,9 @@ state 75
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 	if : IF expression . ':' composedStatement ELSE composedStatement  (62)
 	if : IF expression . ':' composedStatement  (63)
 
@@ -971,10 +971,10 @@ state 75
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
+	'!'  shift 94
+	'.'  shift 95
 	':'  shift 106
-	'['  shift 96
-	'!'  shift 97
+	'['  shift 97
 	.  error
 
 
@@ -992,9 +992,9 @@ state 76
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 	expressions : expression .  (42)
 
 	AND  shift 84
@@ -1007,9 +1007,9 @@ state 76
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	';'  reduce 42
 	')'  reduce 42
 	','  reduce 42
@@ -1038,29 +1038,29 @@ state 78
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
-	expression : '-' expression .  (40)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : '-' expression .  (34)
+	expression : expression . '[' expression ']'  (36)
 
-	'*'  shift 91
-	'/'  shift 92
-	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
-	AND  reduce 40
-	OR  reduce 40
-	'='  reduce 40
-	'>'  reduce 40
-	'<'  reduce 40
-	'+'  reduce 40
-	'-'  reduce 40
-	':'  reduce 40
-	';'  reduce 40
-	')'  reduce 40
-	']'  reduce 40
-	','  reduce 40
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
+	AND  reduce 34
+	OR  reduce 34
+	'='  reduce 34
+	'>'  reduce 34
+	'<'  reduce 34
+	'+'  reduce 34
+	'-'  reduce 34
+	'*'  reduce 34
+	'/'  reduce 34
+	'%'  reduce 34
+	':'  reduce 34
+	';'  reduce 34
+	')'  reduce 34
+	']'  reduce 34
+	','  reduce 34
 
 
 state 79
@@ -1077,36 +1077,15 @@ state 79
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : '(' expression . ')'  (34)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : '!' expression .  (35)
+	expression : expression . '[' expression ']'  (36)
 
-	AND  shift 84
-	OR  shift 85
-	'='  shift 86
-	'>'  shift 87
-	'<'  shift 88
-	'+'  shift 89
-	'-'  shift 90
-	'*'  shift 91
-	'/'  shift 92
-	'%'  shift 93
-	'.'  shift 94
-	')'  shift 109
-	'['  shift 96
-	'!'  shift 97
-	.  error
+	.  reduce 35
 
 
 state 80
-	expression : '(' type . ')' expression  (32)
-
-	')'  shift 110
-	.  error
-
-
-state 81
 	expression : expression . '+' expression  (16)
 	expression : expression . '-' expression  (17)
 	expression : expression . '*' expression  (18)
@@ -1120,34 +1099,55 @@ state 81
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : '!' expression .  (29)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : '(' expression . ')'  (33)
+	expression : expression . '[' expression ']'  (36)
 
-	.  reduce 29
+	AND  shift 84
+	OR  shift 85
+	'='  shift 86
+	'>'  shift 87
+	'<'  shift 88
+	'+'  shift 89
+	'-'  shift 90
+	'*'  shift 91
+	'/'  shift 92
+	'%'  shift 93
+	'!'  shift 94
+	'.'  shift 95
+	')'  shift 109
+	'['  shift 97
+	.  error
+
+
+state 81
+	expression : '(' type . ')' expression  (31)
+
+	')'  shift 110
+	.  error
 
 
 state 82
-	expression : ID . '(' expressions_or_empty ')'  (33)
-	expression : ID .  (39)
+	expression : ID . '(' expressions_or_empty ')'  (32)
+	expression : ID .  (40)
 	call_function : ID . '(' expressions_or_empty ')' ';'  (60)
 
 	'('  shift 71
-	AND  reduce 39
-	OR  reduce 39
-	'='  reduce 39
-	'>'  reduce 39
-	'<'  reduce 39
-	'+'  reduce 39
-	'-'  reduce 39
-	'*'  reduce 39
-	'/'  reduce 39
-	'%'  reduce 39
-	'.'  reduce 39
-	';'  reduce 39
-	'['  reduce 39
-	'!'  reduce 39
+	AND  reduce 40
+	OR  reduce 40
+	'='  reduce 40
+	'>'  reduce 40
+	'<'  reduce 40
+	'+'  reduce 40
+	'-'  reduce 40
+	'*'  reduce 40
+	'/'  reduce 40
+	'%'  reduce 40
+	'!'  reduce 40
+	'.'  reduce 40
+	';'  reduce 40
+	'['  reduce 40
 
 
 state 83
@@ -1163,8 +1163,8 @@ state 83
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  reduce 54
 
 	statement  goto 98
@@ -1175,30 +1175,30 @@ state 83
 
 
 state 84
-	expression : expression AND . expression  (31)
+	expression : expression AND . expression  (30)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 111
 
 
 state 85
-	expression : expression OR . expression  (30)
+	expression : expression OR . expression  (29)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 112
@@ -1214,8 +1214,8 @@ state 86
 	REAL_CONSTANT  shift 53
 	'='  shift 113
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 114
@@ -1231,8 +1231,8 @@ state 87
 	REAL_CONSTANT  shift 53
 	'='  shift 115
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 116
@@ -1248,8 +1248,8 @@ state 88
 	REAL_CONSTANT  shift 53
 	'='  shift 117
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 118
@@ -1263,8 +1263,8 @@ state 89
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 119
@@ -1278,8 +1278,8 @@ state 90
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 120
@@ -1293,8 +1293,8 @@ state 91
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 121
@@ -1308,8 +1308,8 @@ state 92
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 122
@@ -1323,46 +1323,46 @@ state 93
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 123
 
 
 state 94
-	expression : expression '.' . ID  (21)
+	expression : expression '!' . '=' expression  (28)
 
-	ID  shift 124
+	'='  shift 124
 	.  error
 
 
 state 95
+	expression : expression '.' . ID  (21)
+
+	ID  shift 125
+	.  error
+
+
+state 96
 	statement : expression ';' .  (9)
 
 	.  reduce 9
 
 
-state 96
-	expression : expression '[' . expression ']'  (35)
+state 97
+	expression : expression '[' . expression ']'  (36)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
-	expression  goto 125
-
-
-state 97
-	expression : expression '!' . '=' expression  (28)
-
-	'='  shift 126
-	.  error
+	expression  goto 126
 
 
 state 98
@@ -1392,7 +1392,7 @@ state 101
 
 
 state 102
-	expression : ID '(' expressions_or_empty . ')'  (33)
+	expression : ID '(' expressions_or_empty . ')'  (32)
 	call_function : ID '(' expressions_or_empty . ')' ';'  (60)
 
 	')'  shift 127
@@ -1400,7 +1400,7 @@ state 102
 
 
 state 103
-	expression : ID '(' . expressions_or_empty ')'  (33)
+	expression : ID '(' . expressions_or_empty ')'  (32)
 	expressions_or_empty : .  (44)
 
 	INT_CONSTANT  shift 50
@@ -1408,8 +1408,8 @@ state 103
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	')'  reduce 44
 
 	expression  goto 76
@@ -1435,8 +1435,8 @@ state 105
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'{'  shift 129
 	.  error
 
@@ -1461,8 +1461,8 @@ state 106
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'{'  shift 129
 	.  error
 
@@ -1488,29 +1488,29 @@ state 108
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 133
 
 
 state 109
-	expression : '(' expression ')' .  (34)
+	expression : '(' expression ')' .  (33)
 
-	.  reduce 34
+	.  reduce 33
 
 
 state 110
-	expression : '(' type ')' . expression  (32)
+	expression : '(' type ')' . expression  (31)
 
 	INT_CONSTANT  shift 50
 	ID  shift 72
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 134
@@ -1530,10 +1530,10 @@ state 111
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression AND expression .  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression AND expression .  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'>'  shift 87
 	'<'  shift 88
@@ -1542,17 +1542,17 @@ state 111
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
-	AND  reduce 31
-	OR  reduce 31
-	'='  reduce 31
-	':'  reduce 31
-	';'  reduce 31
-	')'  reduce 31
-	']'  reduce 31
-	','  reduce 31
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
+	AND  reduce 30
+	OR  reduce 30
+	'='  reduce 30
+	':'  reduce 30
+	';'  reduce 30
+	')'  reduce 30
+	']'  reduce 30
+	','  reduce 30
 
 
 state 112
@@ -1569,10 +1569,10 @@ state 112
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression OR expression .  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression OR expression .  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'>'  shift 87
 	'<'  shift 88
@@ -1581,17 +1581,17 @@ state 112
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
-	AND  reduce 30
-	OR  reduce 30
-	'='  reduce 30
-	':'  reduce 30
-	';'  reduce 30
-	')'  reduce 30
-	']'  reduce 30
-	','  reduce 30
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
+	AND  reduce 29
+	OR  reduce 29
+	'='  reduce 29
+	':'  reduce 29
+	';'  reduce 29
+	')'  reduce 29
+	']'  reduce 29
+	','  reduce 29
 
 
 state 113
@@ -1602,8 +1602,8 @@ state 113
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 135
@@ -1624,9 +1624,9 @@ state 114
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -1638,9 +1638,9 @@ state 114
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	':'  reduce 22
 	';'  reduce 22
 	')'  reduce 22
@@ -1656,8 +1656,8 @@ state 115
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 136
@@ -1678,18 +1678,18 @@ state 116
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'+'  shift 89
 	'-'  shift 90
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 24
 	OR  reduce 24
 	'='  reduce 24
@@ -1710,8 +1710,8 @@ state 117
 	CHAR_CONSTANT  shift 52
 	REAL_CONSTANT  shift 53
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	.  error
 
 	expression  goto 137
@@ -1732,18 +1732,18 @@ state 118
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'+'  shift 89
 	'-'  shift 90
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 23
 	OR  reduce 23
 	'='  reduce 23
@@ -1771,16 +1771,16 @@ state 119
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 16
 	OR  reduce 16
 	'='  reduce 16
@@ -1810,16 +1810,16 @@ state 120
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 17
 	OR  reduce 17
 	'='  reduce 17
@@ -1849,13 +1849,13 @@ state 121
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 18
 	OR  reduce 18
 	'='  reduce 18
@@ -1888,13 +1888,13 @@ state 122
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 19
 	OR  reduce 19
 	'='  reduce 19
@@ -1927,13 +1927,13 @@ state 123
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	AND  reduce 20
 	OR  reduce 20
 	'='  reduce 20
@@ -1952,12 +1952,27 @@ state 123
 
 
 state 124
+	expression : expression '!' '=' . expression  (28)
+
+	INT_CONSTANT  shift 50
+	ID  shift 72
+	CHAR_CONSTANT  shift 52
+	REAL_CONSTANT  shift 53
+	'-'  shift 58
+	'!'  shift 59
+	'('  shift 60
+	.  error
+
+	expression  goto 138
+
+
+state 125
 	expression : expression '.' ID .  (21)
 
 	.  reduce 21
 
 
-state 125
+state 126
 	expression : expression . '+' expression  (16)
 	expression : expression . '-' expression  (17)
 	expression : expression . '*' expression  (18)
@@ -1971,10 +1986,10 @@ state 125
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
-	expression : expression '[' expression . ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
+	expression : expression '[' expression . ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -1986,37 +2001,22 @@ state 125
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	']'  shift 138
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
+	']'  shift 139
 	.  error
-
-
-state 126
-	expression : expression '!' '=' . expression  (28)
-
-	INT_CONSTANT  shift 50
-	ID  shift 72
-	CHAR_CONSTANT  shift 52
-	REAL_CONSTANT  shift 53
-	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
-	.  error
-
-	expression  goto 139
 
 
 state 127
-	expression : ID '(' expressions_or_empty ')' .  (33)
+	expression : ID '(' expressions_or_empty ')' .  (32)
 	call_function : ID '(' expressions_or_empty ')' . ';'  (60)
 
-	.  reduce 33
+	.  reduce 32
 
 
 state 128
-	expression : ID '(' expressions_or_empty . ')'  (33)
+	expression : ID '(' expressions_or_empty . ')'  (32)
 
 	')'  shift 141
 	.  error
@@ -2035,8 +2035,8 @@ state 129
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  shift 142
 	.  error
 
@@ -2074,8 +2074,8 @@ state 132
 	IF  reduce 63
 	PRINT  reduce 63
 	'-'  reduce 63
-	'('  reduce 63
 	'!'  reduce 63
+	'('  reduce 63
 	'}'  reduce 63
 
 
@@ -2093,9 +2093,9 @@ state 133
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 	expressions : expressions ',' expression .  (41)
 
 	AND  shift 84
@@ -2108,9 +2108,9 @@ state 133
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	';'  reduce 41
 	')'  reduce 41
 	','  reduce 41
@@ -2130,29 +2130,29 @@ state 134
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : '(' type ')' expression .  (32)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : '(' type ')' expression .  (31)
+	expression : expression . '[' expression ']'  (36)
 
-	'['  shift 96
-	'!'  shift 97
-	AND  reduce 32
-	OR  reduce 32
-	'='  reduce 32
-	'>'  reduce 32
-	'<'  reduce 32
-	'+'  reduce 32
-	'-'  reduce 32
-	'*'  reduce 32
-	'/'  reduce 32
-	'%'  reduce 32
-	'.'  reduce 32
-	':'  reduce 32
-	';'  reduce 32
-	')'  reduce 32
-	']'  reduce 32
-	','  reduce 32
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
+	AND  reduce 31
+	OR  reduce 31
+	'='  reduce 31
+	'>'  reduce 31
+	'<'  reduce 31
+	'+'  reduce 31
+	'-'  reduce 31
+	'*'  reduce 31
+	'/'  reduce 31
+	'%'  reduce 31
+	':'  reduce 31
+	';'  reduce 31
+	')'  reduce 31
+	']'  reduce 31
+	','  reduce 31
 
 
 state 135
@@ -2170,9 +2170,9 @@ state 135
 	expression : expression . '>' '=' expression  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -2184,9 +2184,9 @@ state 135
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	':'  reduce 25
 	';'  reduce 25
 	')'  reduce 25
@@ -2209,9 +2209,9 @@ state 136
 	expression : expression '>' '=' expression .  (26)
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -2223,9 +2223,9 @@ state 136
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	':'  reduce 26
 	';'  reduce 26
 	')'  reduce 26
@@ -2248,9 +2248,9 @@ state 137
 	expression : expression . '<' '=' expression  (27)
 	expression : expression '<' '=' expression .  (27)
 	expression : expression . '!' '=' expression  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -2262,9 +2262,9 @@ state 137
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	':'  reduce 27
 	';'  reduce 27
 	')'  reduce 27
@@ -2273,12 +2273,6 @@ state 137
 
 
 state 138
-	expression : expression '[' expression ']' .  (35)
-
-	.  reduce 35
-
-
-state 139
 	expression : expression . '+' expression  (16)
 	expression : expression . '-' expression  (17)
 	expression : expression . '*' expression  (18)
@@ -2293,9 +2287,9 @@ state 139
 	expression : expression . '<' '=' expression  (27)
 	expression : expression . '!' '=' expression  (28)
 	expression : expression '!' '=' expression .  (28)
-	expression : expression . OR expression  (30)
-	expression : expression . AND expression  (31)
-	expression : expression . '[' expression ']'  (35)
+	expression : expression . OR expression  (29)
+	expression : expression . AND expression  (30)
+	expression : expression . '[' expression ']'  (36)
 
 	AND  shift 84
 	OR  shift 85
@@ -2307,14 +2301,20 @@ state 139
 	'*'  shift 91
 	'/'  shift 92
 	'%'  shift 93
-	'.'  shift 94
-	'['  shift 96
-	'!'  shift 97
+	'!'  shift 94
+	'.'  shift 95
+	'['  shift 97
 	':'  reduce 28
 	';'  reduce 28
 	')'  reduce 28
 	']'  reduce 28
 	','  reduce 28
+
+
+state 139
+	expression : expression '[' expression ']' .  (36)
+
+	.  reduce 36
 
 
 state 140
@@ -2324,9 +2324,9 @@ state 140
 
 
 state 141
-	expression : ID '(' expressions_or_empty ')' .  (33)
+	expression : ID '(' expressions_or_empty ')' .  (32)
 
-	.  reduce 33
+	.  reduce 32
 
 
 state 142
@@ -2348,8 +2348,8 @@ state 143
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'}'  shift 145
 	.  error
 
@@ -2372,8 +2372,8 @@ state 144
 	IF  shift 56
 	PRINT  shift 57
 	'-'  shift 58
-	'('  shift 59
-	'!'  shift 60
+	'!'  shift 59
+	'('  shift 60
 	'{'  shift 129
 	.  error
 
@@ -2402,5 +2402,5 @@ Rules never reduced:
 	definicion : function  (6)
 
 
-46 terminals, 23 nonterminals
+48 terminals, 23 nonterminals
 73 grammar rules, 147 states

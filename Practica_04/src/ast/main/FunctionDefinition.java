@@ -2,13 +2,11 @@ package ast.main;
 
 import java.util.List;
 
-import ast.expressions.Expression;
 import ast.statements.Statement;
 import ast.types.Type;
-import errorhandler.Contexts;
 import semantic.Visitor;
 
-public class FunctionDefinition extends ConcreteASTNode implements Definition, Expression {
+public class FunctionDefinition extends ConcreteASTNode implements Definition {
 
     private String name;
     private List<Statement> body;

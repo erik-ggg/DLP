@@ -1,5 +1,8 @@
 package semantic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ast.expressions.Arithmetic;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
@@ -7,10 +10,10 @@ import ast.expressions.Comparison;
 import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
-import ast.expressions.Invocation;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
 import ast.expressions.UnaryMinus;
+import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
 import ast.main.FunctionDefinition;
 import ast.main.Operation;
@@ -19,6 +22,7 @@ import ast.main.VarDefinition;
 import ast.statements.Assignment;
 import ast.statements.IfStatement;
 import ast.statements.Input;
+import ast.statements.Invocation;
 import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
@@ -36,6 +40,10 @@ import ast.types.VoidType;
 
 public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	
+	public TR visit(Program program, TP p) {
+		program.getDefinitions().forEach(x -> x.accept(this, p));
+		return null;
+	}
 	public TR visit(FunctionDefinition functionDefinition, TP p) {
 		functionDefinition.getType().accept(this, p);
 		functionDefinition.getVars().forEach(x -> x.accept(this, p));
@@ -55,16 +63,16 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		return null;
 	}
 	public TR visit(Arithmetic arithmetic, TP p) {
-		arithmetic.getRightop().accept(this, p);
-		arithmetic.getLeftop().accept(this, p);
-		return null;
-	}
-	public TR visit(ErrorType errorType, TP p) {
+		arithmetic.getRight().accept(this, p);
+		arithmetic.getLeft().accept(this, p);
 		return null;
 	}
 	public TR visit(FunctionType functionType, TP p) {
 		functionType.getParams().forEach(x -> x.accept(this, p));
 		functionType.getReturnType().accept(this, p);
+		return null;
+	}
+	public TR visit(ErrorType errorType, TP p) {
 		return null;
 	}
 	public TR visit(CharType charType, TP p) {
@@ -77,8 +85,7 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	public TR visit(IntType intType, TP p) {
 		return null;
 	}
-	public TR visit(Program program, TP p) {
-		program.getDefinitions().forEach(x -> x.accept(this, p));
+	public TR visit(RealLiteral realLiteral, TP p) {
 		return null;
 	}
 	public TR visit(Operation operation, TP p) {
@@ -89,17 +96,19 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		unaryMinus.getExpression().accept(this, p);
 		return null;
 	}
-	public TR visit(RealLiteral realLiteral, TP p) {
+	@Override
+	public TR visit(UnaryNot arg, TP tp) {
+		arg.getExpression().accept(this, tp);
 		return null;
 	}
 	public TR visit(Logical logical, TP p) {
-		logical.getRightop().accept(this, p);
-		logical.getLeftop().accept(this, p);
+		logical.getRight().accept(this, p);
+		logical.getLeft().accept(this, p);
 		return null;
 	}
 	public TR visit(Indexing indexing, TP p) {
-		indexing.getRightop().accept(this, p);
-		indexing.getLeftop().accept(this, p);
+		indexing.getRight().accept(this, p);
+		indexing.getLeft().accept(this, p);
 		return null;
 	}
 	public TR visit(FieldAccess fieldAccess, TP p) {
@@ -107,16 +116,16 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		return null;
 	}
 	public TR visit(Comparison comparison, TP p) {
-		comparison.getRightop().accept(this, p);
-		comparison.getLeftop().accept(this, p);
-		return null;
-	}
-	public TR visit(CharLiteral charLiteral, TP p) {
+		comparison.getRight().accept(this, p);
+		comparison.getLeft().accept(this, p);
 		return null;
 	}
 	public TR visit(Cast cast, TP p) {
 		cast.getExpression().accept(this, p);
-		cast.getType().accept(this, p);
+		cast.getCastType().accept(this, p);
+		return null;
+	}
+	public TR visit(CharLiteral charLiteral, TP p) {
 		return null;
 	}
 	public TR visit(IntLiteral intLiteral, TP p) {
@@ -129,7 +138,9 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		return null;
 	}
 	public TR visit(RecordType recordType, TP p) {
-		recordType.getBody().forEach(x -> x.accept(this, p));
+		for (RecordField recordField : (List<RecordField>)recordType.getBody().get(0)) {
+			recordField.accept(this, p);
+		}
 		return null;
 	}
 	public TR visit(VoidType voidType, TP p) {

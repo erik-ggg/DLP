@@ -3,7 +3,9 @@ package ast.types;
 import semantic.Visitor;
 
 public class IntType extends AbstractType {
+
     private static final IntType INSTANCE = new IntType();
+	public static final int SIZE = 2;
     private int value;
 
     public IntType() {
@@ -21,7 +23,12 @@ public class IntType extends AbstractType {
 	@Override
 	public String toString() {
 		return "IntType";
-	}	
+	}
+	
+	@Override
+	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
+		return visitor.visit(this, p);
+	}
 
 	@Override
 	public Type arithmetic(Type type) {
@@ -30,9 +37,73 @@ public class IntType extends AbstractType {
 		if (type instanceof CharType) return IntType.getInstance();
 		else return null;
 	}
+
+	@Override
+	public Type arithmetic() {
+		return this;
+	}
+
+	@Override
+	public boolean isLogical() {
+		return true;
+	}
+
+	@Override
+	public int getNumberOfBytes() {
+		return SIZE;
+	}
+
+	@Override
+	public Type canBeCast( Type type ) {
+		return type;
+	}
 	
 	@Override
-	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
-		return visitor.visit(this, p);
+	public Type comparison(Type type) {
+		if (type instanceof ErrorType) return type;
+		if (type instanceof IntType) return this;
+		return null;
+	}
+	
+	@Override
+	public Type logical( Type type ) {
+		if (type instanceof ErrorType) {
+			return type;
+		}
+
+		if (type instanceof IntType) {
+			return this;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Type logical() {
+		return this;
+	}
+	
+	@Override
+	public Type promotesTo( Type type ) {
+		if (type instanceof ErrorType) {
+			return type;
+		}
+
+		if (type instanceof IntType) {
+			return this;
+		}
+
+		return null;
+	}
+	
+	@Override
+	public String getSuffix() {
+		return "i";
+	}
+	
+	@Override
+	public Type superType(Type type) {
+		if (type == RealType.getInstance()) return type;
+		return this;
 	}
 }

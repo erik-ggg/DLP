@@ -1,11 +1,9 @@
 package ast.expressions;
 
-import ast.main.ConcreteASTNode;
 import ast.main.Definition;
-import errorhandler.Contexts;
 import semantic.Visitor;
 
-public class Variable extends ConcreteASTNode implements Expression {
+public class Variable extends AbstractExpression {
 	
 	private Definition definition;
 	private String name;
