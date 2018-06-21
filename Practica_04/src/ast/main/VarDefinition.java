@@ -8,7 +8,8 @@ import semantic.Visitor;
 public class VarDefinition extends ConcreteASTNode implements Definition, Statement {
 
     private String name;
-    private Type type;
+	private Type type;
+	private int offset;
 
     public VarDefinition(int row, int column, String name, Type type) {
         super(row, column);
@@ -24,7 +25,21 @@ public class VarDefinition extends ConcreteASTNode implements Definition, Statem
 	@Override
     public String getName() {
         return name;
-    }
+	}
+	
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return offset;
+	}
 
 	@Override
 	public String toString() {

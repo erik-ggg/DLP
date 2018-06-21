@@ -3,6 +3,7 @@ package ast.main;
 import java.util.List;
 
 import ast.statements.Statement;
+import ast.types.FunctionType;
 import ast.types.Type;
 import semantic.Visitor;
 
@@ -46,6 +47,14 @@ public class FunctionDefinition extends ConcreteASTNode implements Definition {
 
 	public void setVars(List<VarDefinition> vars) {
 		this.vars = vars;
+	}
+
+	public int numBytesLocals() {
+		return vars.stream().map( x -> x.getType().getNumberOfBytes()).reduce((acc,x) -> acc + x).orElse(0);
+	}
+	
+	public int numBytesParams() {
+		return  ((FunctionType) type).getParams().stream().map( x -> x.getType().getNumberOfBytes()).reduce((acc,x) -> acc + x).orElse(0);
 	}
 
 	@Override

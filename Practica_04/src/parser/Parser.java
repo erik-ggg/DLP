@@ -978,7 +978,7 @@ case 63:
 break;
 case 64:
 //#line 162 "../../src/parser/parser.y"
-{ yyval = val_peek(1); ((List)yyval).add(val_peek(0)); }
+{ yyval = val_peek(1); ((List)yyval).addAll((List)val_peek(0)); }
 break;
 case 65:
 //#line 163 "../../src/parser/parser.y"

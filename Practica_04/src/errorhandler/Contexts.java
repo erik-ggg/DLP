@@ -51,4 +51,8 @@ public class Contexts {
 	public static Contexts getInstance() {		
 		return INSTANCE;
 	}
+	
+	public int getScope() {
+		return contexts.size() - 1;
+	}
 }

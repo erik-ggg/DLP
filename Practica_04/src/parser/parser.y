@@ -159,7 +159,7 @@ if: IF expression ':' composedStatement ELSE composedStatement          { $$ = n
         | IF expression ':' composedStatement                           { $$ = new IfStatement(scanner.getLine(), scanner.getColumn(), new ArrayList(), (List)$4, (Expression)$2); }                      %prec MENORQUEELSE
         ;
 
-struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).add($2); }
+struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).addAll((List)$2); }
         | definicionStruct                              { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 

@@ -1,8 +1,13 @@
 
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import ast.main.ASTNode;
+import codegeneration.CodeGenerator;
+import codegeneration.ExecutorVisitor;
+import codegeneration.OffsetVisitor;
 import introspector.model.IntrospectorModel;
 import introspector.view.IntrospectorTree;
 import parser.Parser;
@@ -47,8 +52,15 @@ public class Main {
 		}
 		else{			
 			// * Show AST
-			IntrospectorModel model=new IntrospectorModel("Program",parser.getAST());
+			OffsetVisitor offsetVisitor = new OffsetVisitor();
+			ast.accept(offsetVisitor, false);
+			IntrospectorModel model = new IntrospectorModel("Program",parser.getAST());
 			new IntrospectorTree("Introspector", model);
+			PrintStream stream = new PrintStream(new FileOutputStream("output.txt"));
+			new CodeGenerator(stream).source("C:\\Users\\ERIK\\Documents\\University\\DLP\\Repo\\DLP\\Practica_04\\small-input.txt");
+			ExecutorVisitor executorVisitor = new ExecutorVisitor();
+			ast.accept(executorVisitor, null);
+			stream.close();
 		}
 	}
 }

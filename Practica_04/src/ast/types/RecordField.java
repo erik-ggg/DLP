@@ -31,6 +31,20 @@ public class RecordField extends AbstractType {
 	public Type getType() {
 		return type;
 	}
+
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 	
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {

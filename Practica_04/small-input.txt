@@ -55,21 +55,21 @@ def fill(value:int):void {
 def show():void {
 	i,j:int;
 	i = 0;	
-	print '[','\n';
+	# print '[','\n';
 	while i < MATRIXSIZE: {
 		j = 0;
-		print '\t','[';
+		# print '\t','[';
 		while j < MATRIXSIZE: {
-			print getValue(i,j);
+			# print getValue(i,j);
 			if j != MATRIXSIZE - 1: {
-				print ',';
+				# print ',';
 			}
 			j = j + 1;
 		}
-		print ']','\n';	
+		# print ']','\n';	
 		i = i + 1;
 	}	
-	print ']';	
+	# print ']';	
 }
 
 # Main program
@@ -81,10 +81,10 @@ def main():void { # Uncomment to test
 	setValue(5,5,5);
 	integer = getValue(5,5);
 	if integer == 5: { # Uncomment { to test
-		print 'O','k','\n';
+		# print 'O','k','\n';
 	}
 	else {
-		print 'E','r','r','o','r','\n';
+		# print 'E','r','r','o','r','\n';
 	}
 	show();
 	
