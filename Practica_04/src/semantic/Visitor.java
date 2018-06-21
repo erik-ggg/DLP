@@ -9,6 +9,7 @@ import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
+import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
@@ -70,4 +71,5 @@ public interface Visitor<TP, TR> {
 	TR visit(Write write, TP p);
 	TR visit(VoidType voidType, TP p);
 	TR visit(UnaryNot unaryNot, TP p);
+	TR visit(TernaryOperator ternaryOperator, TP tp);
 }

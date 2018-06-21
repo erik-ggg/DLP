@@ -48,9 +48,11 @@ import ast.types.*;
 %left ';'
 %nonassoc '('')'
 %nonassoc '['']'
-%nonassoc '!'
+%left '?'
 %nonassoc MENORQUEELSE
 %nonassoc ELSE
+%nonassoc OT
+%nonassoc COMP
 
 %%
 // * Gramática y acciones Yacc
@@ -81,20 +83,21 @@ composedStatement: statement { $$ = new ArrayList(); ((List)$$).add((List) $1);}
         | '{' statements '}' { $$ = $2; }
         | '{' '}' { $$ = new ArrayList(); }
         ;
-
+// %prec TERNARY_OPERATOR 
 expression: expression '+' expression	                        { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "+", (Expression)$3); }
         | expression '-' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "-", (Expression)$3); }
         | expression '*' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "*", (Expression)$3); }
         | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "/", (Expression)$3); }
         | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "%", (Expression)$3); }
+        | expression '?' expression ':' expression %prec OT     { $$ = new TernaryOperator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5); }  
         | expression '.' ID                                     { $$ = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$3); }
         | expression '=' expression                             { $$ = new Assignment(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3); }
-        | expression '<' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
-        | expression '>' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">", (Expression)$3); }
-        | expression '=''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "==", (Expression)$4); }
-        | expression '>''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">=", (Expression)$4); }
-        | expression '<''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<=", (Expression)$4); }
-        | expression '!''=' expression                          { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "!=", (Expression)$4); }
+        | expression '<' expression                %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
+        | expression '>' expression                %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">", (Expression)$3); }
+        | expression '=''=' expression             %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "==", (Expression)$4); }
+        | expression '>''=' expression             %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">=", (Expression)$4); }
+        | expression '<''=' expression             %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<=", (Expression)$4); }
+        | expression '!''=' expression             %prec COMP   { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "!=", (Expression)$4); }
         | expression OR expression                              { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
         | expression AND expression                             { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
         | '(' type ')' expression %prec CAST                    { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }

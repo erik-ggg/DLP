@@ -12,6 +12,7 @@ import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
+import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
@@ -179,6 +180,13 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	}
 	public TR visit(Write write, TP p) {
 		write.getExpression().accept(this, p);
+		return null;
+	}
+	@Override
+	public TR visit(TernaryOperator ternaryOperator, TP tp) {
+		ternaryOperator.getCondition().accept(this, tp);
+		ternaryOperator.getLeft().accept(this, tp);
+		ternaryOperator.getRight().accept(this, tp);
 		return null;
 	}
 }

@@ -1,115 +1,127 @@
 # source "C:\Users\ERIK\Documents\University\DLP\Repo\DLP\Practica_04\small-input.txt"
 
-	' * IntType integer (offset 0)
-	' * CharType  character (offset 2)
-	' * RealType real (offset 3)
-	' * IntType MATRIXSIZE (offset 7)
-	' * ArrayType size: 10 matrix (offset 9)
-	' * RecordType [body=[[RecordField [name=day, offset=0, type=IntType], RecordField [name=mounth, offset=2, type=IntType], RecordField [name=year, offset=4, type=IntType]]]] date (offset 9)
+	' * IntType operadorTernario (offset 0)
+	' * IntType integer (offset 2)
+	' * CharType  character (offset 4)
+	' * RealType real (offset 5)
+	' * IntType MATRIXSIZE (offset 9)
+	' * ArrayType size: 10 matrix (offset 11)
+	' * RecordType [body=[[RecordField [name=day, offset=0, type=IntType], RecordField [name=mounth, offset=2, type=IntType], RecordField [name=year, offset=4, type=IntType]]]] date (offset 11)
 ' Invocation to the main function
 call main
 halt
-# line 29
+# line 35
 setValue:
 	' * Parameters
-	' * IntType row (offset 19)
-	' * IntType column (offset 17)
-	' * IntType value (offset 15)
+	' * IntType row (offset 21)
+	' * IntType column (offset 19)
+	' * IntType value (offset 17)
 	' * Local variables
 	enter	0
 	' * Assignment
-	pusha	9
+	pusha	0
+	pusha	2
+	loadi
+	pushi	5
+	gti
+	pusha	2
+	loadi
+	pusha	5
+	loadf
+	storei
+	' * Assignment
+	pusha	11
 	pushi	0
 	addi
 	pushi	9
 	storei
 	' * Assignment
-	pusha	9
+	pusha	11
 	pushi	2
 	addi
 	pushi	3
 	storei
 	' * Assignment
-	pusha	9
+	pusha	11
 	pushi	4
 	addi
 	pushi	2016
 	storei
 	' * Assignment
-	pusha	2
-	pusha	9
+	pusha	4
+	pusha	11
 	pushi	0
 	addi
 	loadi
 	i2b
 	storeb
 	' * If
-	pusha	19
+	pusha	21
 	loadi
 	pushi	0
-	pusha	19
+	gei
+	pusha	21
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	and
-	pusha	17
+	pusha	19
 	loadi
 	pushi	0
-	pusha	17
+	gei
+	and
+	pusha	19
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	and
-	gei
-	and
-	gei
 	jz	label0
 	' * Assignment
-	pusha	9
-	pusha	19
+	pusha	11
+	pusha	21
 	loadi
 	pushi	0
 	muli
 	addi
-	pusha	17
+	pusha	19
 	loadi
 	pushi	2
 	muli
 	addi
-	pusha	15
+	pusha	17
 	loadi
 	storei
 	jmp	label1
 label0:
 label1:
 	ret	0, 0, 6
-# line 42
+# line 48
 getValue:
 	' * Parameters
-	' * IntType row (offset 23)
-	' * IntType column (offset 21)
+	' * IntType row (offset 25)
+	' * IntType column (offset 23)
 	' * Local variables
 	enter	0
 	' * If
-	pusha	23
+	pusha	25
 	loadi
 	pushi	0
 	lti
-	pusha	23
+	pusha	25
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	gei
 	or
-	pusha	21
+	pusha	23
 	loadi
 	pushi	0
 	lti
-	pusha	21
+	pusha	23
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	gei
 	and
@@ -123,13 +135,13 @@ getValue:
 	jmp	label3
 label2:
 	' * Return
-	pusha	9
-	pusha	23
+	pusha	11
+	pusha	25
 	loadi
 	pushi	0
 	muli
 	addi
-	pusha	21
+	pusha	23
 	loadi
 	pushi	2
 	muli
@@ -137,49 +149,49 @@ label2:
 	loadi
 	ret	2, 0, 4
 label3:
-# line 54
+# line 60
 fill:
 	' * Parameters
-	' * IntType value (offset 25)
+	' * IntType value (offset 27)
 	' * Local variables
-	' * IntType i (offset 27)
-	' * IntType j (offset 29)
+	' * IntType i (offset 29)
+	' * IntType j (offset 31)
 	enter	4
 	' * Assignment
-	pusha	27
+	pusha	29
 	pushi	0
 	storei
 	' * While
 label4:
-	pusha	27
+	pusha	29
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	jz	label5
 	' * Assignment
-	pusha	29
+	pusha	31
 	pushi	0
 	storei
 	' * While
 label6:
-	pusha	29
+	pusha	31
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	jz	label7
 	' * Invocation
-	pusha	27
-	loadi
 	pusha	29
 	loadi
-	pusha	25
+	pusha	31
+	loadi
+	pusha	27
 	loadi
 	call	setValue
 	' * Assignment
-	pusha	29
-	pusha	29
+	pusha	31
+	pusha	31
 	loadi
 	pushi	1
 	addi
@@ -187,8 +199,8 @@ label6:
 	jmp	label6
 label7:
 	' * Assignment
-	pusha	27
-	pusha	27
+	pusha	29
+	pusha	29
 	loadi
 	pushi	1
 	addi
@@ -196,52 +208,52 @@ label7:
 	jmp	label4
 label5:
 	ret	0, 4, 2
-# line 73
+# line 79
 show:
 	' * Parameters
 	' * Local variables
-	' * IntType i (offset 31)
-	' * IntType j (offset 33)
+	' * IntType i (offset 33)
+	' * IntType j (offset 35)
 	enter	4
 	' * Assignment
-	pusha	31
+	pusha	33
 	pushi	0
 	storei
 	' * While
 label8:
-	pusha	31
+	pusha	33
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	jz	label9
 	' * Assignment
-	pusha	33
+	pusha	35
 	pushi	0
 	storei
 	' * While
 label10:
-	pusha	33
+	pusha	35
 	loadi
-	pusha	7
+	pusha	9
 	loadi
 	lti
 	jz	label11
 	' * If
-	pusha	33
+	pusha	35
 	loadi
-	pusha	7
+	pusha	9
 	loadi
+	nei
 	pushi	1
 	subi
-	nei
 	jz	label12
 	jmp	label13
 label12:
 label13:
 	' * Assignment
-	pusha	33
-	pusha	33
+	pusha	35
+	pusha	35
 	loadi
 	pushi	1
 	addi
@@ -249,8 +261,8 @@ label13:
 	jmp	label10
 label11:
 	' * Assignment
-	pusha	31
-	pusha	31
+	pusha	33
+	pusha	33
 	loadi
 	pushi	1
 	addi
@@ -258,14 +270,14 @@ label11:
 	jmp	label8
 label9:
 	ret	0, 4, 0
-# line 96
+# line 102
 main:
 	' * Parameters
 	' * Local variables
-	' * ArrayType size: 1 characters (offset 35)
+	' * ArrayType size: 1 characters (offset 37)
 	enter	0
 	' * Assignment
-	pusha	7
+	pusha	9
 	pushi	10
 	storei
 	' * Invocation
@@ -277,13 +289,13 @@ main:
 	pushi	5
 	call	setValue
 	' * Assignment
-	pusha	0
+	pusha	2
 	pushi	5
 	pushi	5
 	call	getValue
 	storei
 	' * If
-	pusha	0
+	pusha	2
 	loadi
 	pushi	5
 	eqi
@@ -294,7 +306,7 @@ label15:
 	' * Invocation
 	call	show
 	' * Assignment
-	pusha	3
+	pusha	5
 	pushf	4.5
 	pushi	4
 	addf

@@ -44,6 +44,8 @@ public class Main {
 		ast.accept(identificationVisitor, null);
 		ComprobacionTiposVisitor comprobacionTiposVisitor = new ComprobacionTiposVisitor();
 		ast.accept(comprobacionTiposVisitor, null);
+//		IntrospectorModel model = new IntrospectorModel("Program",parser.getAST());
+//		new IntrospectorTree("Introspector", model);
 				
 		// * Check errors 
 		if(EH.getEH().hasErrors()){

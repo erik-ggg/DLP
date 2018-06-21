@@ -44,16 +44,17 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 
 	@Override
 	public Void visit(IfStatement ifStatement, Object p) {
-		String etElse = codeGenerator.createLabelAuto(), finIf = codeGenerator.createLabelAuto();
+		String etElse = codeGenerator.createLabelAuto();
+		String endIf = codeGenerator.createLabelAuto();
 		codeGenerator.print("\t' * If");
 		ifStatement.getCondition().accept(valueVisitor, null);
 		codeGenerator.jumpIfZero(etElse);
 		ifStatement.getIfbody().forEach(x -> x.accept(this, p));
-		codeGenerator.jump(finIf);
+		codeGenerator.jump(endIf);
 		codeGenerator.label(etElse);
 		if (ifStatement.getElsebody() != null)
 			ifStatement.getElsebody().forEach(x -> x.accept(this, p));
-		codeGenerator.label(finIf);
+		codeGenerator.label(endIf);
 		return null;
 	}
 

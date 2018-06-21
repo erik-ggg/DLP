@@ -10,6 +10,7 @@ import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
+import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
@@ -108,6 +109,14 @@ public class ValueVisitor extends AbstractCGVisitor {
 	public Void visit(Variable variable, Object o) {
 		variable.accept(AddressVisitor.getInstance(), o);
 		codeGenerator.load(variable.getType().getSuffix());
+		return null;
+	}
+
+	@Override
+	public Void visit(TernaryOperator ternaryOperator, Object tp) {	
+		ternaryOperator.getCondition().accept(this, tp);
+		ternaryOperator.getLeft().accept(this, tp);
+		ternaryOperator.getRight().accept(this, tp);
 		return null;
 	}
 

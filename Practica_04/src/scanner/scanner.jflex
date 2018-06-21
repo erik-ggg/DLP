@@ -38,7 +38,7 @@ public Object getYylval() {
 
 // ************  Patrones (macros) ********************
 
-TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)]  
+TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)?]  
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
 REAL = ({ConstanteEntera}*['.']{ConstanteEntera}*) 

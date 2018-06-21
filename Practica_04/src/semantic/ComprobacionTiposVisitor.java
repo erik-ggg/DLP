@@ -71,23 +71,23 @@ public class ComprobacionTiposVisitor extends DefaultVisitor {
 	}
 
 	@Override
-	public Void visit(CharLiteral arithmetic, Object o) {
-		arithmetic.setLValue(false);
-		arithmetic.setType(CharType.getInstance());
+	public Void visit(CharLiteral charLiteral, Object o) {
+		charLiteral.setLValue(false);
+		charLiteral.setType(CharType.getInstance());
 		return null;
 	}
 
 	@Override
-	public Void visit(Comparison arithmetic, Object o) {
-		super.visit(arithmetic, o);
-		arithmetic.setLValue(false);
-		Type type = arithmetic.getLeft().getType().comparison(arithmetic.getRight().getType());
+	public Void visit(Comparison comparison, Object o) {
+		super.visit(comparison, o);
+		comparison.setLValue(false);
+		Type type = comparison.getLeft().getType().comparison(comparison.getRight().getType());
 		if (type == null)
-			arithmetic.setType(
-					new ErrorType("Can't compare types " + arithmetic.getLeft().getType() + "and" + arithmetic.getRight().getType()
-							, arithmetic));
+			comparison.setType(
+					new ErrorType("Can't compare types " + comparison.getLeft().getType() + " and " + comparison.getRight().getType()
+							, comparison));
 		else
-			arithmetic.setType(type);
+			comparison.setType(type);
 		return null;
 	}
 

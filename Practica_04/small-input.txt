@@ -1,5 +1,6 @@
 
 # Global variables
+operadorTernario: int;
 integer:int;
 character:char;
 real:double;
@@ -17,9 +18,14 @@ date:struct {
 
 # Functions
 def setValue(row:int, column:int, value:int):void {
+	operadorTernario = integer > 5 ? integer : real;
+	# operadorTernario = integer + integer + integer;
+
 	date.day = 9;
 	date.mounth = 3;
 	date.year = 2016;
+
+	
 	
 	character = (char)date.day;
 	if row >= 0 && row < MATRIXSIZE && column >= 0 && column < MATRIXSIZE: {

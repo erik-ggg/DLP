@@ -1,6 +1,8 @@
 package ast.expressions;
 
 import ast.main.Definition;
+import ast.types.Type;
+import errorhandler.Contexts;
 import semantic.Visitor;
 
 public class Variable extends AbstractExpression {
@@ -29,6 +31,12 @@ public class Variable extends AbstractExpression {
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
+
+//	@Override
+//	public Type getType() {
+//		Definition definition = Contexts.getInstance().search(getName());
+//		return (definition != null) ? definition.getType() : null;
+//	}
 
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {

@@ -9,6 +9,7 @@ import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
 import ast.expressions.RealLiteral;
+import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
@@ -207,6 +208,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
 	@Override
 	public Object visit(UnaryNot unaryNot, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+	
+	@Override
+	public Object visit(TernaryOperator ternaryOperator, Object tp) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
 	
