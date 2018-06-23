@@ -201,11 +201,13 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	}
 	@Override
 	public TR visit(Switch swt, TP p) {
+		swt.getParam().accept(this, p);
 		swt.getCases().forEach(x -> x.accept(this, p));
 		return null;
 	}
 	@Override
 	public TR visit(Case cs, TP p) {
+		cs.getCondition().accept(this, p);
 		cs.getBody().forEach(x -> x.accept(this, p));
 		return null;
 	}

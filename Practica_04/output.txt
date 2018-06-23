@@ -1,22 +1,83 @@
-# source "C:\Users\ERIK\Documents\University\DLP\Repo\DLP\Practica_04\small-input.txt"
+#source "C:\Users\ERIK\Documents\University\DLP\Repo\DLP\Practica_04\small-input.txt"
 
 	' * IntType i (offset 0)
 	' * IntType n (offset 2)
 	' * IntType j (offset 4)
 	' * CharType  c (offset 6)
-	' * RecordType [body=[RecordField [name=integer, offset=0, type=IntType], RecordField [name=character, offset=2, type=CharType ]]] pair (offset 7)
-	' * ArrayType size: 10 matrix (offset 10)
 ' Invocation to the main function
 call main
 halt
-# line 12
-p:
+#line 19
+main:
 	' * Parameters
 	' * Local variables
 	enter	0
+#line 8
+	' * Assignment
+	pusha	0
+	pushi	5
+	storei
+	' * Switch
+	pusha	0
+	loadi
+	pusha	0
+	loadi
+	pushi	1
+	eqi
+	jz	label1
+#line 11
+	' * Assignment
+	pusha	0
+	pushi	0
+	storei
+	' * Write
+	pushb	102
+	outb
+	' * Write
+	pushb	97
+	outb
+	' * Write
+	pushb	105
+	outb
+	' * Write
+	pushb	108
+	outb
+	jmp	label0
+label1:
+	pusha	0
+	loadi
+	pushi	2
+	eqi
+	jz	label2
+#line 14
+	' * Assignment
+	pusha	0
+	pushi	0
+	pushi	1
+	subi
+	storei
+#line 15
+	' * Assignment
+	pusha	2
+	pusha	0
+	loadi
+	pushi	9
+	muli
+	storei
+	jmp	label0
+label2:
+	pusha	0
+	loadi
+	pushi	5
+	eqi
+	jz	label3
+	' * Write
+	pushb	111
+	outb
+	' * Write
+	pushb	107
+	outb
+	jmp	label0
+label3:
+label0:
 	ret	0, 0, 0
-# line 14
-swt:
-	' * Parameters
-	' * Local variables
-	enter	0

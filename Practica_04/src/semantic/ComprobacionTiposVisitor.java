@@ -19,10 +19,12 @@ import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
 import ast.main.FunctionDefinition;
 import ast.statements.Assignment;
+import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Invocation;
 import ast.statements.Read;
 import ast.statements.Return;
+import ast.statements.Switch;
 import ast.statements.While;
 import ast.types.CharType;
 import ast.types.ErrorType;
@@ -33,7 +35,27 @@ import ast.types.Type;
 
 public class ComprobacionTiposVisitor extends DefaultVisitor {
 	
-    @Override
+	@Override
+	public Object visit(Case cs, Object p) {
+		super.visit(cs, p);
+		return null;
+	}
+
+	@Override
+	public Object visit(Switch swt, Object p) {
+    	super.visit(swt, p);
+    	swt.setLValue(false);
+    	for (Case iCase : swt.getCases()) {
+			Type type = swt.getParam().getType().promotesTo(iCase.getCondition().getType());
+			if (type == null) {
+				iCase.setType(new ErrorType<>("Case of switch: " + iCase.getCondition()
+	    				+ " is incompatible with switch parameter " + swt.getParam().getType(), iCase));
+			} 
+		}
+    	return null;
+	}
+
+	@Override
 	public Void visit(TernaryOperator ternaryOperator, Object tp) {
     	super.visit(ternaryOperator, tp);
     	ternaryOperator.setLValue(false);

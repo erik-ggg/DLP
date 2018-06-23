@@ -45,7 +45,6 @@ import ast.types.*;
 
 %right '='
 %left AND OR
-%nonassoc TO
 %left '?'
 %left '>' GREATER_THAN '<' LESS_THAN EQ NEQ RANGE_LEFT RANGE_RIGHT
 %left '+''-'
@@ -100,7 +99,8 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "/", (Expression)$3); }
         | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "%", (Expression)$3); }
         | expression '?' expression ':' expression              { $$ = new TernaryOperator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5); }  
-        | expression RANGE_LEFT expression RANGE_LEFT expression {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, "<<"); }
+        | expression RANGE_LEFT expression RANGE_LEFT expression   {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, "<<"); }
+        | expression RANGE_RIGHT expression RANGE_RIGHT expression {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, ">>"); }
         | expression '.' ID                                     { $$ = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$3); }        
         | expression '<' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
         | expression '>' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">", (Expression)$3); }

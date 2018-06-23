@@ -45,7 +45,6 @@ import ast.types.*;
 
 %right '='
 %left AND OR
-%nonassoc TO
 %left '?'
 %left '>' GREATER_THAN '<' LESS_THAN EQ NEQ RANGE_LEFT RANGE_RIGHT
 %left '+''-'

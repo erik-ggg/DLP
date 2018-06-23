@@ -9,6 +9,7 @@ public class Switch extends AbstractStatement {
 	
 	private Variable param;
 	private List<Case> cases;
+	private boolean lValue;
 	
 
 	public Switch(int row, int column, Variable param, List<Case> cases) {
@@ -48,4 +49,15 @@ public class Switch extends AbstractStatement {
 		return visitor.visit(this, p);
 	}
 
+
+
+	public void setLValue(boolean lValue) {
+		this.lValue = lValue;
+	}
+
+
+
+	public boolean islValue() {
+		return lValue;
+	}
 }

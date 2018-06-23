@@ -32,9 +32,11 @@ public class CodeGenerator {
 		operators.put("*", "mul");
 		operators.put("/", "div");
 		operators.put("%", "mod");
+		operators.put(">>", "gt");
 		operators.put(">", "gt");
 		operators.put(">=", "ge");
 		operators.put("<", "lt");
+		operators.put("<<", "lt");
 		operators.put("<=", "le");
 		operators.put("==", "eq");
 		operators.put("!=", "ne");
@@ -63,7 +65,7 @@ public class CodeGenerator {
 		stream.println("\tjmp\t" + label);
 	}
 
-	public void llamadaAMain() {
+	public void mainCall() {
 		stream.println("' Invocation to the main function");
 		stream.println("call main");
 		stream.println("halt");
@@ -141,7 +143,7 @@ public class CodeGenerator {
 	}
 
 	public void comentario(String comentario) {
-		stream.println("# " + comentario);
+		stream.println("#" + comentario);
 	}
 	
 	public void source(String source) {

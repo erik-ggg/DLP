@@ -3,43 +3,17 @@ package ast.expressions;
 import ast.main.ConcreteASTNode;
 import semantic.Visitor;
 
-public class RangeComparator extends AbstractExpression {
+public class RangeComparator extends BinaryExpression {
 	
-	private Expression left, value, right;
-	private String operator;
-	
+	private Expression value;
 	
 
 	public RangeComparator(int row, int column, Expression left, Expression value, Expression right, String operator) {
 		super(row, column);
-		this.left = left;
+		this.setOperator("&&");
+		this.setLeft(new Comparison(row, column, left, operator, value));
+		this.setRight(new Comparison(row, column, value, operator, right));
 		this.value = value;
-		this.right = right;
-		this.operator = operator;
-	}
-
-
-
-	public String getOperator() {
-		return operator;
-	}
-
-
-
-	public void setOperator(String operator) {
-		this.operator = operator;
-	}
-
-
-
-	public Expression getLeft() {
-		return left;
-	}
-
-
-
-	public void setLeft(Expression left) {
-		this.left = left;
 	}
 
 
@@ -52,18 +26,6 @@ public class RangeComparator extends AbstractExpression {
 
 	public void setValue(Expression value) {
 		this.value = value;
-	}
-
-
-
-	public Expression getRight() {
-		return right;
-	}
-
-
-
-	public void setRight(Expression right) {
-		this.right = right;
 	}
 
 

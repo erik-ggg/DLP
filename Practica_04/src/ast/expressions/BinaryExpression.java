@@ -12,6 +12,10 @@ public abstract class BinaryExpression extends AbstractExpression {
 		this.rightop = right;
 	}
 
+	public BinaryExpression(int row, int column) {
+		super(row, column);
+	}
+
 	public Expression getRight() {
 		return rightop;
 	}

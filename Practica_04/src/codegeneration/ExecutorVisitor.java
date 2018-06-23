@@ -1,14 +1,17 @@
 package codegeneration;
 
+import ast.expressions.Comparison;
 import ast.expressions.TernaryOperator;
 import ast.main.FunctionDefinition;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Invocation;
 import ast.statements.Read;
 import ast.statements.Return;
+import ast.statements.Switch;
 import ast.statements.While;
 import ast.statements.Write;
 import ast.types.FunctionType;
@@ -45,28 +48,30 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 	}
 
 	@Override
-	public Void visit(TernaryOperator ternaryOperator, Object tp) {
-		String ifLabel = codeGenerator.createLabelAuto();
-		String elseLabel = codeGenerator.createLabelAuto();
-		codeGenerator.print("\t' * Condition");
+	public Void visit(TernaryOperator ternaryOperator, Object o) {
+		String sElse = codeGenerator.createLabelAuto();
+		String endIf = codeGenerator.createLabelAuto();
+		codeGenerator.print("\t' * Ternary operator");
 		ternaryOperator.getCondition().accept(valueVisitor, null);
-		codeGenerator.jumpIfZero(ifLabel);
-		ternaryOperator.getLeft().accept(this, tp);
-		codeGenerator.jump(elseLabel);
-		codeGenerator.label(ifLabel);
+		codeGenerator.jumpIfZero(sElse);
+		ternaryOperator.getLeft().accept(this, o);
+		codeGenerator.jump(endIf);
+		codeGenerator.label(sElse);
+		ternaryOperator.getRight().accept(this, o);
+		codeGenerator.label(endIf);
 		return null;
 	}
 
 	@Override
 	public Void visit(IfStatement ifStatement, Object p) {
-		String etElse = codeGenerator.createLabelAuto();
+		String sElse = codeGenerator.createLabelAuto();
 		String endIf = codeGenerator.createLabelAuto();
 		codeGenerator.print("\t' * If");
 		ifStatement.getCondition().accept(valueVisitor, null);
-		codeGenerator.jumpIfZero(etElse);
+		codeGenerator.jumpIfZero(sElse);
 		ifStatement.getIfbody().forEach(x -> x.accept(this, p));
 		codeGenerator.jump(endIf);
-		codeGenerator.label(etElse);
+		codeGenerator.label(sElse);
 		if (ifStatement.getElsebody() != null)
 			ifStatement.getElsebody().forEach(x -> x.accept(this, p));
 		codeGenerator.label(endIf);
@@ -89,7 +94,7 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 			if (x instanceof VarDefinition)
 				x.accept(this, p);
 		});
-		codeGenerator.llamadaAMain();
+		codeGenerator.mainCall();
 		program.getDefinitions().forEach(x -> {
 			if (x instanceof FunctionDefinition)
 				x.accept(this, p);
@@ -141,6 +146,23 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 		codeGenerator.print("\t' * Write");
 		write.getExpression().accept(valueVisitor, p);
 		codeGenerator.out(write.getExpression().getType().getSuffix());
+		return null;
+	}
+
+	@Override
+	public Object visit(Switch swt, Object p) {
+		String endSwitch = codeGenerator.createLabelAuto();
+		codeGenerator.print("\t' * Switch");
+		swt.getParam().accept(valueVisitor, null);
+		for (Case iCase : swt.getCases()) {
+			String lCase = codeGenerator.createLabelAuto();
+			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", iCase.getCondition()).accept(valueVisitor, null);
+			codeGenerator.jumpIfZero(lCase);
+			iCase.getBody().forEach(x -> x.accept(this, p));
+			codeGenerator.jump(endSwitch);
+			codeGenerator.label(lCase);
+		}
+		codeGenerator.label(endSwitch);
 		return null;
 	}
 }

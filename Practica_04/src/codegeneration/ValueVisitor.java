@@ -9,13 +9,16 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
+import ast.statements.Case;
 import ast.statements.Invocation;
 import ast.types.Type;
+import sun.invoke.util.BytecodeName;
 
 public class ValueVisitor extends AbstractCGVisitor {
 
@@ -113,12 +116,25 @@ public class ValueVisitor extends AbstractCGVisitor {
 	}
 
 	@Override
-	public Void visit(TernaryOperator ternaryOperator, Object tp) {	
-		ternaryOperator.getCondition().accept(this, tp);
-		ternaryOperator.getLeft().accept(this, tp);
-		ternaryOperator.getRight().accept(this, tp);
+	public Void visit(TernaryOperator ternaryOperator, Object o) {
+		String sElse = codeGenerator.createLabelAuto();
+		String endIf = codeGenerator.createLabelAuto();
+		ternaryOperator.getCondition().accept(this, null);
+		codeGenerator.jumpIfZero(sElse);
+		ternaryOperator.getLeft().accept(this, o);
+		codeGenerator.jump(endIf);
+		codeGenerator.label(sElse);
+		ternaryOperator.getRight().accept(this, o);
+		codeGenerator.label(endIf);
 		return null;
 	}
+
+	@Override
+	public Object visit(RangeComparator rangeComparator, Object o) {
+		return visitOperation(rangeComparator, o, rangeComparator.getLeft().getType().superType(rangeComparator.getRight().getType()));
+	}
+
+	
 
 	private Void visitOperation(BinaryExpression binaryExpression, Object o, Type type) {
 		binaryExpression.getLeft().accept(this, o);
