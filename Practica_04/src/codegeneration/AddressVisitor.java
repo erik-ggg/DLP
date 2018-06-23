@@ -40,7 +40,7 @@ public class AddressVisitor extends AbstractCGVisitor {
 	@Override
 	public Void visit(Variable variable, Object o) {
 		VarDefinition varDef = (VarDefinition) variable.getDefinition();
-		if (Contexts.getInstance().getScope() == 0)
+		if (varDef.getScope() == 0)
 			codeGenerator.pusha(varDef.getOffset());
 		else {
 			codeGenerator.pushbp();

@@ -10,12 +10,21 @@ public class VarDefinition extends ConcreteASTNode implements Definition, Statem
     private String name;
 	private Type type;
 	private int offset;
+	private int scope;
 
     public VarDefinition(int row, int column, String name, Type type) {
         super(row, column);
         this.name = name;
         this.type = type;
     }
+
+	public int getScope() {
+		return scope;
+	}
+
+	public void setScope(int scope) {
+		this.scope = scope;
+	}
 
 	@Override
 	public Type getType() {

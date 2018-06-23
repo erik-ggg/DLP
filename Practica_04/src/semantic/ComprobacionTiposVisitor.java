@@ -11,7 +11,9 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
+import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
@@ -30,7 +32,22 @@ import ast.types.RealType;
 import ast.types.Type;
 
 public class ComprobacionTiposVisitor extends DefaultVisitor {
+	
     @Override
+	public Void visit(TernaryOperator ternaryOperator, Object tp) {
+    	super.visit(ternaryOperator, tp);
+    	ternaryOperator.setLValue(false);
+    	Type type = ternaryOperator.getLeft().getType().promotesTo(ternaryOperator.getRight().getType());
+    	if (type == null) {
+    		ternaryOperator.setType(new ErrorType<>("Ternary operator return types: " + ternaryOperator.getLeft().getType() 
+    				+ " and " + ternaryOperator.getRight().getType(), ternaryOperator));
+    	} else {
+    		ternaryOperator.setType(type);
+    	}
+		return null;
+	}
+
+	@Override
 	public Void visit(Arithmetic arithmetic, Object o) {
 		super.visit(arithmetic, o);
 		arithmetic.setLValue(false);
@@ -88,6 +105,22 @@ public class ComprobacionTiposVisitor extends DefaultVisitor {
 							, comparison));
 		else
 			comparison.setType(type);
+		return null;
+	}
+
+	@Override
+	public Void visit(RangeComparator rangeComparator, Object o) {
+		super.visit(rangeComparator, o);
+		rangeComparator.setLValue(false);
+		Type type = rangeComparator.getLeft().getType().comparison(rangeComparator.getRight().getType());
+		type = type.comparison(rangeComparator.getValue().getType());
+		if (type == null) {
+			rangeComparator.setType(
+					new ErrorType("Can't compare ranges between " + rangeComparator.getLeft() 
+					+ " and " + rangeComparator.getValue() + " and " + rangeComparator.getRight(), rangeComparator));
+		} else {
+			rangeComparator.setType(type);
+		}
 		return null;
 	}
 

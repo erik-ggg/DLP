@@ -21,13 +21,17 @@ public class IdentificationVisitor<TP, TR> extends DefaultVisitor<TP, TR> {
 	@Override
 	public TR visit(VarDefinition varDefinition, TP p) {
 		if (!Contexts.getInstance().add(varDefinition)) new ErrorType("Variable already defined: " + varDefinition.getName(), varDefinition);
+		else varDefinition.setScope(Contexts.getInstance().getContexts().size() -1);
 		return null;
 	}
 
 	@Override
 	public TR visit(Variable variable, TP p) {
 		Definition def = Contexts.getInstance().search(variable.getName());
-		if (def != null) variable.setDefinition(def);
+		if (def != null) {
+			variable.setDefinition(def);
+			variable.setScope(Contexts.getInstance().getContexts().size() -1);
+		}
 		else {
 			variable.setDefinition(new VarDefinition(variable.getRow(), variable.getColumn(), variable.getName(), new ErrorType("Symbol not defined: " + variable.getName(), variable)));			
 		}

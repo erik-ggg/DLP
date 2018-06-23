@@ -1,5 +1,6 @@
 package codegeneration;
 
+import ast.expressions.TernaryOperator;
 import ast.main.FunctionDefinition;
 import ast.main.Program;
 import ast.main.VarDefinition;
@@ -20,6 +21,7 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 
 	@Override
 	public Void visit(Assignment assignment, Object p) {
+		codeGenerator.line(assignment.getRow());
 		codeGenerator.print("\t' * Assignment");
 		assignment.getLeft().accept(addressVisitor, null);
 		assignment.getRight().accept(valueVisitor, null);
@@ -29,7 +31,7 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 
 	@Override
 	public Void visit(FunctionDefinition functionDefinition, Object p) {
-		codeGenerator.line(functionDefinition.getRow());
+		codeGenerator.line(functionDefinition.getVariable().getRow());
 		codeGenerator.label(functionDefinition.getName());
 		codeGenerator.print("\t' * Parameters");
 		((FunctionType) functionDefinition.getType()).getParams().forEach(x -> x.accept(this, p));
@@ -39,6 +41,19 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 		functionDefinition.getBody().forEach(x -> x.accept(this, functionDefinition));
 		if (((FunctionType) functionDefinition.getType()).getReturnType() instanceof VoidType)
 			codeGenerator.returnStatement(0, functionDefinition.numBytesLocals(), functionDefinition.numBytesParams());
+		return null;
+	}
+
+	@Override
+	public Void visit(TernaryOperator ternaryOperator, Object tp) {
+		String ifLabel = codeGenerator.createLabelAuto();
+		String elseLabel = codeGenerator.createLabelAuto();
+		codeGenerator.print("\t' * Condition");
+		ternaryOperator.getCondition().accept(valueVisitor, null);
+		codeGenerator.jumpIfZero(ifLabel);
+		ternaryOperator.getLeft().accept(this, tp);
+		codeGenerator.jump(elseLabel);
+		codeGenerator.label(ifLabel);
 		return null;
 	}
 

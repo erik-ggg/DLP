@@ -11,6 +11,7 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
@@ -21,12 +22,14 @@ import ast.main.Operation;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Input;
 import ast.statements.Invocation;
 import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
+import ast.statements.Switch;
 import ast.statements.While;
 import ast.statements.Write;
 import ast.types.ArrayType;
@@ -139,7 +142,7 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		return null;
 	}
 	public TR visit(RecordType recordType, TP p) {
-		for (RecordField recordField : (List<RecordField>)recordType.getBody().get(0)) {
+		for (RecordField recordField : recordType.getBody()) {
 			recordField.accept(this, p);
 		}
 		return null;
@@ -187,6 +190,23 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		ternaryOperator.getCondition().accept(this, tp);
 		ternaryOperator.getLeft().accept(this, tp);
 		ternaryOperator.getRight().accept(this, tp);
+		return null;
+	}
+	@Override
+	public TR visit(RangeComparator rangeComparator, TP p) {
+		rangeComparator.getLeft().accept(this, p);
+		rangeComparator.getRight().accept(this, p);
+		rangeComparator.getValue().accept(this, p);
+		return null;
+	}
+	@Override
+	public TR visit(Switch swt, TP p) {
+		swt.getCases().forEach(x -> x.accept(this, p));
+		return null;
+	}
+	@Override
+	public TR visit(Case cs, TP p) {
+		cs.getBody().forEach(x -> x.accept(this, p));
 		return null;
 	}
 }

@@ -2,6 +2,7 @@ package ast.main;
 
 import java.util.List;
 
+import ast.expressions.Variable;
 import ast.statements.Statement;
 import ast.types.FunctionType;
 import ast.types.Type;
@@ -9,13 +10,13 @@ import semantic.Visitor;
 
 public class FunctionDefinition extends ConcreteASTNode implements Definition {
 
-    private String name;
+    private Variable name;
     private List<Statement> body;
     private Type type;
     private List<VarDefinition> vars;
     private Definition definition;
 
-    public FunctionDefinition(int row, int column, String name, Type type, List<VarDefinition> vars, List<Statement> body) {
+    public FunctionDefinition(int row, int column, Variable name, Type type, List<VarDefinition> vars, List<Statement> body) {
 		super(row, column);
         this.name = name;
         this.type = type;
@@ -23,9 +24,17 @@ public class FunctionDefinition extends ConcreteASTNode implements Definition {
         this.body = body;
     }
 
-    @Override
+    public void setName(Variable name) {
+		this.name = name;
+	}
+    
+    public Variable getVariable() {
+		return name;
+	}
+
+	@Override
     public String getName() {
-        return name;
+        return name.getName();
     }
 
 	@Override

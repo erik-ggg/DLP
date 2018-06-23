@@ -21,7 +21,7 @@ public class Write extends ConcreteASTNode implements Statement {
 
 	@Override
 	public String toString() {
-		return "print "+ expression.toString() + ";";
+		return "Write "+ expression.toString() + ";";
 	}
 
 	@Override

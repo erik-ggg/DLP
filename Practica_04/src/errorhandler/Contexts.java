@@ -26,6 +26,10 @@ public class Contexts {
 		}
 	}
 	
+	public Stack<Map<String, Definition>> getContexts() {
+		return contexts;
+	}
+
 	/**
 	 * 
 	 * @param name
@@ -50,9 +54,5 @@ public class Contexts {
 	
 	public static Contexts getInstance() {		
 		return INSTANCE;
-	}
-	
-	public int getScope() {
-		return contexts.size() - 1;
 	}
 }

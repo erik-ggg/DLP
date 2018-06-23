@@ -8,6 +8,7 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
@@ -18,12 +19,14 @@ import ast.main.Operation;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Input;
 import ast.statements.Invocation;
 import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
+import ast.statements.Switch;
 import ast.statements.While;
 import ast.statements.Write;
 import ast.types.ArrayType;
@@ -213,6 +216,21 @@ public abstract class AbstractCGVisitor implements Visitor {
 	
 	@Override
 	public Object visit(TernaryOperator ternaryOperator, Object tp) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(RangeComparator rangeComparator, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(Switch switch1, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(Case cs, Object p) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
 	

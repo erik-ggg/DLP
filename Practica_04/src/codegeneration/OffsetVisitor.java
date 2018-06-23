@@ -20,14 +20,13 @@ public class OffsetVisitor extends DefaultVisitor {
 	public Object visit(FunctionDefinition fun, Object tp) {
 		super.visit(fun, tp);
 		offsetLocal = 0;
-		offsetParams = 0;
+		offsetParams = 4;
 		return null;
 	}
 	@Override
 	public Object visit(VarDefinition var, Object tp) {
 		super.visit(var, tp);
-		offsetRecordFields = 0;
-		if (Contexts.getInstance().getScope() == 0) {
+		if (var.getScope() == 0) {
 			var.setOffset(offsetGlobal);
 			offsetGlobal += var.getType().getNumberOfBytes();
 		} else {
@@ -35,7 +34,7 @@ public class OffsetVisitor extends DefaultVisitor {
 				var.setOffset(offsetParams);
 				offsetParams += var.getType().getNumberOfBytes();
 			} else {
-				offsetGlobal -= var.getType().getNumberOfBytes();
+				offsetLocal -= var.getType().getNumberOfBytes();
 				var.setOffset(offsetLocal);
 			}
 		}
@@ -53,7 +52,7 @@ public class OffsetVisitor extends DefaultVisitor {
 	public Object visit(RecordType recordType, Object p) {
 		super.visit(recordType, p);
 		offsetRecordFields = 0;
-		for (RecordField recordField : (List<RecordField>)recordType.getBody().get(0)) {
+		for (RecordField recordField : recordType.getBody()) {
 			recordField.setOffset(offsetRecordFields);
 			offsetRecordFields += recordField.getType().getNumberOfBytes();
 		}

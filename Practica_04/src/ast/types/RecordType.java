@@ -31,7 +31,8 @@ public class RecordType extends AbstractType {
 
 	@Override
 	public Type dot(String field) {
-		for (RecordField record : (List<RecordField>)body.get(0))
+		List<RecordField> records = body;
+		for (RecordField record : records)
 			if (record.getName().equals(field))
 				return record.getType();
 		return null;
@@ -39,14 +40,13 @@ public class RecordType extends AbstractType {
 	
 	@Override
 	public RecordField getField(String name) {
-		for(RecordField record: (List<RecordField>)body.get(0)) 
+		for(RecordField record: body) 
 			if (record.getName().equals(name)) return record;
 		return null;
 	}
 
 	@Override
 	public int getNumberOfBytes() {
-		List<RecordField> records = (List<RecordField>) body.get(0);
-		return records.stream().mapToInt(x -> ((Integer) x.getType().getNumberOfBytes())).sum();
+		return body.stream().mapToInt(x -> ((Integer) x.getType().getNumberOfBytes())).sum();
 	}
 }

@@ -38,6 +38,7 @@ public Object getYylval() {
 
 // ************  Patrones (macros) ********************
 
+
 TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)?]  
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
@@ -63,18 +64,44 @@ INT = int
 REAL_TYPE = double
 CHAR_TYPE = char
 VOID = void
+
+MAIN = main
+SWITCH = "switch"
+CASE = "case"
+
+GREATER_THAN = ">="
+LESS_THAN = "<="
+NEQ = "!="
+EQ = "=="
 AND = "&&"
 OR = "||"
-MAIN = main
+RANGE_LEFT = "<<"
+RANGE_RIGHT = ">>"
 
 %%
 // ************  Acciones ********************
 
 // * Constante Entera
+{SWITCH} 				{this.yylval = yytext();
+         			    return Parser.SWITCH;}
+{CASE} 				{this.yylval = yytext();
+         			    return Parser.CASE;}
+{RANGE_LEFT} 				{this.yylval = yytext();
+         			    return Parser.RANGE_LEFT;}
+{RANGE_RIGHT} 				{this.yylval = yytext();
+         			    return Parser.RANGE_RIGHT;}
 {AND} 				{this.yylval = yytext();
          			    return Parser.AND;}
 {OR} 				{this.yylval = yytext();
-         			    return Parser.OR;}			 						 						 
+         			    return Parser.OR;}		
+{GREATER_THAN} 				{this.yylval = yytext();
+         			    return Parser.GREATER_THAN;}		
+{LESS_THAN} 				{this.yylval = yytext();
+         			    return Parser.LESS_THAN;}	
+{EQ} 				{this.yylval = yytext();
+         			    return Parser.EQ;}		
+{NEQ} 				{this.yylval = yytext();
+         			    return Parser.NEQ;}			 						 						 
 {VOID} 				{this.yylval = new String(yytext());
          			    return Parser.VOID;}
 {INT} 				{this.yylval = new String(yytext());

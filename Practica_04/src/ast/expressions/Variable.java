@@ -9,10 +9,19 @@ public class Variable extends AbstractExpression {
 	
 	private Definition definition;
 	private String name;
+	private int scope;
 
 	public Variable(int row, int column, String name) {
 		super(row, column);
 		this.name = name;
+	}
+
+	public int getScope() {
+		return scope;
+	}
+
+	public void setScope(int scope) {
+		this.scope = scope;
 	}
 
 	public String getName() {
