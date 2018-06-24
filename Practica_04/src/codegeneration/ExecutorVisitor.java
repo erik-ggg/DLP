@@ -1,5 +1,7 @@
 package codegeneration;
 
+import java.util.List;
+
 import ast.expressions.Comparison;
 import ast.expressions.TernaryOperator;
 import ast.main.FunctionDefinition;
@@ -155,13 +157,23 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 		codeGenerator.print("\t' * Switch");
 		swt.getParam().accept(valueVisitor, null);
 		for (Case iCase : swt.getCases()) {
-			String lCase = codeGenerator.createLabelAuto();
+			String nextCase = codeGenerator.createLabelAuto();
 			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", iCase.getCondition()).accept(valueVisitor, null);
-			codeGenerator.jumpIfZero(lCase);
+			codeGenerator.jumpIfZero(nextCase);
 			iCase.getBody().forEach(x -> x.accept(this, p));
-			codeGenerator.jump(endSwitch);
-			codeGenerator.label(lCase);
+			if (iCase.hasBreak()) codeGenerator.jump(endSwitch);
+			codeGenerator.label(nextCase);
 		}
+//		List<Case> cases = swt.getCases();
+//		for (int i = 0; i < cases.size(); i++) {
+//			String nextCase = codeGenerator.createLabelAuto();
+//			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", cases.get(i).getCondition()).accept(valueVisitor, null);
+//			codeGenerator.jumpIfZero(nextCase);
+//			cases.get(i).getBody().forEach(x -> x.accept(this, p));
+//			if (cases.get(i).hasBreak()) codeGenerator.jump(endSwitch);
+//			if (i < cases.size() - 1) codeGenerator.label(nextCase);
+//		}
+		codeGenerator.jump(endSwitch);
 		codeGenerator.label(endSwitch);
 		return null;
 	}

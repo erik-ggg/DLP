@@ -19,6 +19,7 @@ import ast.main.Operation;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Break;
 import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Input;
@@ -231,6 +232,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
 	@Override
 	public Object visit(Case cs, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(Break brk, Object p) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
 	

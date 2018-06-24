@@ -68,6 +68,7 @@ VOID = void
 MAIN = main
 SWITCH = "switch"
 CASE = "case"
+BREAK = "break"
 
 GREATER_THAN = ">="
 LESS_THAN = "<="
@@ -86,6 +87,8 @@ RANGE_RIGHT = ">>"
          			    return Parser.SWITCH;}
 {CASE} 				{this.yylval = yytext();
          			    return Parser.CASE;}
+{BREAK} 				{this.yylval = yytext();
+         			    return Parser.BREAK;}
 {RANGE_LEFT} 				{this.yylval = yytext();
          			    return Parser.RANGE_LEFT;}
 {RANGE_RIGHT} 				{this.yylval = yytext();

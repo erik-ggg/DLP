@@ -21,6 +21,7 @@ import ast.types.*;
 %token MAIN
 %token SWITCH
 %token CASE
+%token BREAK
 %token RETURN
 %token WHILE
 %token IF
@@ -92,14 +93,15 @@ composedStatement: statement { $$ = new ArrayList(); ((List)$$).addAll((List) $1
         | '{' statements '}' { $$ = $2; }
         | '{' '}' { $$ = new ArrayList(); }
         ;
-// %prec TERNARY_OPERATOR 
+
 expression: expression '+' expression	                        { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "+", (Expression)$3); }
         | expression '-' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "-", (Expression)$3); }
         | expression '*' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "*", (Expression)$3); }
         | expression '/' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "/", (Expression)$3); }
         | expression '%' expression                             { $$ = new Arithmetic(scanner.getLine(), scanner.getColumn(), (Expression)$1, "%", (Expression)$3); }
         | expression '?' expression ':' expression              { $$ = new TernaryOperator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5); }  
-        | expression RANGE_LEFT expression RANGE_LEFT expression {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, "<<"); }
+        | expression RANGE_LEFT expression RANGE_LEFT expression   {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, "<<"); }
+        | expression RANGE_RIGHT expression RANGE_RIGHT expression {$$ = new RangeComparator(scanner.getLine(), scanner.getColumn(), (Expression)$1, (Expression)$3, (Expression)$5, ">>"); }
         | expression '.' ID                                     { $$ = new FieldAccess(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$3); }        
         | expression '<' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "<", (Expression)$3); }
         | expression '>' expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, ">", (Expression)$3); }
@@ -164,18 +166,22 @@ function_var_declaration: function_var_declaration definicionVariable           
         | definicionVariable                                                    { $$ = $1; }
         ;
         
-statements: statements statement                        { $$ = $1; ((List)$$).addAll((List)$2); }
-        | statement                                     { $$ = new ArrayList(); ((List)$$).addAll((List)$1); }
+statements: statements statement                    { $$ = $1; ((List)$$).addAll((List)$2); }
+        | statement                                 { $$ = new ArrayList(); ((List)$$).addAll((List)$1); }
         ;
 
-switch: SWITCH '(' ident ')' ':' '{' cases '}'         { $$ = new ArrayList(); ((List)$$).add(new Switch(scanner.getLine(), scanner.getColumn(), (Variable)$3, (List)$7)); }
+switch: SWITCH '(' ident ')' ':' '{' cases '}'      { $$ = new ArrayList(); ((List)$$).add(new Switch(scanner.getLine(), scanner.getColumn(), (Variable)$3, (List)$7)); }
         ;
 
 cases: cases case                                   { $$ = $1; ((List)$$).add($2); }
         | case                                      { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-case: CASE expression ':' statements                                { $$ = new Case(scanner.getLine(), scanner.getColumn(), (Expression)$2, (List)$4); }
+case: CASE expression ':' statements break          { $$ = new Case(scanner.getLine(), scanner.getColumn(), (Expression)$2, (List)$4, (Statement)$5); }
+        ;
+
+break: BREAK ';'                                    { $$ = new Break(scanner.getLine(), scanner.getColumn()); }
+        |                                           { $$ = null; }
         ;
                   
 call_function: ID '(' expressions_or_empty ')' ';'  { $$ = new ArrayList(); ((List)$$).add(new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List)$3)); }

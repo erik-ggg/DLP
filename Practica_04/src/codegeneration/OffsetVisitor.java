@@ -4,6 +4,7 @@ import java.util.List;
 
 import ast.main.FunctionDefinition;
 import ast.main.VarDefinition;
+import ast.statements.Break;
 import ast.types.FunctionType;
 import ast.types.RecordField;
 import ast.types.RecordType;

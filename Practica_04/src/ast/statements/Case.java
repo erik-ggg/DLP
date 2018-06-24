@@ -9,11 +9,13 @@ public class Case extends AbstractStatement {
 	
 	private List<Statement> body;
 	private Expression condition;
+	private Statement brk;
 
-	public Case(int row, int column, Expression condition, List<Statement> body) {
+	public Case(int row, int column, Expression condition, List<Statement> body, Statement brk) {
 		super(row, column);
 		this.condition = condition;
 		this.body = body;
+		this.brk = brk;
 	}
 
 	public Expression getCondition() {
@@ -30,6 +32,11 @@ public class Case extends AbstractStatement {
 
 	public void setBody(List<Statement> body) {
 		this.body = body;
+	}
+
+	public boolean hasBreak() {
+		if (brk != null) return true;
+		return false;
 	}
 
 	@Override

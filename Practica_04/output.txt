@@ -7,7 +7,7 @@
 ' Invocation to the main function
 call main
 halt
-#line 19
+#line 21
 main:
 	' * Parameters
 	' * Local variables
@@ -42,7 +42,6 @@ main:
 	' * Write
 	pushb	108
 	outb
-	jmp	label0
 label1:
 	pusha	0
 	loadi
@@ -64,7 +63,6 @@ label1:
 	pushi	9
 	muli
 	storei
-	jmp	label0
 label2:
 	pusha	0
 	loadi
@@ -77,7 +75,37 @@ label2:
 	' * Write
 	pushb	107
 	outb
-	jmp	label0
 label3:
+	pusha	0
+	loadi
+	pushi	5
+	eqi
+	jz	label4
+	' * Write
+	pushb	98
+	outb
+	' * Write
+	pushb	114
+	outb
+	' * Write
+	pushb	101
+	outb
+	' * Write
+	pushb	97
+	outb
+	' * Write
+	pushb	107
+	outb
+	' * Write
+	pushb	32
+	outb
+	' * Write
+	pushb	111
+	outb
+	' * Write
+	pushb	107
+	outb
+label4:
+	jmp	label0
 label0:
 	ret	0, 0, 0

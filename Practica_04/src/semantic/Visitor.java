@@ -19,6 +19,7 @@ import ast.main.Operation;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Break;
 import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Input;
@@ -78,4 +79,5 @@ public interface Visitor<TP, TR> {
 	TR visit(RangeComparator rangeComparator, TP p);
 	TR visit(Switch switch1, TP p);
 	TR visit(Case cs, TP p);
+	TR visit(Break brk, TP p);
 }

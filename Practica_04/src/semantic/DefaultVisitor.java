@@ -22,6 +22,7 @@ import ast.main.Operation;
 import ast.main.Program;
 import ast.main.VarDefinition;
 import ast.statements.Assignment;
+import ast.statements.Break;
 import ast.statements.Case;
 import ast.statements.IfStatement;
 import ast.statements.Input;
@@ -209,6 +210,10 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	public TR visit(Case cs, TP p) {
 		cs.getCondition().accept(this, p);
 		cs.getBody().forEach(x -> x.accept(this, p));
+		return null;
+	}
+	@Override
+	public TR visit(Break brk, TP p) {
 		return null;
 	}
 }
