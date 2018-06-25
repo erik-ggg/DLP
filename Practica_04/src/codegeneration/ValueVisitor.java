@@ -9,14 +9,17 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.Pointer;
 import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
+import ast.expressions.Reference;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
 import ast.statements.Case;
 import ast.statements.Invocation;
+import ast.types.PointerType;
 import ast.types.Type;
 import sun.invoke.util.BytecodeName;
 
@@ -30,6 +33,12 @@ public class ValueVisitor extends AbstractCGVisitor {
 
 	public static ValueVisitor getInstance() {
 		return INSTANCE;
+	}
+
+	@Override
+	public Object visit(Reference reference, Object p) {
+		reference.getVariable().accept(AddressVisitor.getInstance(), p);
+		return null;
 	}
 
 	@Override
@@ -134,7 +143,12 @@ public class ValueVisitor extends AbstractCGVisitor {
 		return visitOperation(rangeComparator, o, rangeComparator.getLeft().getType().superType(rangeComparator.getRight().getType()));
 	}
 
-	
+	@Override
+	public Void visit(Pointer pointer, Object o) {
+		pointer.getVariable().accept(this, o);
+		codeGenerator.load(((PointerType) pointer.getType()).getType().getSuffix());
+		return null;
+	}
 
 	private Void visitOperation(BinaryExpression binaryExpression, Object o, Type type) {
 		binaryExpression.getLeft().accept(this, o);

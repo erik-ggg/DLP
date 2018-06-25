@@ -4,108 +4,42 @@
 	' * IntType n (offset 2)
 	' * IntType j (offset 4)
 	' * CharType  c (offset 6)
+	' * ConcreteASTNode [fila=10, columna=7] ptr (offset 7)
 ' Invocation to the main function
 call main
 halt
-#line 21
+#line 20
 main:
 	' * Parameters
 	' * Local variables
 	enter	0
-#line 8
-	' * Assignment
-	pusha	0
-	pushi	5
-	storei
-	' * Switch
-	pusha	0
-	loadi
-	pusha	0
-	loadi
-	pushi	1
-	eqi
-	jz	label1
-#line 11
-	' * Assignment
-	pusha	0
-	pushi	0
-	storei
-	' * Write
-	pushb	102
-	outb
-	' * Write
-	pushb	97
-	outb
-	' * Write
-	pushb	105
-	outb
-	' * Write
-	pushb	108
-	outb
-label1:
-	pusha	0
-	loadi
-	pushi	2
-	eqi
-	jz	label2
 #line 14
 	' * Assignment
 	pusha	0
-	pushi	0
-	pushi	1
-	subi
+	pushi	10
 	storei
-#line 15
+	' * Write
+	pusha	0
+	loadi
+	outi
+#line 16
 	' * Assignment
-	pusha	2
+	pusha	7
+	pusha	0
+	store
+	' * Write
+	pusha	7
+	load
+	loadi
+	out
+#line 18
+	' * Assignment
+	pusha	7
+	load
+	pushi	20
+	store
+	' * Write
 	pusha	0
 	loadi
-	pushi	9
-	muli
-	storei
-label2:
-	pusha	0
-	loadi
-	pushi	5
-	eqi
-	jz	label3
-	' * Write
-	pushb	111
-	outb
-	' * Write
-	pushb	107
-	outb
-label3:
-	pusha	0
-	loadi
-	pushi	5
-	eqi
-	jz	label4
-	' * Write
-	pushb	98
-	outb
-	' * Write
-	pushb	114
-	outb
-	' * Write
-	pushb	101
-	outb
-	' * Write
-	pushb	97
-	outb
-	' * Write
-	pushb	107
-	outb
-	' * Write
-	pushb	32
-	outb
-	' * Write
-	pushb	111
-	outb
-	' * Write
-	pushb	107
-	outb
-label4:
-	jmp	label0
-label0:
+	outi
 	ret	0, 0, 0

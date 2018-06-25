@@ -3,6 +3,7 @@ package codegeneration;
 
 import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
+import ast.expressions.Pointer;
 import ast.expressions.Variable;
 import ast.main.VarDefinition;
 import errorhandler.Contexts;
@@ -49,5 +50,12 @@ public class AddressVisitor extends AbstractCGVisitor {
 		}
 		return null;
 	}
+
+	@Override
+	public Void visit(Pointer pointer, Object p) {
+		pointer.getVariable().accept(ValueVisitor.getInstance(), p);
+		return null;
+	}
+	
 
 }

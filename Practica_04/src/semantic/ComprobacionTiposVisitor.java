@@ -11,8 +11,10 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.Pointer;
 import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
+import ast.expressions.Reference;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
@@ -30,19 +32,39 @@ import ast.types.CharType;
 import ast.types.ErrorType;
 import ast.types.FunctionType;
 import ast.types.IntType;
+import ast.types.PointerType;
 import ast.types.RealType;
 import ast.types.Type;
 
 public class ComprobacionTiposVisitor extends DefaultVisitor {
 	
 	@Override
-	public Object visit(Case cs, Object p) {
-		super.visit(cs, p);
+	public Void visit(Reference reference, Object o) {
+		super.visit(reference, o);		
 		return null;
 	}
 
 	@Override
-	public Object visit(Switch swt, Object p) {
+	public Void visit(Pointer pointer, Object o) {
+		super.visit(pointer, o);
+		pointer.setLValue(true);
+		return null;
+	}
+
+	@Override
+	public Void visit(PointerType pointerType, Object o) {
+		super.visit(pointerType, this);
+		return null;
+	}
+
+	@Override
+	public Void visit(Case cs, Object o) {
+		super.visit(cs, o);
+		return null;
+	}
+
+	@Override
+	public Void visit(Switch swt, Object p) {
     	super.visit(swt, p);
     	swt.setLValue(false);
     	for (Case iCase : swt.getCases()) {

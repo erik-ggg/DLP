@@ -8,8 +8,10 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.Pointer;
 import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
+import ast.expressions.Reference;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
@@ -22,9 +24,7 @@ import ast.statements.Assignment;
 import ast.statements.Break;
 import ast.statements.Case;
 import ast.statements.IfStatement;
-import ast.statements.Input;
 import ast.statements.Invocation;
-import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
 import ast.statements.Switch;
@@ -35,6 +35,7 @@ import ast.types.CharType;
 import ast.types.ErrorType;
 import ast.types.FunctionType;
 import ast.types.IntType;
+import ast.types.PointerType;
 import ast.types.RealType;
 import ast.types.RecordField;
 import ast.types.RecordType;
@@ -176,16 +177,6 @@ public abstract class AbstractCGVisitor implements Visitor {
 	}
 
 	@Override
-	public Object visit(Input input, Object p) {
-		throw new RuntimeException("Plantilla no implementada");
-	}
-
-	@Override
-	public Object visit(Print print, Object p) {
-		throw new RuntimeException("Plantilla no implementada");
-	}
-
-	@Override
 	public Object visit(Read read, Object p) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
@@ -237,6 +228,21 @@ public abstract class AbstractCGVisitor implements Visitor {
 
 	@Override
 	public Object visit(Break brk, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(Reference reference, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(Pointer pointer, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(PointerType pointerType, Object p) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
 	

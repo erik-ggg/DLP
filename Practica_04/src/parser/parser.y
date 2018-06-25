@@ -42,6 +42,8 @@ import ast.types.*;
 %token NEQ
 %token RANGE_LEFT
 %token RANGE_RIGHT
+%token POINTER
+%token REFERENCE
 
 
 %right '='
@@ -59,8 +61,6 @@ import ast.types.*;
 %nonassoc '['']'
 %nonassoc MENORQUEELSE
 %nonassoc ELSE
-%nonassoc SWITCH
-%nonassoc CASE
 %nonassoc PID
 
 %%
@@ -74,11 +74,6 @@ definiciones: definiciones definicionVariable           { $$ = $1; ((List)$$).ad
         | definiciones function                         { $$ = $1; ((List)$$).add($2); }
         |                                               { $$ = new ArrayList(); }
         ;
-        
-definicion:  definicionVariable                                
-        | function
-        // | INPUT expressions ';'        { $$ = new Input(scanner.getLine(), scanner.getColumn(), (List<Expression>)$2); }
-        ;
 
 statement: assigment                    { $$ = $1; }
         | if                            { $$ = $1; }
@@ -86,6 +81,7 @@ statement: assigment                    { $$ = $1; }
         | call_function                 { $$ = $1; }
         | return                        { $$ = $1; }
         | print                         { $$ = $1; }
+        | input                         { $$ = $1; }
         | switch                        { $$ = $1; }
         ;
 
@@ -111,16 +107,18 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression NEQ expression                             { $$ = new Comparison(scanner.getLine(), scanner.getColumn(), (Expression)$1, "!=", (Expression)$3); }
         | expression OR expression                              { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
         | expression AND expression                             { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
-        | '(' type ')' expression %prec CAST                    { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
+        | '(' basic_type ')' expression %prec CAST              { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
         | ID '(' expressions_or_empty ')'                       { $$ = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List<Expression>)$3); }
         | '(' expression ')'                                    { $$ = $2; }
+        | POINTER ident                                         { $$ = new Pointer(scanner.getLine(), scanner.getColumn(), (Variable)$2); }
+        | REFERENCE ident                                       { $$ = new Reference(scanner.getLine(), scanner.getColumn(), (Variable)$2); }
         | '-' expression        %prec UNARY_MINUS               { $$ = new UnaryMinus(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
         | '!' expression                                        { $$ = new UnaryNot(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
         | expression '['expression']'                           { $$ = new Indexing(scanner.getLine(), scanner.getColumn(), (Expression)$1, "[]", (Expression)$3);}
         | INT_CONSTANT	                                        { $$ = new IntLiteral(scanner.getLine(), scanner.getColumn(), (int)$1); } 
         | REAL_CONSTANT                                         { $$ = new RealLiteral(scanner.getLine(), scanner.getColumn(),(double)$1); }
         | CHAR_CONSTANT                                         { $$ = new CharLiteral(scanner.getLine(), scanner.getColumn(), (String)$1); }
-        | ID                      %prec PID                     { $$ = new Variable(scanner.getLine(), scanner.getColumn(), (String)$1); }
+        | ID                                                    { $$ = new Variable(scanner.getLine(), scanner.getColumn(), (String)$1); }
         ;
 
 expressions: expressions ',' expression         { $$ = $1; ((List)$$).add($3); }
@@ -140,14 +138,14 @@ parametrosFuncion: parametrosFuncion ',' definicionParametro            { $$ = $
         |                                                               { $$ = new ArrayList(); }
         ;
 
-definicionParametro: ID ':' type        { $$ = new VarDefinition(scanner.getLine(), scanner.getColumn(), (String)$1, (Type)$3); }
+definicionParametro: ID ':' basic_type        { $$ = new VarDefinition(scanner.getLine(), scanner.getColumn(), (String)$1, (Type)$3); }
         ;
 
 ids: ids ',' ID         { $$ = $1; ((List)$$).add($3); }
         | ID            { $$ = new ArrayList(); ((List)$$).add($1); }
         ;
 
-function: def ident '(' parametrosFuncion ')' ':' type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (Variable)$2, new FunctionType(scanner.getLine(), scanner.getColumn(), (List<VarDefinition>)$4, (Type)$7), (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
+function: def ident '(' parametrosFuncion ')' ':' return_type '{' function_body '}' { $$ = new FunctionDefinition(scanner.getLine(), scanner.getColumn(), (Variable)$2, new FunctionType(scanner.getLine(), scanner.getColumn(), (List<VarDefinition>)$4, (Type)$7), (List)((Object[]) $9)[0], (List)((Object[])$9)[1]); }
         ;
 
 ident: ID { $$ = new Variable(scanner.getLine(), scanner.getColumn(), (String)$1); }
@@ -203,6 +201,9 @@ if: IF expression ':' composedStatement ELSE composedStatement          { $$ = n
         | IF expression ':' composedStatement                           {$$ = new ArrayList(); ((List)$$).add(new IfStatement(scanner.getLine(), scanner.getColumn(), new ArrayList(), (List)$4, (Expression)$2)); }                      %prec MENORQUEELSE
         ;
 
+input: INPUT expressions ';'                                            { $$ = new ArrayList(); for(Expression expression: (List<Expression>)$2) ((List<Read>)$$).add(new Read(scanner.getLine(), scanner.getColumn(), expression));}
+        ;
+
 struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).addAll((List)$2); }
         | definicionStruct                              { $$ = $1; }
         ;
@@ -210,13 +211,21 @@ struct_body: struct_body definicionStruct               { $$ = $1; ((List)$$).ad
 definicionStruct: ids ':' type ';'                      { $$ = new ArrayList(); for(String id : (List<String>)$1) ((List<RecordField>)$$).add(new RecordField(scanner.getLine(), scanner.getColumn(), id, (Type)$3)); }
         ;
         
-type: INT                                               { $$ = IntType.getInstance(); }
-        | REAL_TYPE                                     { $$ = RealType.getInstance(); }
-        | CHAR_TYPE                                     { $$ = CharType.getInstance(); }
+type:   basic_type                                      { $$ = $1; }
         | VOID                                          { $$ = VoidType.getInstance(); }
         | '[' INT_CONSTANT ']' type                     { $$ = new ArrayType(scanner.getLine(), scanner.getColumn(), (int)$2, (Type)$4); }
         | STRUCT '{' struct_body '}'                    { $$ = new RecordType(scanner.getLine(), scanner.getColumn(), (List)$3); } 
+        | POINTER basic_type                            { $$ = new PointerType(scanner.getLine(), scanner.getColumn(), (Type)$2); }
         ;
+
+basic_type: INT                                         { $$ = IntType.getInstance(); }
+        | REAL_TYPE                                     { $$ = RealType.getInstance(); }
+        | CHAR_TYPE                                     { $$ = CharType.getInstance(); }
+        ;
+
+return_type: basic_type { $$ = $1; }  
+		 | VOID { $$ = VoidType.getInstance(); } 
+		 ;
 %%
 
 // * Código Java

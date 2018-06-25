@@ -43,15 +43,15 @@ TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)?]
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
 REAL = ({ConstanteEntera}*['.']{ConstanteEntera}*) 
-REAL_EXPONENTE = {REAL}|({REAL}[eE]{ConstanteEntera}*)|({REAL}[eE]-{ConstanteEntera}*)  
+REAL_EXPONENTE = ({REAL}|({REAL}|{ConstanteEntera}){EXPONENTE})
+EXPONENTE = ([eE]([+\-])?{ConstanteEntera})
 CHAR_VALUE = .
 CHAR = '({CHAR_VALUE}|(\\{CHAR_VALUE})|{ConstanteEntera}|(\\{ConstanteEntera}))'
 NUMBER = ({REAL}|{ConstanteEntera})*
 Word = [a-zA-Z]+
-IDENT = ({Word}|{ConstanteEntera}|_)*
+IDENT = ({Word}|_)({Word}|{ConstanteEntera}|_)*
 COMMENT = #.*
-ANYTHING = ({IDENT}|{JUMPS}|{NUMBER})*
-BIG_COMMENT = "\"\"\""{ANYTHING}"\"\"\""
+BIG_COMMENT = \"\"\" ~ \"\"\"
 DEF = def
 RETURN = return
 WHILE = while
@@ -78,11 +78,16 @@ AND = "&&"
 OR = "||"
 RANGE_LEFT = "<<"
 RANGE_RIGHT = ">>"
+REFERENCE = "&"
+POINTER = "*"
 
 %%
 // ************  Acciones ********************
 
-// * Constante Entera
+{REFERENCE} 				{this.yylval = yytext();
+         			    return Parser.REFERENCE;}
+{POINTER} 				{this.yylval = yytext();
+         			    return Parser.POINTER;}
 {SWITCH} 				{this.yylval = yytext();
          			    return Parser.SWITCH;}
 {CASE} 				{this.yylval = yytext();

@@ -155,7 +155,7 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 	public Object visit(Switch swt, Object p) {
 		String endSwitch = codeGenerator.createLabelAuto();
 		codeGenerator.print("\t' * Switch");
-		swt.getParam().accept(valueVisitor, null);
+//		swt.getParam().accept(valueVisitor, null);
 		for (Case iCase : swt.getCases()) {
 			String nextCase = codeGenerator.createLabelAuto();
 			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", iCase.getCondition()).accept(valueVisitor, null);
@@ -164,15 +164,6 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 			if (iCase.hasBreak()) codeGenerator.jump(endSwitch);
 			codeGenerator.label(nextCase);
 		}
-//		List<Case> cases = swt.getCases();
-//		for (int i = 0; i < cases.size(); i++) {
-//			String nextCase = codeGenerator.createLabelAuto();
-//			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", cases.get(i).getCondition()).accept(valueVisitor, null);
-//			codeGenerator.jumpIfZero(nextCase);
-//			cases.get(i).getBody().forEach(x -> x.accept(this, p));
-//			if (cases.get(i).hasBreak()) codeGenerator.jump(endSwitch);
-//			if (i < cases.size() - 1) codeGenerator.label(nextCase);
-//		}
 		codeGenerator.jump(endSwitch);
 		codeGenerator.label(endSwitch);
 		return null;

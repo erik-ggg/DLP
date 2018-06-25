@@ -6,7 +6,6 @@ public class IntType extends AbstractType {
 
     private static final IntType INSTANCE = new IntType();
 	public static final int SIZE = 2;
-    private int value;
 
     public IntType() {
     	super(0, 0);
@@ -14,10 +13,6 @@ public class IntType extends AbstractType {
 
     public static IntType getInstance(){
         return INSTANCE;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
 	@Override

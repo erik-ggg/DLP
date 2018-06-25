@@ -11,8 +11,10 @@ import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
 import ast.expressions.Logical;
+import ast.expressions.Pointer;
 import ast.expressions.RangeComparator;
 import ast.expressions.RealLiteral;
+import ast.expressions.Reference;
 import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
@@ -25,9 +27,7 @@ import ast.statements.Assignment;
 import ast.statements.Break;
 import ast.statements.Case;
 import ast.statements.IfStatement;
-import ast.statements.Input;
 import ast.statements.Invocation;
-import ast.statements.Print;
 import ast.statements.Read;
 import ast.statements.Return;
 import ast.statements.Switch;
@@ -38,6 +38,7 @@ import ast.types.CharType;
 import ast.types.ErrorType;
 import ast.types.FunctionType;
 import ast.types.IntType;
+import ast.types.PointerType;
 import ast.types.RealType;
 import ast.types.RecordField;
 import ast.types.RecordType;
@@ -162,13 +163,6 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 		if (!ifStatement.getElsebody().isEmpty()) ifStatement.getElsebody().forEach(x -> x.accept(this, p));
 		return null;
 	}
-	public TR visit(Input input, TP p) {
-		return null;
-	}
-	public TR visit(Print print, TP p) {
-		print.getExpressions().forEach(x -> x.accept(this, p));
-		return null;
-	}
 	public TR visit(Read read, TP p) {
 		read.getExpression().accept(this, p);
 		return null;
@@ -214,6 +208,21 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	}
 	@Override
 	public TR visit(Break brk, TP p) {
+		return null;
+	}
+	@Override
+	public TR visit(Reference reference, TP p) {
+		reference.getVariable().accept(this, p);
+		return null;
+	}
+	@Override
+	public TR visit(Pointer pointer, TP p) {
+		pointer.getVariable().accept(this, p);
+		return null;
+	}
+	@Override
+	public TR visit(PointerType pointerType, TP p) {
+		pointerType.getType().accept(this, p);
 		return null;
 	}
 }
