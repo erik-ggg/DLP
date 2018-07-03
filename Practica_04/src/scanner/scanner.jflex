@@ -39,7 +39,7 @@ public Object getYylval() {
 // ************  Patrones (macros) ********************
 
 
-TOKENS = [%.\-+*/<>;(){}!=:,&|\[\](&&)(||)?]  
+TOKENS = [%.\-+/<>;(){}*!=:,&|\[\](&&)(||)?]  
 JUMPS = [ \n\t\r]*
 ConstanteEntera = [0-9]+
 REAL = ({ConstanteEntera}*['.']{ConstanteEntera}*) 
@@ -79,7 +79,8 @@ OR = "||"
 RANGE_LEFT = "<<"
 RANGE_RIGHT = ">>"
 REFERENCE = "&"
-POINTER = "*"
+POINTER = ""
+// poner "*" en puntero para probar
 
 %%
 // ************  Acciones ********************

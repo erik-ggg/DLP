@@ -1,25 +1,16 @@
-"""
-	Control Test
-	PLD 17/18
-"""
-
-# Global variables
-i,n,j:int;
-c:char;
-
-ptr: *int;
-
 # Main program
 def main():void {
-	i = 10;
-	print i;
-	ptr = &i;
-	print *ptr;
-	*ptr = 20;
-	print i;
+	a: [5]int;
+	i: int;	
+	c: char;
+	i = 3;
+	a = {i-2, i, i * 5, -i, 9};
+	# a = {10.4, 101, '1'};
+	# a = {'h','e','l','l', 111};
+	# a = {11.1, 10.8};
+	# a = {1, 2, 3, 4, 5, 6, 7};
+	print a[0],',', a[1],',', a[2],',', a[3],',', a[4];
 }
 
-# cuando hacemos punter = &var el puntero toma valor del valor del puntero de la variable
-# *ptr = se asigna el valor al valor de la variable apuntada
 
 

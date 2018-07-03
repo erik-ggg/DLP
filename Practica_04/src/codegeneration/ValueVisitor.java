@@ -1,10 +1,12 @@
 package codegeneration;
 
 import ast.expressions.Arithmetic;
+import ast.expressions.ArrayInit;
 import ast.expressions.BinaryExpression;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
 import ast.expressions.Comparison;
+import ast.expressions.Expression;
 import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
@@ -17,6 +19,7 @@ import ast.expressions.TernaryOperator;
 import ast.expressions.UnaryMinus;
 import ast.expressions.UnaryNot;
 import ast.expressions.Variable;
+import ast.main.VarDefinition;
 import ast.statements.Case;
 import ast.statements.Invocation;
 import ast.types.PointerType;
@@ -36,7 +39,22 @@ public class ValueVisitor extends AbstractCGVisitor {
 	}
 
 	@Override
-	public Object visit(Reference reference, Object p) {
+	public Void visit(ArrayInit arrayInit, Object p) {
+		VarDefinition varDef = (VarDefinition)arrayInit.getVariable().getDefinition();
+		int i = 1;
+		for (Expression	arrayItem : arrayInit.getArrayValues()) {
+			if (i != 1) codeGenerator.add();
+			arrayItem.accept(this, p);
+			codeGenerator.store(arrayItem.getType().getSuffix());
+			codeGenerator.pushbp();
+			codeGenerator.pushi(varDef.getOffset()+(i*arrayItem.getType().getNumberOfBytes()));
+			i++;
+		}
+		return null;
+	}
+
+	@Override
+	public Void visit(Reference reference, Object p) {
 		reference.getVariable().accept(AddressVisitor.getInstance(), p);
 		return null;
 	}

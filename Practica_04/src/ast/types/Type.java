@@ -34,4 +34,6 @@ public interface Type extends ASTNode {
 	String getSuffix();
 	
 	Type superType(Type type);
+	
+	Type compareTypes(Type type);
 }

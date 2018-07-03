@@ -87,6 +87,10 @@ public class IntType extends AbstractType {
 		if (type instanceof IntType) {
 			return this;
 		}
+		
+		if (type instanceof CharType) {
+			return type;
+		}
 
 		return null;
 	}
@@ -100,5 +104,11 @@ public class IntType extends AbstractType {
 	public Type superType(Type type) {
 		if (type == RealType.getInstance()) return type;
 		return this;
+	}
+
+	@Override
+	public Type compareTypes(Type type) {
+		if (type instanceof IntType) return type;
+		return null;
 	}
 }

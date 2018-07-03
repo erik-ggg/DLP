@@ -109,8 +109,9 @@ expression: expression '+' expression	                        { $$ = new Arithme
         | expression AND expression                             { $$ = new Logical(scanner.getLine(), scanner.getColumn(), (Expression)$1, (String)$2, (Expression)$3); }
         | '(' basic_type ')' expression %prec CAST              { $$ = new Cast(scanner.getLine(), scanner.getColumn(), ((Expression)$4), (Type)$2); }
         | ID '(' expressions_or_empty ')'                       { $$ = new Invocation(scanner.getLine(), scanner.getColumn(), new Variable(scanner.getLine(), scanner.getColumn(), (String)$1), (List<Expression>)$3); }
+        | '{' expressions '}'                                   { $$ = new ArrayInit(scanner.getLine(), scanner.getColumn(), (List)$2); }
         | '(' expression ')'                                    { $$ = $2; }
-        | POINTER ident                                         { $$ = new Pointer(scanner.getLine(), scanner.getColumn(), (Variable)$2); }
+        | "*" ident                                         { $$ = new Pointer(scanner.getLine(), scanner.getColumn(), (Variable)$2); }
         | REFERENCE ident                                       { $$ = new Reference(scanner.getLine(), scanner.getColumn(), (Variable)$2); }
         | '-' expression        %prec UNARY_MINUS               { $$ = new UnaryMinus(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
         | '!' expression                                        { $$ = new UnaryNot(scanner.getLine(), scanner.getColumn(), (Expression)$2); }
@@ -215,7 +216,7 @@ type:   basic_type                                      { $$ = $1; }
         | VOID                                          { $$ = VoidType.getInstance(); }
         | '[' INT_CONSTANT ']' type                     { $$ = new ArrayType(scanner.getLine(), scanner.getColumn(), (int)$2, (Type)$4); }
         | STRUCT '{' struct_body '}'                    { $$ = new RecordType(scanner.getLine(), scanner.getColumn(), (List)$3); } 
-        | POINTER basic_type                            { $$ = new PointerType(scanner.getLine(), scanner.getColumn(), (Type)$2); }
+        | "*" basic_type                            { $$ = new PointerType(scanner.getLine(), scanner.getColumn(), (Type)$2); }
         ;
 
 basic_type: INT                                         { $$ = IntType.getInstance(); }

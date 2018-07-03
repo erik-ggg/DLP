@@ -1,6 +1,7 @@
 package codegeneration;
 
 import ast.expressions.Arithmetic;
+import ast.expressions.ArrayInit;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
 import ast.expressions.Comparison;
@@ -243,6 +244,11 @@ public abstract class AbstractCGVisitor implements Visitor {
 
 	@Override
 	public Object visit(PointerType pointerType, Object p) {
+		throw new RuntimeException("Plantilla no implementada");
+	}
+
+	@Override
+	public Object visit(ArrayInit arrayInit, Object p) {
 		throw new RuntimeException("Plantilla no implementada");
 	}
 	

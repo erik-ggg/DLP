@@ -5,6 +5,7 @@ import java.util.List;
 import ast.main.FunctionDefinition;
 import ast.main.VarDefinition;
 import ast.statements.Break;
+import ast.types.ArrayType;
 import ast.types.FunctionType;
 import ast.types.RecordField;
 import ast.types.RecordType;
@@ -17,6 +18,8 @@ public class OffsetVisitor extends DefaultVisitor {
 	private int offsetLocal = 0;
 	private int offsetParams = 4;
 	private int offsetRecordFields = 0;
+	private int offsetArrayFields = 0;
+	
 	@Override
 	public Object visit(FunctionDefinition fun, Object tp) {
 		super.visit(fun, tp);

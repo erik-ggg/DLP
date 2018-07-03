@@ -125,7 +125,7 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 
 	@Override
 	public Void visit(VarDefinition varDefinition, Object p) {
-		codeGenerator.comentarioVarDefinition(varDefinition);
+		codeGenerator.comentVarDefinition(varDefinition);
 		return null;
 	}
 
@@ -155,17 +155,19 @@ public class ExecutorVisitor extends AbstractCGVisitor {
 	public Object visit(Switch swt, Object p) {
 		String endSwitch = codeGenerator.createLabelAuto();
 		codeGenerator.print("\t' * Switch");
-//		swt.getParam().accept(valueVisitor, null);
+		boolean areBreaks = false;
 		for (Case iCase : swt.getCases()) {
 			String nextCase = codeGenerator.createLabelAuto();
 			new Comparison(swt.getRow(), swt.getColumn(), swt.getParam(), "==", iCase.getCondition()).accept(valueVisitor, null);
 			codeGenerator.jumpIfZero(nextCase);
 			iCase.getBody().forEach(x -> x.accept(this, p));
-			if (iCase.hasBreak()) codeGenerator.jump(endSwitch);
+			if (iCase.hasBreak()) {
+				codeGenerator.jump(endSwitch);
+				areBreaks = true;
+			}
 			codeGenerator.label(nextCase);
 		}
-		codeGenerator.jump(endSwitch);
-		codeGenerator.label(endSwitch);
+		if (areBreaks) codeGenerator.label(endSwitch);
 		return null;
 	}
 }

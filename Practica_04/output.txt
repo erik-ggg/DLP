@@ -1,45 +1,146 @@
 #source "C:\Users\ERIK\Documents\University\DLP\Repo\DLP\Practica_04\small-input.txt"
 
-	' * IntType i (offset 0)
-	' * IntType n (offset 2)
-	' * IntType j (offset 4)
-	' * CharType  c (offset 6)
-	' * ConcreteASTNode [fila=10, columna=7] ptr (offset 7)
 ' Invocation to the main function
 call main
 halt
-#line 20
+#line 37
 main:
 	' * Parameters
 	' * Local variables
-	enter	0
-#line 14
+	' * ConcreteASTNode [fila=3, columna=8] ptr (offset 0)
+	' * IntType a (offset -2)
+	' * IntType b (offset -4)
+	enter	4
+#line 8
 	' * Assignment
-	pusha	0
-	pushi	10
+	push	bp
+	pushi	-2
+	addi
+	pushi	1
+	pushi	2
+	lti
+	jz	label0
+	pushi	1
+	jmp	label1
+label0:
+	pushi	2
+label1:
 	storei
 	' * Write
-	pusha	0
+	push	bp
+	pushi	-2
+	addi
 	loadi
 	outi
-#line 16
+#line 13
 	' * Assignment
-	pusha	7
-	pusha	0
+	push	bp
+	pushi	-4
+	addi
+	pushi	5
+	storei
+	' * If
+	pushi	1
+	pushi	5
+	lti
+	pushi	5
+	pushi	10
+	lti
+	and
+	jz	label2
+	' * Write
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	outi
+	jmp	label3
+label2:
+label3:
+	' * Switch
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	pushi	1
+	eqi
+	jz	label5
+	' * Write
+	pushi	1
+	outi
+label5:
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	pushi	2
+	eqi
+	jz	label6
+	' * Write
+	pushi	2
+	outi
+label6:
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	pushi	5
+	eqi
+	jz	label7
+	' * Write
+	pushb	111
+	outb
+	' * Write
+	pushb	107
+	outb
+	jmp	label4
+label7:
+	push	bp
+	pushi	-4
+	addi
+	loadi
+	pushi	5
+	eqi
+	jz	label8
+	' * Write
+	pushb	111
+	outb
+	' * Write
+	pushb	107
+	outb
+	' * Write
+	pushb	50
+	outb
+label8:
+label4:
+#line 33
+	' * Assignment
+	push	bp
+	pushi	0
+	addi
+	push	bp
+	pushi	-4
+	addi
 	store
 	' * Write
-	pusha	7
+	push	bp
+	pushi	0
+	addi
 	load
 	loadi
 	out
-#line 18
+#line 35
 	' * Assignment
-	pusha	7
+	push	bp
+	pushi	0
+	addi
 	load
 	pushi	20
 	store
 	' * Write
-	pusha	0
+	push	bp
+	pushi	-4
+	addi
 	loadi
 	outi
-	ret	0, 0, 0
+	ret	0, 4, 0

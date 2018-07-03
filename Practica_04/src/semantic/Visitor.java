@@ -1,6 +1,7 @@
 package semantic;
 
 import ast.expressions.Arithmetic;
+import ast.expressions.ArrayInit;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
 import ast.expressions.Comparison;
@@ -82,4 +83,5 @@ public interface Visitor<TP, TR> {
 	TR visit(Reference reference, TP p);
 	TR visit(Pointer pointer, TP p);
 	TR visit(PointerType pointerType, TP p);
+	TR visit(ArrayInit arrayInit, TP p);
 }

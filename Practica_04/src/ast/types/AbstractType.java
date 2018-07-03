@@ -85,4 +85,9 @@ public abstract class AbstractType<TP, TR> extends ConcreteASTNode<TP, TR> imple
 	public Type logical() {
 		return null;
 	}
+
+	@Override
+	public Type compareTypes(Type type) {
+		return null;
+	}
 }

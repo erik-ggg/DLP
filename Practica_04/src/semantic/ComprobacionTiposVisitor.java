@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.expressions.Arithmetic;
+import ast.expressions.ArrayInit;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
 import ast.expressions.Comparison;
+import ast.expressions.Expression;
 import ast.expressions.FieldAccess;
 import ast.expressions.Indexing;
 import ast.expressions.IntLiteral;
@@ -28,6 +30,7 @@ import ast.statements.Read;
 import ast.statements.Return;
 import ast.statements.Switch;
 import ast.statements.While;
+import ast.types.ArrayType;
 import ast.types.CharType;
 import ast.types.ErrorType;
 import ast.types.FunctionType;
@@ -38,6 +41,21 @@ import ast.types.Type;
 
 public class ComprobacionTiposVisitor extends DefaultVisitor {
 	
+	@Override
+	public Void visit(ArrayInit arrayInit, Object p) {
+		super.visit(arrayInit, p);
+		arrayInit.setLValue(false);
+		Type one = arrayInit.getArrayValues().get(0).getType();
+		arrayInit.setType(one);
+		for (Expression arrayItem : arrayInit.getArrayValues()) {
+			if (arrayItem.getType().compareTypes(one) == null)  {
+				arrayInit.setType(new ErrorType("Mismatch values types in array asignation.", arrayInit));
+				break;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public Void visit(Reference reference, Object o) {
 		super.visit(reference, o);		
@@ -107,14 +125,39 @@ public class ComprobacionTiposVisitor extends DefaultVisitor {
 	@Override
 	public Void visit(Assignment assigment, Object o) {
 		super.visit(assigment, o);
+		// si es un array init
+		if (assigment.getRight() instanceof ArrayInit) {
+			// le asignamos su variable para saber el tipo de la izquierda
+			ArrayInit arrayInit = (ArrayInit) assigment.getRight();
+			// si lo que tenemos a la izquierda es de tipo indexing
+			if (assigment.getLeft() instanceof Indexing) {
+				Indexing indexing = (Indexing) assigment.getLeft();
+				arrayInit.setVariable((Variable) indexing.getLeft());
+			} else {
+				arrayInit.setVariable((Variable)assigment.getLeft());
+			}
+			if (assigment.getLeft().getType() instanceof ArrayType) {
+				ArrayType arrayType = (ArrayType) assigment.getLeft().getType();
+				for (Expression arrayItem : arrayInit.getArrayValues()) {
+					Type type = arrayType.getType().promotesTo(arrayItem.getType());
+					if (type == null)
+						arrayItem.setType(new ErrorType("Can't assign type " + assigment.getRight().getType() + " to "
+								+ assigment.getLeft().getType(), assigment));
+					else {
+						arrayItem.setType(type);
+					}
+				}
+			}
+		}
 		if (!assigment.getLeft().getLValue())
 			new ErrorType("The left operator must be assignable (LValue:true)", assigment);
 		Type type = assigment.getLeft().getType().promotesTo(assigment.getRight().getType());
 		if (type == null)
 			new ErrorType("Can't assign type " + assigment.getRight().getType() + " to "
 					+ assigment.getLeft().getType(), assigment);
-		else
+		else {			
 			assigment.getLeft().setType(type);
+		}
 		return null;
 	}
 

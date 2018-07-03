@@ -13,12 +13,25 @@ public class ArrayType extends AbstractType {
         this.type = type;
     }
 
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
 	@Override
 	public String toString() {
 		return "ArrayType " + "size: " + size;
     }
     
-    /**
+    @Override
+	public int getNumberOfBytes() {
+		return size*type.getNumberOfBytes();
+	}
+
+	/**
      * @return the type
      */
     public Type getType() {
@@ -30,6 +43,12 @@ public class ArrayType extends AbstractType {
 		return type.arithmetic(targetType);
 	}
 	
+	@Override
+	public Type promotesTo(Type type) {
+		if (type instanceof ErrorType) return type;
+		else return this.type;
+	}
+
 	@Override
 	public <TP, TR> TR accept(Visitor<TP, TR> visitor, TP p) {
 		return visitor.visit(this, p);

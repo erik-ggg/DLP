@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.expressions.Arithmetic;
+import ast.expressions.ArrayInit;
 import ast.expressions.Cast;
 import ast.expressions.CharLiteral;
 import ast.expressions.Comparison;
@@ -223,6 +224,11 @@ public abstract class DefaultVisitor<TP, TR> implements Visitor<TP, TR> {
 	@Override
 	public TR visit(PointerType pointerType, TP p) {
 		pointerType.getType().accept(this, p);
+		return null;
+	}
+	@Override
+	public TR visit(ArrayInit arrayInit, TP p) {
+		arrayInit.getArrayValues().forEach(x -> x.accept(this, p));
 		return null;
 	}
 }

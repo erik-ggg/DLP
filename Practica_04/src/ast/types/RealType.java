@@ -59,6 +59,8 @@ public class RealType extends AbstractType {
 	public Type promotesTo( Type type ) {
 		if (type instanceof ErrorType) return type;
 		if (type instanceof RealType) return this;
+		if (type instanceof IntType) return type;
+		if (type instanceof CharType) return type;
 		return null;
 	}
 	
@@ -70,5 +72,11 @@ public class RealType extends AbstractType {
 	@Override
 	public Type superType(Type type) {
 		return this;
+	}
+	
+	@Override
+	public Type compareTypes(Type type) {
+		if (type instanceof RealType) return type;
+		return null;
 	}
 }

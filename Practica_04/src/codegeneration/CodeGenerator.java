@@ -44,6 +44,10 @@ public class CodeGenerator {
 		operators.put("||", "or");
 		operators.put("!", "not");
 	}
+	
+	public void add() {
+		stream.println("\tadd");
+	}
 
 	public String createLabelAuto() {
 		return "label" + numLabels++;
@@ -142,20 +146,20 @@ public class CodeGenerator {
 		stream.println("\t" + operators.get(operator) + (isLogic(operator) ? "" : suffix));
 	}
 
-	public void comentario(String comentario) {
+	public void comment(String comentario) {
 		stream.println("#" + comentario);
 	}
 	
 	public void source(String source) {
-		comentario("source \"" + source + "\"\n");
+		comment("source \"" + source + "\"\n");
 	}
 	
-	public void comentarioVarDefinition(VarDefinition varDef) {
+	public void comentVarDefinition(VarDefinition varDef) {
 		stream.println("\t' * " + varDef.getType() + " " +varDef.getName() + " (offset " + varDef.getOffset() + ")");
 	}
 	
 	public void line(int num) {
-		comentario("line " + num);
+		comment("line " + num);
 	}
 	
 	public void print(String text) {
